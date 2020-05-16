@@ -118,3 +118,5 @@ source /Users/glen/Documents/projects/git/zsh-git-prompt/zshrc.sh
 PROMPT='$(get_prompt)'
 
 alias config='/usr/bin/git --git-dir=/Users/glen/.cfg/ --work-tree=/Users/glen'
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
