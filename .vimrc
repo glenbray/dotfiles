@@ -259,7 +259,7 @@ noremap <leader>0 :tablast<cr>
 noremap <leader>. :tabnew<cr>
 noremap <leader>s :Snippets<cr>
 noremap <leader>w :Windows<cr>
-noremap <leader>f :RG<cr>
+noremap <leader>f :Rg<cr>
 
 " vim-test mappings
 nmap <silent> <leader>tn :TestNearest<cr>

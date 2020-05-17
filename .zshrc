@@ -118,11 +118,19 @@ get_prompt() {
   echo -n "\n"
 }
 
+antibody bundle < ~/.zsh_plugins.txt
+
 source /Users/glen/Documents/projects/git/zsh-git-prompt/zshrc.sh
+
 ZSH_THEME_GIT_PROMPT_PREFIX="("
 ZSH_THEME_GIT_PROMPT_SUFFIX=")"
 ZSH_THEME_GIT_PROMPT_LOCAL=""
 PROMPT='$(get_prompt)'
 
+export FZF_DEFAULT_COMMAND="rg --files"
+export PATH="$HOME/.rbenv/bin:$PATH"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+eval "$(rbenv init -)"
+
