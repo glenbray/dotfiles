@@ -98,25 +98,31 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+alias config='/usr/bin/git --git-dir=/Users/glen/.cfg/ --work-tree=/Users/glen'
 alias zc="vim ~/.zshrc"
 alias vc="vim ~/.vimrc"
 alias ss="source ~/.zshrc"
+alias p="cd ~/Documents/projects"
 
 get_prompt() {
-  echo -n "%{$reset_color%}%~" # Dir
-  echo -n "$(git_super_status)" # Git branch
   echo -n "\n"
-  echo -n "%F{6}%n%f" # User
-  echo -n "%F{8}@%f" # at
-  echo -n "%F{12}%m%f" # Host
-  echo -n "%F{8}:%f" # in
-  echo -n "$%{$reset_color%} " # $ or #
+  echo -n "%{$reset_color%}"
+  echo -n "%{$fg[cyan]%}[%~]" # Dir
+  echo -n "$(git_super_status) " # Git branch
+  echo -n "\n"
+  echo -n "%{$fg_bold[green]%}➜ " # Right arrow
+  echo -n "%{$fg[magenta]%}%n%f " # User
+  echo -n "at " # at
+  echo -n "%{$fg[yellow]%}%m%f " # Host
+  echo -n "$%{$reset_color%} " # $
   echo -n "\n"
 }
 
 source /Users/glen/Documents/projects/git/zsh-git-prompt/zshrc.sh
+ZSH_THEME_GIT_PROMPT_PREFIX="("
+ZSH_THEME_GIT_PROMPT_SUFFIX=")"
+ZSH_THEME_GIT_PROMPT_LOCAL=""
 PROMPT='$(get_prompt)'
 
-alias config='/usr/bin/git --git-dir=/Users/glen/.cfg/ --work-tree=/Users/glen'
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

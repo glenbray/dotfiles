@@ -119,6 +119,8 @@ let g:lightline = {
 \   'filename': 'LightlineTabname'
 \ },
 \ 'colorscheme': 'seoul256',
+\ 'separator': { 'left': '', 'right': '' },
+\ 'subseparator': { 'left': '', 'right': '' }
 \ }
 
 function! LightlineFilename()
