@@ -86,6 +86,8 @@ source $ZSH/oh-my-zsh.sh
 #   export EDITOR='mvim'
 # fi
 
+export EDITOR='vim'
+
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
 
@@ -103,6 +105,7 @@ alias zc="vim ~/.zshrc"
 alias vc="vim ~/.vimrc"
 alias ss="source ~/.zshrc"
 alias p="cd ~/Documents/projects"
+alias b="bundle exec"
 
 get_prompt() {
   echo -n "\n"
@@ -118,7 +121,7 @@ get_prompt() {
   echo -n "\n"
 }
 
-antibody bundle < ~/.zsh_plugins.txt
+$(antibody bundle < ~/.zsh_plugins.txt)
 
 source /Users/glen/Documents/projects/git/zsh-git-prompt/zshrc.sh
 
@@ -127,6 +130,7 @@ ZSH_THEME_GIT_PROMPT_SUFFIX=")"
 ZSH_THEME_GIT_PROMPT_LOCAL=""
 PROMPT='$(get_prompt)'
 
+export FZF_DEFAULT_OPTS='--color bg+:#334455'
 export FZF_DEFAULT_COMMAND="rg --files"
 export PATH="$HOME/.rbenv/bin:$PATH"
 

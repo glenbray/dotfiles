@@ -1,3 +1,5 @@
+syntax on
+
 set colorcolumn=+1
 set number
 set numberwidth=5
@@ -34,6 +36,7 @@ au FocusGained,BufEnter * checktime
 " (useful for handling the permission-denied error)
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
+set termguicolors
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
@@ -57,19 +60,13 @@ set nobackup
 set nowb
 set noswapfile
 
+let g:gruvbox_contrast_dark = 'dark'
+
 colorscheme gruvbox
 
 let mapleader = ","
-" let g:VM_leader = ',,'
-
-let g:gruvbox_contrast_dark = 'dark'
 
 " set wildignore+=*/tmp/*,*.so,*.sw,*.zip     " MacOSX/Linux
-
-" let g:airline#extensions#tabline#enabled = 1
-" let g:airline_powerline_fonts = 1
-
-let g:deoplete#enable_at_startup = 1
 
 " better key bindings for UltiSnipsExpandTrigger
 let g:UltiSnipsExpandTrigger="<C-j>"
@@ -91,6 +88,28 @@ let g:vim_json_syntax_conceal = 0
 let g:vim_markdown_conceal = 0
 let g:indentLine_fileTypeExclude = ['json', 'md']
 
+"COC configuration
+set hidden
+set cmdheight=2
+set updatetime=300
+
+inoremap <silent><expr> <c-space> coc#refresh()
+inoremap <silent><expr> <NUL> coc#refresh()
+
+" use <tab> for trigger completion and navigate to the next complete item
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
+inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Ale settings
@@ -118,7 +137,7 @@ let g:lightline = {
 \ 'tab_component_function': {
 \   'filename': 'LightlineTabname'
 \ },
-\ 'colorscheme': 'seoul256',
+\ 'colorscheme': 'powerline',
 \ 'separator': { 'left': '', 'right': '' },
 \ 'subseparator': { 'left': '', 'right': '' }
 \ }
@@ -173,12 +192,8 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'janko/vim-test'
 Plug 'airblade/vim-gitgutter'
 Plug 'jremmen/vim-ripgrep'
-Plug 'mtth/scratch.vim'
-Plug 'morhetz/gruvbox'
-Plug 'Shougo/deoplete.nvim'
-Plug 'Shougo/denite.nvim'
-Plug 'roxma/nvim-yarp'
-Plug 'roxma/vim-hug-neovim-rpc'
+Plug 'gruvbox-community/gruvbox'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'mattn/emmet-vim'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
@@ -194,13 +209,12 @@ Plug 'itchyny/lightline.vim'
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
 
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-
+" NERDTree open if directories are present
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
-autocmd VimEnter * call deoplete#custom#source('ultisnips', 'matchers', ['matcher_fuzzy'])
-autocmd BufWritePre * :%s/\s\+$//e
 
+" automatically remove trailing whitespaces
+autocmd BufWritePre * :%s/\s\+$//e
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
@@ -211,6 +225,8 @@ nnoremap <C-l> <C-w>l
 " open ctags in vertical split
 nnoremap <C-]> :execute "vertical ptag " . expand("<cword>")<CR>
 
+" split pane and fix position
+nnoremap <C-W>s Hmx`` \|:split<CR>`xzt``
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Spell checking
@@ -230,10 +246,11 @@ map <leader>s? z=
 map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
 
 " Remap alt h/l keys to change tabs left and right
-nnoremap - gt<cr>
-nnoremap ˍ gT<cr>
+" nnoremap - gt<cr>
+" nnoremap ˍ gT<cr>
 
 
+" Quit
 map <leader>q :q<cr>
 
 " NERDTree mappings
@@ -259,7 +276,10 @@ noremap <leader>0 :tablast<cr>
 noremap <leader>. :tabnew<cr>
 noremap <leader>s :Snippets<cr>
 noremap <leader>w :Windows<cr>
-noremap <leader>f :Rg<cr>
+noremap <leader>ff :RG<cr>
+noremap <leader>fe :RGE<cr>
+" remap fzf to ctrl+p
+nnoremap <silent> <c-p> :Files<cr>
 
 " vim-test mappings
 nmap <silent> <leader>tn :TestNearest<cr>
@@ -276,22 +296,12 @@ noremap <leader>P "+p
 
 nnoremap <Leader>b :Git blame<CR>
 
-" remap fzf to ctrl+p
-nnoremap <silent> <c-p> :Files<cr>
-
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<cr>
-
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 augroup DisableMappings
     " autocmd! VimEnter * :inoremap <leader>ic <Nop>
     autocmd! VimEnter * :unmap <C-e>
 augroup END
-
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep(
-  \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
-  \   fzf#vim#with_preview(), <bang>0)
 
 command! -bang -nargs=? -complete=dir Files
     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
@@ -348,7 +358,16 @@ function! RipgrepFzf(query, fullscreen)
   call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
 endfunction
 
+function! RipgrepFzfExact(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -F %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+
 command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+command! -nargs=* -bang RGE call RipgrepFzfExact(<q-args>, <bang>0)
 
 " change cursor on insert mode
 let &t_SI = "\e[6 q"
@@ -359,3 +378,13 @@ augroup myCmds
 au!
 autocmd VimEnter * silent !echo -ne "\e[2 q"
 augroup END
+
+function! s:fzf_statusline()
+  " Override statusline as you like
+  highlight fzf1 ctermfg=161 ctermbg=251
+  highlight fzf2 ctermfg=23 ctermbg=251
+  highlight fzf3 ctermfg=237 ctermbg=251
+  setlocal statusline=%#fzf1#\ >\ %#fzf2#fz%#fzf3#f
+endfunction
+
+autocmd! User FzfStatusLine call <SID>fzf_statusline()
