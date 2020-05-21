@@ -36,6 +36,10 @@ au FocusGained,BufEnter * checktime
 " (useful for handling the permission-denied error)
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
+" Set the title to the current working directory name
+autocmd BufEnter * let &titlestring = ' ' . fnamemodify(getcwd(), ':t')
+set title
+
 set termguicolors
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -69,7 +73,7 @@ let mapleader = ","
 " set wildignore+=*/tmp/*,*.so,*.sw,*.zip     " MacOSX/Linux
 
 " better key bindings for UltiSnipsExpandTrigger
-let g:UltiSnipsExpandTrigger="<C-j>"
+" let g:UltiSnipsExpandTrigger="<C-j>"
 
 " open UltiSnipsEditSplit in a new tab
 let g:UltiSnipsEditSplit = 'tabdo'
@@ -90,9 +94,9 @@ let g:indentLine_fileTypeExclude = ['json', 'md']
 
 "COC configuration
 set hidden
-set cmdheight=2
 set updatetime=300
 
+"triger completion when space is pressed
 inoremap <silent><expr> <c-space> coc#refresh()
 inoremap <silent><expr> <NUL> coc#refresh()
 
@@ -106,10 +110,27 @@ inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
       \ coc#refresh()
+
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
+" remap up and down when context menu is open
 inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
+
+" use <C-l> to complete snippets
+inoremap <silent><expr> <C-l>
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+let g:coc_snippet_next = '<tab>'
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Ale settings
@@ -249,9 +270,11 @@ map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
 " nnoremap - gt<cr>
 " nnoremap ˍ gT<cr>
 
-
 " Quit
-map <leader>q :q<cr>
+map <leader>qq :q<cr>
+
+" Save
+map <leader>w :w<cr>
 
 " NERDTree mappings
 noremap <leader>c :NERDTreeToggle<cr>
@@ -274,8 +297,9 @@ noremap <leader>0 :tablast<cr>
 
 " fzf search mappings
 noremap <leader>. :tabnew<cr>
-noremap <leader>s :Snippets<cr>
-noremap <leader>w :Windows<cr>
+
+noremap <leader>fs :Snippets<cr>
+noremap <leader>fw :Windows<cr>
 noremap <leader>ff :RG<cr>
 noremap <leader>fe :RGE<cr>
 " remap fzf to ctrl+p
@@ -379,6 +403,7 @@ au!
 autocmd VimEnter * silent !echo -ne "\e[2 q"
 augroup END
 
+" WHAT DOES THIS DO???
 function! s:fzf_statusline()
   " Override statusline as you like
   highlight fzf1 ctermfg=161 ctermbg=251

@@ -106,6 +106,8 @@ alias vc="vim ~/.vimrc"
 alias ss="source ~/.zshrc"
 alias p="cd ~/Documents/projects"
 alias b="bundle exec"
+alias d="docker-compose"
+alias dr="docker-compose run web /bin/bash"
 
 get_prompt() {
   echo -n "\n"
