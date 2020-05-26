@@ -14,7 +14,6 @@ set fillchars+=vert:│
 set mouse=a
 set ignorecase
 set wildmenu
-set cursorline
 set hlsearch
 
 " Show matching brackets when text indicator is over them
@@ -40,7 +39,6 @@ command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 autocmd BufEnter * let &titlestring = ' ' . fnamemodify(getcwd(), ':t')
 set title
 
-set termguicolors
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Text, tab and indent related
@@ -67,6 +65,8 @@ set noswapfile
 let g:gruvbox_contrast_dark = 'dark'
 
 colorscheme gruvbox
+set background=dark termguicolors cursorline
+
 
 let mapleader = ","
 
@@ -163,8 +163,12 @@ let g:lightline = {
 \ 'subseparator': { 'left': '', 'right': '' }
 \ }
 
+function LightLineModified()
+  return &modifiable && &modified ? ' ❗' : ''
+endfunction
+
 function! LightlineFilename()
-  return pathshorten(expand('%'))
+  return pathshorten(expand('%')) . LightLineModified()
 endfunction
 
 function! LightlineTabname(n) abort
@@ -271,7 +275,7 @@ map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
 " nnoremap ˍ gT<cr>
 
 " Quit
-map <leader>qq :q<cr>
+map <leader>x :q<cr>
 
 " Save
 map <leader>w :w<cr>
