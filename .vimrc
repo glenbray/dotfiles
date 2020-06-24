@@ -67,7 +67,6 @@ let g:gruvbox_contrast_dark = 'dark'
 colorscheme gruvbox
 set background=dark termguicolors cursorline
 
-
 let mapleader = ","
 
 " set wildignore+=*/tmp/*,*.so,*.sw,*.zip     " MacOSX/Linux
@@ -90,6 +89,7 @@ let g:NERDTreeHijackNetrw=0
 " let g:indentLine_setConceal = 0
 let g:vim_json_syntax_conceal = 0
 let g:vim_markdown_conceal = 0
+let g:indentLine_concealcursor='nc'
 let g:indentLine_fileTypeExclude = ['json', 'md']
 
 "COC configuration
@@ -139,7 +139,7 @@ let g:ale_linter_aliases = {'javascriptreact': 'javascript'}
 let g:ale_lint_on_save = 1
 let g:ale_yaml_yamllint_executable = 'prettier'
 let g:ale_fix_on_save = 1
-
+let g:ale_set_highlights = 0 " Disable highligting
 let g:ale_linters = {
 \ 'ruby': ['standardrb'],
 \}
@@ -183,6 +183,8 @@ let g:ruby_indent_assignment_style = 'variable'
 
 let test#strategy = "vimterminal"
 
+set rtp+=/usr/local/opt/fzf
+
 " Open FZF in modal center of page
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.8 } }
 
@@ -209,6 +211,7 @@ Plug 'tpope/vim-obsession'
 Plug 'mg979/vim-visual-multi'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'simeji/winresizer'
@@ -230,6 +233,7 @@ Plug 'mkitt/tabline.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'vim-scripts/Tabmerge'
 Plug 'itchyny/lightline.vim'
+Plug 'AndrewRadev/tagalong.vim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -246,6 +250,7 @@ nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
+nnoremap <C-=> <C-w>=
 
 " open ctags in vertical split
 nnoremap <C-]> :execute "vertical ptag " . expand("<cword>")<CR>
@@ -273,6 +278,9 @@ map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
 " Remap alt h/l keys to change tabs left and right
 " nnoremap - gt<cr>
 " nnoremap ˍ gT<cr>
+
+nnoremap ^[h gt<cr>
+nnoremap ^[l gT<cr>
 
 " Quit
 map <leader>x :q<cr>
@@ -407,13 +415,3 @@ au!
 autocmd VimEnter * silent !echo -ne "\e[2 q"
 augroup END
 
-" WHAT DOES THIS DO???
-function! s:fzf_statusline()
-  " Override statusline as you like
-  highlight fzf1 ctermfg=161 ctermbg=251
-  highlight fzf2 ctermfg=23 ctermbg=251
-  highlight fzf3 ctermfg=237 ctermbg=251
-  setlocal statusline=%#fzf1#\ >\ %#fzf2#fz%#fzf3#f
-endfunction
-
-autocmd! User FzfStatusLine call <SID>fzf_statusline()
