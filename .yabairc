@@ -3,8 +3,19 @@ yabai -m rule --add app="^Calculator$" manage=off
 yabai -m rule --add app="^Monosnap$" manage=off
 yabai -m rule --add app="^Coccinellida$" manage=off
 yabai -m rule --add app="^Postgres$" manage=off
-yabai -m rule --add app="^PS4 Remote Play$" manage=off
-
+yabai -m rule --add app="^PS Remote Play$" manage=off
+yabai -m rule --add app="^Battle.net$" manage=off
+yabai -m rule --add app="^Archive Utility$" manage=off
+yabai -m rule --add app="^Docker$" manage=off
+yabai -m rule --add app="^About This Mac$" manage=off
+yabai -m rule --add app="^Parallels Desktop$" manage=off
+yabai -m rule --add app="^Alfred Preferences$" manage=off
+yabai -m rule --add app="^Remember The Milk$" manage=off
+yabai -m rule --add app="^TickTick$" manage=off
+yabai -m rule --add app="^todo$" manage=off
+yabai -m rule --add app="^Simulator$" manage=off
+yabai -m rule --add app="^Android Studio$" manage=off
+yabai -m rule --add app="^Mail$" manage=off
 
 yabai -m config layout bsp
 yabai -m window --toggle border
@@ -25,7 +36,7 @@ yabai -m config left_padding                "${gaps_left}"
 yabai -m config right_padding               "${gaps_right}"
 yabai -m config window_gap                  "${gaps_inner}"
 
-yabai -m config window_border_width         6
+yabai -m config window_border_width         8
 yabai -m config active_window_border_color  "0xE0${focused_border_color}"
 yabai -m config insert_window_border_color  "0xE0${preselect_border_color}"
 yabai -m config normal_window_border_color  "0x00${normal_border_color}"

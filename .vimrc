@@ -1,5 +1,3 @@
-syntax on
-
 set colorcolumn=+1
 set number
 set numberwidth=5
@@ -38,6 +36,8 @@ command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 " Set the title to the current working directory name
 autocmd BufEnter * let &titlestring = ' ' . fnamemodify(getcwd(), ':t')
 set title
+
+set redrawtime=10000
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -78,6 +78,9 @@ let mapleader = ","
 let g:UltiSnipsEditSplit = 'tabdo'
 
 
+" Visual Multi
+let g:VM_leader = '\'
+
 " Git Gutter
 let g:gitgutter_enabled = 1
 let g:gitgutter_async = 1
@@ -86,11 +89,17 @@ let g:gitgutter_async = 1
 let NERDTreeShowHidden = 1
 let g:NERDTreeHijackNetrw=0
 
+
 " let g:indentLine_setConceal = 0
 let g:vim_json_syntax_conceal = 0
 let g:vim_markdown_conceal = 0
 let g:indentLine_concealcursor='nc'
 let g:indentLine_fileTypeExclude = ['json', 'md']
+
+
+" Automatically redraw on focus
+" au FocusGained * :redraw!
+
 
 "COC configuration
 set hidden
@@ -131,26 +140,72 @@ endfunction
 
 let g:coc_snippet_next = '<tab>'
 
+let g:coc_global_extensions = [
+  \ 'coc-solargraph',
+  \ 'coc-tsserver'
+  \ ]
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
+  let g:coc_global_extensions += ['coc-prettier']
+endif
+
+if isdirectory('./node_modules') && isdirectory('./node_modules/eslint')
+  let g:coc_global_extensions += ['coc-eslint']
+endif
+
+nnoremap <silent> K :call CocAction('doHover')<CR>
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Ale settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ale_linter_aliases = {'javascriptreact': 'javascript'}
 let g:ale_lint_on_save = 1
-let g:ale_yaml_yamllint_executable = 'prettier'
+" let g:ale_yaml_yamllint_executable = 'prettier'
 let g:ale_fix_on_save = 1
 let g:ale_set_highlights = 0 " Disable highligting
+let g:ale_python_flake8_executable = 'python3'
+let g:ale_python_pyflakes_executable = 'pyflakes3'
+
 let g:ale_linters = {
-\ 'ruby': ['standardrb'],
+\  'ruby': ['standardrb'],
+\  'python': ['flake8'],
 \}
 
 let g:ale_fixers = {
 \  'ruby': ['standardrb'],
 \  'javascript': ['prettier'],
 \  'javascriptreact': ['prettier'],
+\  'typescript': ['prettier', 'tslint'],
 \  'css': ['prettier'],
+\  'python': ['autopep8', 'yapf'],
 \}
 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Tagbar settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if executable('ripper-tags')
+  let g:tagbar_type_ruby = {
+      \ 'kinds'      : ['m:modules',
+                      \ 'c:classes',
+                      \ 'C:constants',
+                      \ 'F:singleton methods',
+                      \ 'f:methods',
+                      \ 'a:aliases'],
+      \ 'kind2scope' : { 'c' : 'class',
+                       \ 'm' : 'class' },
+      \ 'scope2kind' : { 'class' : 'c' },
+      \ 'ctagsbin'   : 'ripper-tags',
+      \ 'ctagsargs'  : ['-f', '-']
+      \ }
+endif
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Lightline settings
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:lightline = {
 \ 'component_function': {
 \   'filename': 'LightlineFilename'
@@ -188,10 +243,28 @@ set rtp+=/usr/local/opt/fzf
 " Open FZF in modal center of page
 let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.8 } }
 
+let $FZF_DEFAULT_OPTS="--bind \"ctrl-n:preview-down,ctrl-p:preview-up\""
+
+
 let NERDTreeIgnore = ['.*sw.', 'Session.vim']
 
 " Display extra whitespace
 set list listchars=tab:»·,trail:·,nbsp:·
+
+
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*js,*jsx'
+let g:closetag_xhtml_filenames = '*.xhtml'
+let g:closetag_filetypes = 'html,xhtml,phtml,js,jsx'
+let g:closetag_xhtml_filetypes = 'xhtml,jsx'
+let g:closetag_emptyTags_caseSensitive = 1
+let g:closetag_regions = {
+    \ 'typescript.tsx': 'jsxRegion,tsxRegion',
+    \ 'javascript.jsx': 'jsxRegion',
+    \ }
+
+let g:closetag_shortcut = '>'
+let g:closetag_close_shortcut = '<leader>>'
+
 
 call plug#begin('~/.vim/plugged')
 
@@ -234,6 +307,11 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'vim-scripts/Tabmerge'
 Plug 'itchyny/lightline.vim'
 Plug 'AndrewRadev/tagalong.vim'
+Plug 'easymotion/vim-easymotion'
+Plug 'wakatime/vim-wakatime'
+Plug 'lambdalisue/vim-pyenv'
+Plug 'majutsushi/tagbar'
+Plug 'alvan/vim-closetag'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -244,6 +322,14 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in
 
 " automatically remove trailing whitespaces
 autocmd BufWritePre * :%s/\s\+$//e
+
+" Set comment string for rspec file type
+autocmd FileType rspec setlocal commentstring=#\ %s
+
+autocmd BufNewFile,BufRead *_spec.rb set syntax=ruby filetype=ruby
+
+" Tagbar
+nnoremap <silent> <Leader>b :TagbarToggle<CR>
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
@@ -270,14 +356,9 @@ map <leader>sp [s
 map <leader>sa zg
 map <leader>s? z=
 
-
 " Opens a new tab with the current buffer's path
 " Super useful when editing files in the same directory
 map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
-
-" Remap alt h/l keys to change tabs left and right
-" nnoremap - gt<cr>
-" nnoremap ˍ gT<cr>
 
 nnoremap ^[h gt<cr>
 nnoremap ^[l gT<cr>
@@ -330,14 +411,20 @@ noremap <leader>p "*p
 noremap <leader>Y "+y
 noremap <leader>P "+p
 
-nnoremap <Leader>b :Git blame<CR>
-
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<cr>
 
 augroup DisableMappings
     " autocmd! VimEnter * :inoremap <leader>ic <Nop>
     autocmd! VimEnter * :unmap <C-e>
 augroup END
+
+" Start vim obsession when opening vim
+if has('autocmd')
+  autocmd VimEnter * nested
+        \ if !argc() && empty(v:this_session) && filereadable('Session.vim') && !&modified |
+        \   source Session.vim |
+        \ endif
+endif
 
 command! -bang -nargs=? -complete=dir Files
     \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
