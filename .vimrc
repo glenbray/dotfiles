@@ -62,10 +62,16 @@ set nobackup
 set nowb
 set noswapfile
 
-let g:gruvbox_contrast_dark = 'dark'
+" let g:gruvbox_contrast_dark = 'dark'
 
-colorscheme gruvbox
-set background=dark termguicolors cursorline
+" if has('termguicolors')
+"   set termguicolors
+" endif
+
+" let g:gruvbox_material_background = 'medium'
+" colorscheme gruvbox-material
+
+" set background=dark termguicolors cursorline
 
 let mapleader = ","
 
@@ -170,15 +176,18 @@ let g:ale_python_pyflakes_executable = 'pyflakes3'
 let g:ale_linters = {
 \  'ruby': ['standardrb'],
 \  'python': ['flake8'],
+\  'eruby': [],
 \}
 
 let g:ale_fixers = {
 \  'ruby': ['standardrb'],
 \  'javascript': ['prettier'],
 \  'javascriptreact': ['prettier'],
+\  'javascript.jsx': [],
 \  'typescript': ['prettier', 'tslint'],
 \  'css': ['prettier'],
 \  'python': ['autopep8', 'yapf'],
+\  'dart': ['dartfmt'],
 \}
 
 
@@ -215,8 +224,13 @@ let g:lightline = {
 \ },
 \ 'colorscheme': 'powerline',
 \ 'separator': { 'left': '', 'right': '' },
-\ 'subseparator': { 'left': '', 'right': '' }
+\ 'subseparator': { 'left': '', 'right': '' },
 \ }
+
+" \ 'separator': { 'left': "\ue0b8", 'right': "\ue0be" },
+" \ 'subseparator': { 'left': "\ue0b9", 'right': "\ue0b9" }
+" \ 'tabline_separator': { 'left': "\ue0bc", 'right': "\ue0ba" },
+" \ 'tabline_subseparator': { 'left': "\ue0bb", 'right': "\ue0bb" },
 
 function LightLineModified()
   return &modifiable && &modified ? ' ❗' : ''
@@ -265,7 +279,6 @@ let g:closetag_regions = {
 let g:closetag_shortcut = '>'
 let g:closetag_close_shortcut = '<leader>>'
 
-
 call plug#begin('~/.vim/plugged')
 
 "Declare the list of plugins.
@@ -293,7 +306,8 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'janko/vim-test'
 Plug 'airblade/vim-gitgutter'
 Plug 'jremmen/vim-ripgrep'
-Plug 'gruvbox-community/gruvbox'
+" Plug 'gruvbox-community/gruvbox'
+Plug 'sainnhe/gruvbox-material'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'mattn/emmet-vim'
 Plug 'dhruvasagar/vim-table-mode'
@@ -315,6 +329,18 @@ Plug 'alvan/vim-closetag'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
+
+
+if has('termguicolors')
+  set termguicolors
+endif
+
+let &t_ZH="\e[3m"
+let &t_ZR="\e[23m"
+let g:gruvbox_material_better_performance = 1
+let g:gruvbox_material_background = 'hard'
+colorscheme gruvbox-material
+
 
 " NERDTree open if directories are present
 autocmd StdinReadPre * let s:std_in=1
@@ -411,6 +437,9 @@ noremap <leader>p "*p
 noremap <leader>Y "+y
 noremap <leader>P "+p
 
+noremap <leader>fl :CocList --input=flutter commands<cr>
+noremap <leader>fr :call CocAction('runCommand', 'flutter.run', '--flavor', 'development', '-d', 'all')<cr>
+
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<cr>
 
 augroup DisableMappings
@@ -502,3 +531,11 @@ au!
 autocmd VimEnter * silent !echo -ne "\e[2 q"
 augroup END
 
+" automatically install missing plugins on startup
+augroup vim_vim_plug_auto_install
+  autocmd!
+  autocmd VimEnter *
+        \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+        \|   PlugInstall --sync | q
+        \| endif
+augroup END
