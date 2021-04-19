@@ -51,7 +51,7 @@ alias br="bundle exec rspec"
 alias d="docker-compose"
 alias dr="docker-compose run"
 alias ls="exa"
-alias cat="bat"
+# alias cat="bat"
 
 source /Users/glen/Documents/projects/git/zsh-git-prompt/zshrc.sh
 $(antibody bundle < ~/.zsh_plugins.txt)
@@ -128,3 +128,6 @@ ZSH_THEME_GIT_PROMPT_PREFIX="("
 ZSH_THEME_GIT_PROMPT_SUFFIX=")"
 ZSH_THEME_GIT_PROMPT_LOCAL=""
 PROMPT='$(get_prompt)'
+
+eval "$(direnv hook zsh)"
+

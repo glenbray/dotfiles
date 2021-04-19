@@ -145,11 +145,7 @@ function! s:check_back_space() abort
 endfunction
 
 let g:coc_snippet_next = '<tab>'
-
-let g:coc_global_extensions = [
-  \ 'coc-solargraph',
-  \ 'coc-tsserver'
-  \ ]
+let g:coc_global_extensions = ['coc-solargraph']
 
 if isdirectory('./node_modules') && isdirectory('./node_modules/prettier')
   let g:coc_global_extensions += ['coc-prettier']
@@ -354,8 +350,9 @@ autocmd FileType rspec setlocal commentstring=#\ %s
 
 autocmd BufNewFile,BufRead *_spec.rb set syntax=ruby filetype=ruby
 
-" Tagbar
-nnoremap <silent> <Leader>b :TagbarToggle<CR>
+" " Tagbar
+" nnoremap <silent> <Leader>b :TagbarToggle<CR>
+nnoremap <silent> <Leader>b :Buffers<CR>
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
@@ -511,14 +508,16 @@ function! RipgrepFzf(query, fullscreen)
 endfunction
 
 function! RipgrepFzfExact(query, fullscreen)
-  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -F %s || true'
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --ignore --smart-case -F %s || true'
   let initial_command = printf(command_fmt, shellescape(a:query))
   let reload_command = printf(command_fmt, '{q}')
   let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
   call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
 endfunction
 
+" Case insensitive search
 command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+" Case sensitive search
 command! -nargs=* -bang RGE call RipgrepFzfExact(<q-args>, <bang>0)
 
 " change cursor on insert mode
@@ -539,3 +538,6 @@ augroup vim_vim_plug_auto_install
         \|   PlugInstall --sync | q
         \| endif
 augroup END
+
+autocmd BufNewFile,BufRead *.slim set ft=slim
+
