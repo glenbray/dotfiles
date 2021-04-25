@@ -361,8 +361,9 @@ nnoremap <C-h> <C-w>h
 nnoremap <C-l> <C-w>l
 nnoremap <C-=> <C-w>=
 
-" open ctags in vertical split
-nnoremap <C-]> :execute "vertical ptag " . expand("<cword>")<CR>
+" open ctags in new tab
+" nnoremap <C-]> :execute "vertical ptag " . expand("<cword>")<CR><C-w>=
+nnoremap <C-]> :execute "vertical ptag " . expand("<cword>")<CR><C-w>l<C-w>T
 
 " split pane and fix position
 nnoremap <C-W>s Hmx`` \|:split<CR>`xzt``

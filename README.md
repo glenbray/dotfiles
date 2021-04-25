@@ -14,3 +14,8 @@ $ sudo add-apt-repository ppa:jonathonf/vim
 $ sudo apt install vim
 $ sudo apt install vim-gtk3 vim-nox
 ```
+
+### ctags for ruby/rails projects
+
+`ripper-tags -R --exclude=vendor . $(bundle list --paths | sed 's/$/\/lib/')`
+
