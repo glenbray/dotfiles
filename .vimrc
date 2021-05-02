@@ -350,6 +350,8 @@ autocmd FileType rspec setlocal commentstring=#\ %s
 
 autocmd BufNewFile,BufRead *_spec.rb set syntax=ruby filetype=ruby
 
+" autocmd BufWritePost *.rb !ripper-tags -R --exclude=vendor . $(bundle list --paths | sed 's/$/\/lib/')
+
 " " Tagbar
 " nnoremap <silent> <Leader>b :TagbarToggle<CR>
 nnoremap <silent> <Leader>b :Buffers<CR>
@@ -363,6 +365,7 @@ nnoremap <C-=> <C-w>=
 
 " open ctags in new tab
 " nnoremap <C-]> :execute "vertical ptag " . expand("<cword>")<CR><C-w>=
+nnoremap <C-\> :execute "vertical ptag " . expand("<cword>")<CR><C-w>=<C-w>lzz
 nnoremap <C-]> :execute "vertical ptag " . expand("<cword>")<CR><C-w>l<C-w>T
 
 " split pane and fix position
