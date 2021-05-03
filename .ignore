@@ -1,0 +1,14 @@
+!.*
+.git
+*.sw*
+app/javascript/icons/*
+public/*
+node_modules
+.dart_tool
+.idea
+spec/test_input/**/*
+spec/test_output/**/*
+vendor
+yarn.lock
+*.min.js
+.idea/*
