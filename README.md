@@ -3,11 +3,12 @@
 ### Vim prerequisites
 
 - install python (use pyenv and set global python version)
-- install (fzf)[https://github.com/junegunn/fzf]
+- install [fzf](https://github.com/junegunn/fzf)
 - install ripgrep (fast search)
 - install bat (for syntax colours in ripgrep previews)
 - ensure system is using vim 8.2 with python support
-- install (antibody)[https://github.com/getantibody/antibody]
+- install [antibody](https://github.com/getantibody/antibody)
+- `brew install pyenv`
 
 (uninstall vim if vim is < 8.2)
 ```shell
