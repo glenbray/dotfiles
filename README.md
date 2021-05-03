@@ -19,3 +19,6 @@ $ sudo apt install vim-gtk3 vim-nox
 
 `ripper-tags -R --exclude=vendor . $(bundle list --paths | sed 's/$/\/lib/')`
 
+### Setup
+
+https://www.atlassian.com/git/tutorials/dotfiles
