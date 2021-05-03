@@ -50,7 +50,7 @@ alias bi="bundle install"
 alias br="bundle exec rspec"
 alias d="docker-compose"
 alias dr="docker-compose run"
-alias ls="exa"
+# alias ls="exa"
 # alias cat="bat"
 
 source /Users/glen/Documents/projects/git/zsh-git-prompt/zshrc.sh
