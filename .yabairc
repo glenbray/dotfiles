@@ -32,6 +32,9 @@ yabai -m rule --add app="^Cyberduck" manage=off
 yabai -m rule --add app="^Installer" manage=off
 yabai -m rule --add app="^Preview" manage=off
 yabai -m rule --add app="^Activity Monitor" manage=off
+yabai -m rule --add app="^Disk Utility" manage=off
+yabai -m rule --add app="^NordVPN IKE" manage=off
+yabai -m rule --add app="^qBittorrent" manage=off
 
 yabai -m config layout bsp
 yabai -m window --toggle border
