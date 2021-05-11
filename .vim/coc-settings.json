@@ -1,0 +1,25 @@
+{
+  "snippets.extends": {
+    "rspec": ["ruby"],
+    "cpp": ["c"],
+    "javascriptreact": ["javascript"],
+    "typescript": ["javascript"],
+    "typescriptreact": ["javascript"]
+  },
+  "python.linting.pylintPath": "/Users/glen/.pyenv/shims/python",
+  "tsserver.npm": "/Users/glen/.nvm/versions/node/v13.13.0/bin/npm",
+  "tsserver.enableJavascript": false,
+  "eslint.filetypes": ["javascript", "typescript", "typescriptreact", "javascriptreact"],
+  /* "languageserver": { */
+  /*   "tsserver": { */
+  /*     "filetypes": ["javascriptreact", "typescriptreact"] */
+  /*   } */
+  /* }, */
+  "coc.preferences.formatOnSaveFiletypes": [
+    "dart"
+  ],
+  "flutter.provider.hot-reload": true,
+  "solargraph.promptDownload": false,
+  "codeLens.enable": true,
+}
+
