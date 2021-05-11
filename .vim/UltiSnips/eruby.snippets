@@ -1,0 +1,79 @@
+snippet echo "erb echo" i
+<%= $1 %>
+endsnippet
+
+snippet erb "erb" i
+<% $1 %>
+endsnippet
+
+snippet if "erb if else" i
+<% if $1 %>
+	$2
+<% else %>
+	$3
+<% end %>
+endsnippet
+
+snippet render "erb render" i
+<%= render "$1" %>
+endsnippet
+
+snippet rendercomp "erb render" i
+<%= render($1.new)  %>
+endsnippet
+
+snippet sform "simple form" i
+<%= simple_form_for $1 do |f| %>
+	<%= f.input :$2 %>
+	<%= f.submit %>
+<% end %>
+endsnippet
+
+snippet each "erb each" i
+<% $1.each do |$2| %>
+	<%= $3 %>
+<% end %>
+endsnippet
+
+snippet tauto "table auto" i
+<table class="table-fixed">
+  <thead>
+    <tr>
+      <th class="px-4 py-2"></th>
+      <th class="px-4 py-2"></th>
+      <th class="px-4 py-2"></th>
+    </tr>
+  </thead>
+  <tbody>
+		<% @$1.each do |row| %>
+			<tr>
+				<td class="px-4 py-2 border"><%= $2 %></td>
+				<td class="px-4 py-2 border"><%= $3 %></td>
+				<td class="px-4 py-2 border"><%= $4 %></td>
+			</tr>
+		<% end %>
+  </tbody>
+</table>
+endsnippet
+
+snippet tfixed "table fixed" i
+<table class="table-fixed">
+  <thead>
+    <tr>
+      <th class="px-4 py-2"></th>
+      <th class="px-4 py-2"></th>
+      <th class="px-4 py-2"></th>
+    </tr>
+  </thead>
+  <tbody>
+		<% @$1.each do |row| %>
+			<tr>
+				<td class="px-4 py-2 border"><%= $2 %></td>
+				<td class="px-4 py-2 border"><%= $3 %></td>
+				<td class="px-4 py-2 border"><%= $4 %></td>
+			</tr>
+		<% end %>
+  </tbody>
+</table>
+endsnippet
+

@@ -37,6 +37,9 @@ yabai -m rule --add app="^TablePlus" manage=off
 yabai -m rule --add app="^OpenVPN Connect" manage=off
 yabai -m rule --add app="^Logi Options" manage=off
 yabai -m rule --add app="^Postman" manage=off
+yabai -m rule --add app="^Disk Utility" manage=off
+yabai -m rule --add app="^NordVPN IKE" manage=off
+yabai -m rule --add app="^qBittorrent" manage=off
 
 yabai -m config layout bsp
 yabai -m window --toggle border
