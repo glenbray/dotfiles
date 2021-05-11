@@ -9,6 +9,8 @@
 - ensure system is using vim 8.2 with python support
 - install [antibody](https://github.com/getantibody/antibody)
 - `brew install pyenv`
+- `brew tap homebrew/cask-fonts`
+- `brew install font-fira-code --cask`
 
 (uninstall vim if vim is < 8.2)
 ```shell

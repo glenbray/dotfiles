@@ -1,4 +1,5 @@
 !.*
+!config/database.yml
 .git
 *.sw*
 app/javascript/icons/*
@@ -12,3 +13,4 @@ vendor
 yarn.lock
 *.min.js
 .idea/*
+
