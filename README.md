@@ -1,28 +1,40 @@
 # dotfiles
 
-### Vim prerequisites
+## Setup config command
+
+https://www.atlassian.com/git/tutorials/dotfiles
+
+
+## General
 
 - install python (use pyenv and set global python version)
+- `brew install pyenv`
+- install [antibody](https://github.com/getantibody/antibody)
+
+
+## Neovim Setup
+
+- `brew install neovim --HEAD`
+- install [vim-plug](https://github.com/junegunn/vim-plug#unix)
+- `brew install ripgrep`
+- `brew tap homebrew/cask-fonts`
+- `brew install font-fira-mono-nerd-font --cask`
+- `brew install code-minimap`
+
+
+## Vim prerequisites (deprecated - switched to neovim)
+
+Uninstall vim & reinstall if current version is `< 8.2`
+
 - install [fzf](https://github.com/junegunn/fzf)
-- install ripgrep (fast search)
 - install bat (for syntax colours in ripgrep previews)
 - ensure system is using vim 8.2 with python support
-- install [antibody](https://github.com/getantibody/antibody)
-- `brew install pyenv`
+- `brew install ripgrep`
 - `brew tap homebrew/cask-fonts`
-- `brew install font-fira-code --cask`
+- `brew install font-fira-mono-nerd-font --cask`
+- `brew install code-minimap`
 
-(uninstall vim if vim is < 8.2)
-```shell
-$ sudo add-apt-repository ppa:jonathonf/vim
-$ sudo apt install vim
-$ sudo apt install vim-gtk3 vim-nox
-```
-
-### ctags for ruby/rails projects
+## ctags for ruby/rails projects
 
 `ripper-tags -R --exclude=vendor . $(bundle list --paths | sed 's/$/\/lib/')`
 
-### Setup
-
-https://www.atlassian.com/git/tutorials/dotfiles

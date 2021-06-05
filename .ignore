@@ -1,5 +1,5 @@
 !.*
-!config/database.yml
+!database.yml
 .git
 *.sw*
 app/javascript/icons/*

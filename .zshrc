@@ -38,6 +38,7 @@ export EDITOR='vim'
 
 alias config='/usr/bin/git --git-dir=/Users/glen/.cfg/ --work-tree=/Users/glen'
 alias v="vim ."
+alias n="nvim ."
 alias zc="vim ~/.zshrc"
 alias vc="vim ~/.vimrc"
 alias ss="source ~/.zshrc"

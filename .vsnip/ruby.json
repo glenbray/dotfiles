@@ -1,0 +1,16 @@
+{
+  "Debug Puts": {
+    "prefix": "dputs",
+    "body": [
+      "puts \"===================\"",
+      "puts $1",
+      "puts \"===================\""
+    ]
+  },
+  "Pry": {
+    "prefix": "pry",
+    "body": [
+      "require \"pry\"; binding.pry"
+    ]
+  }
+}
