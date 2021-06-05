@@ -15,7 +15,7 @@ https://www.atlassian.com/git/tutorials/dotfiles
 ## Neovim Setup
 
 - `brew install neovim --HEAD`
-- install [vim-plug](https://github.com/junegunn/vim-plug#unix)
+- install [vim-plug](https://github.com/junegunn/vim-plug#neovim)
 - `brew install ripgrep`
 - `brew tap homebrew/cask-fonts`
 - `brew install font-fira-mono-nerd-font --cask`
