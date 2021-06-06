@@ -78,17 +78,6 @@ set nobackup
 set nowb
 set noswapfile
 
-" let g:gruvbox_contrast_dark = 'dark'
-
-" if has('termguicolors')
-"   set termguicolors
-" endif
-
-" let g:gruvbox_material_background = 'medium'
-" colorscheme gruvbox-material
-
-" set background=dark termguicolors cursorline
-
 let mapleader = ","
 
 " set wildignore+=*/tmp/*,*.so,*.sw,*.zip     " MacOSX/Linux
@@ -105,8 +94,8 @@ let NERDTreeShowHidden = 1
 let g:NERDTreeHijackNetrw=0
 
 " minimap
-let g:minimap_auto_start = 1
-let g:minimap_auto_start_win_enter = 1
+" let g:minimap_auto_start = 1
+" let g:minimap_auto_start_win_enter = 1
 
 " let g:indentLine_setConceal = 0
 let g:vim_json_syntax_conceal = 0
@@ -190,7 +179,6 @@ if executable('ripper-tags')
 endif
 
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Lightline settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -202,14 +190,38 @@ let g:lightline = {
 \   'filename': 'LightlineTabname'
 \ },
 \ 'colorscheme': 'powerline',
-\ 'separator': { 'left': '', 'right': '' },
-\ 'subseparator': { 'left': '', 'right': '' },
 \ }
 
-" \ 'separator': { 'left': "\ue0b8", 'right': "\ue0be" },
-" \ 'subseparator': { 'left': "\ue0b9", 'right': "\ue0b9" }
-" \ 'tabline_separator': { 'left': "\ue0bc", 'right': "\ue0ba" },
-" \ 'tabline_subseparator': { 'left': "\ue0bb", 'right': "\ue0bb" },
+let g:lightline.component_expand = {
+\  'linter_checking': 'lightline#ale#checking',
+\  'linter_infos': 'lightline#ale#infos',
+\  'linter_warnings': 'lightline#ale#warnings',
+\  'linter_errors': 'lightline#ale#errors',
+\  'linter_ok': 'lightline#ale#ok',
+\ }
+
+let g:lightline.component_type = {
+\     'linter_checking': 'right',
+\     'linter_infos': 'right',
+\     'linter_warnings': 'warning',
+\     'linter_errors': 'error',
+\     'linter_ok': 'right',
+\ }
+
+let g:lightline.active = { 'right': [[ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ]] }
+
+let g:lightline.active = {
+\ 'right': [ [ 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_infos', 'linter_ok' ],
+\            [ 'lineinfo' ],
+\            [ 'percent' ],
+\            [ 'fileformat', 'fileencoding', 'filetype'] ] }
+
+let g:lightline#ale#indicator_checking = "\uf110"
+let g:lightline#ale#indicator_infos = "\uf129"
+let g:lightline#ale#indicator_warnings = "\uf071"
+let g:lightline#ale#indicator_errors = "\uf05e"
+let g:lightline#ale#indicator_ok = "\uf00c"
+
 
 function LightLineModified()
   return &modifiable && &modified ? ' ❗' : ''
@@ -304,6 +316,7 @@ Plug 'kyazdani42/nvim-web-devicons'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'wfxr/minimap.vim'
+Plug 'maximbaz/lightline-ale'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -428,9 +441,6 @@ noremap <leader>p "*p
 noremap <leader>Y "+y
 noremap <leader>P "+p
 
-" noremap <leader>fl :CocList --input=flutter commands<cr>
-" noremap <leader>fr :call CocAction('runCommand', 'flutter.run', '--flavor', 'development', '-d', 'all')<cr>
-
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<cr>
 
 augroup DisableMappings
@@ -445,24 +455,6 @@ if has('autocmd')
         \   source Session.vim |
         \ endif
 endif
-
-function! LinterStatus() abort
-  let l:counts = ale#statusline#Count(bufnr(''))
-  let l:all_errors = l:counts.error + l:counts.style_error
-  let l:all_non_errors = l:counts.total - l:all_errors
-
-  return l:counts.total == 0 ? '✨ all good ✨' : printf(
-        \   '😞 %dW %dE',
-        \   all_non_errors,
-        \   all_errors
-        \)
-endfunction
-
-set statusline=
-set statusline+=%m
-set statusline+=\ %f
-set statusline+=%=
-set statusline+=\ %{LinterStatus()}
 
 function! s:isAtStartOfLine(mapping)
   let text_before_cursor = getline('.')[0 : col('.')-1]
@@ -516,7 +508,6 @@ require'lspconfig'.solargraph.setup{
   settings = {
     solargraph = {
       commandPath = '/Users/glen/.rbenv/shims/solargraph',
-      diagnostics = true,
       completion = true
     }
   }
@@ -596,6 +587,5 @@ require('telescope').setup{
     },
   }
 }
-
 
 EOF
