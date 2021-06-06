@@ -112,6 +112,7 @@ let g:indentLine_fileTypeExclude = ['json', 'md']
 
 " Trigger completion menu when space is pressed
 inoremap <silent><expr> <C-Space> compe#complete()
+inoremap <silent><expr> <CR> compe#confirm('<CR>')
 
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
@@ -517,6 +518,8 @@ require'lspconfig'.solargraph.setup{
     }
   }
 }
+
+require'lspconfig'.tsserver.setup{}
 
 -- Compe setup
 require'compe'.setup {
