@@ -52,8 +52,8 @@ function! ScrollQuarter(move)
     execute 'normal! ' . height/4 . key
 endfunction
 
-nnoremap <silent> <C-u> :call ScrollQuarter('up')<CR>
-nnoremap <silent> <C-d> :call ScrollQuarter('down')<CR>
+nnoremap <silent> <C-u> :call ScrollQuarter('up') <CR><S-m><CR>
+nnoremap <silent> <C-d> :call ScrollQuarter('down') <CR><S-m><CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
