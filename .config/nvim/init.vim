@@ -33,6 +33,10 @@ au FocusGained,BufEnter * checktime
 " (useful for handling the permission-denied error)
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
+" Better tabbing
+vnoremap < <gv
+vnoremap > >gv
+
 " Set the title to the current workingdirectory name
 autocmd BufEnter * let &titlestring = ' ' . fnamemodify(getcwd(), ':t')
 set title
@@ -317,6 +321,7 @@ Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'wfxr/minimap.vim'
 Plug 'maximbaz/lightline-ale'
+Plug 'unblevable/quick-scope'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
