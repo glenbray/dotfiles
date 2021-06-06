@@ -37,10 +37,11 @@ export EDITOR='vim'
 # For a full list of active aliases, run `alias`.
 
 alias config='/usr/bin/git --git-dir=/Users/glen/.cfg/ --work-tree=/Users/glen'
-alias v="vim ."
+alias v="nvim ."
+alias vim="nvim"
 alias n="nvim ."
-alias zc="vim ~/.zshrc"
-alias vc="vim ~/.vimrc"
+alias zc="nvim ~/.zshrc"
+alias vc="nvim ~/.vimrc"
 alias ss="source ~/.zshrc"
 alias p="cd ~/Documents/projects"
 alias b="bundle exec"
