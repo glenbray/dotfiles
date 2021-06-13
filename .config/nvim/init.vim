@@ -112,7 +112,6 @@ let g:indentLine_fileTypeExclude = ['json', 'md']
 
 " Trigger completion menu when space is pressed
 inoremap <silent><expr> <C-Space> compe#complete()
-inoremap <silent><expr> <CR> compe#confirm('<CR>')
 
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
@@ -323,6 +322,7 @@ Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'wfxr/minimap.vim'
 Plug 'maximbaz/lightline-ale'
 Plug 'unblevable/quick-scope'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -520,6 +520,8 @@ require'lspconfig'.solargraph.setup{
 }
 
 require'lspconfig'.tsserver.setup{}
+require'lspconfig'.yamlls.setup{}
+require'lspconfig'.dockerls.setup{}
 
 -- Compe setup
 require'compe'.setup {
@@ -586,14 +588,31 @@ local actions = require('telescope.actions')
 
 require('telescope').setup{
   defaults = {
-    file_ignore_patterns = { "app/assets/*" },
+    file_ignore_patterns = {
+        "app/assets/*",
+        ".gradle/*",
+        "android/.gradle/*",
+        "android/app/src/main/res/*",
+        "android/app/src/staging/res/*"
+    },
     mappings = {
       i = {
         ["<C-j>"] = actions.move_selection_next,
         ["<C-k>"] = actions.move_selection_previous,
       },
     },
+  },
+  extensions = {
+    fzf = {
+      fuzzy = true,                    -- false will only do exact matching
+      override_generic_sorter = false, -- override the generic sorter
+      override_file_sorter = true,     -- override the file sorter
+      case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+                                       -- the default case_mode is "smart_case"
+    }
   }
 }
+
+require('telescope').load_extension('fzf')
 
 EOF
