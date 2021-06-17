@@ -134,4 +134,5 @@ ZSH_THEME_GIT_PROMPT_LOCAL=""
 PROMPT='$(get_prompt)'
 
 eval "$(direnv hook zsh)"
+source <(kubectl completion zsh)
 
