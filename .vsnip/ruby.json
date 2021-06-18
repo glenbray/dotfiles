@@ -7,10 +7,28 @@
       "puts \"===================\""
     ]
   },
-  "Pry": {
+  "pry": {
     "prefix": "pry",
     "body": [
       "require \"pry\"; binding.pry"
+    ]
+  },
+  "map": {
+    "prefix": "ma",
+    "description": ".map",
+    "body": [
+      "map do |$2|",
+      "  $3",
+      "end"
+    ]
+  },
+  "each": {
+    "prefix": "ea",
+    "description": ".each",
+    "body": [
+      "each do |$2|",
+      "  $3",
+      "end"
     ]
   }
 }

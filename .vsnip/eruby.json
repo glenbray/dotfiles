@@ -1,0 +1,28 @@
+{
+  "echo": {
+    "prefix": "echo",
+    "body": [
+      "<%= $1 %>"
+    ]
+  },
+  "erb": {
+    "prefix": "erb",
+    "body": [
+      "<% $1 %>"
+    ]
+  },
+  "raise": {
+    "prefix": "raise",
+    "body": [
+      "<% raise %>"
+    ]
+  },
+  "collection": {
+    "prefix": "ea",
+    "body": [
+      "<% $1.each do |$2| %>",
+      "  <%= $3 %>",
+      "<% end %>"
+    ]
+  }
+}
