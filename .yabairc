@@ -44,6 +44,7 @@ yabai -m rule --add app="^Notes" manage=off
 yabai -m rule --add app="^Insomnia" manage=off
 yabai -m rule --add app="^AnyDesk" manage=off
 yabai -m rule --add app="^Notes" manage=off
+yabai -m rule --add app="^Talend Studio" manage=off
 
 yabai -m config layout bsp
 yabai -m window --toggle border
