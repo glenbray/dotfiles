@@ -310,6 +310,7 @@ Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
+Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -522,6 +523,15 @@ lua << EOF
     require'lspconfig'.yamlls.setup {}
     require'lspconfig'.dockerls.setup {}
 
+    local tabnine = require('cmp_tabnine.config')
+    tabnine:setup({
+      max_lines = 1000;
+      max_num_results = 20;
+      sort = true;
+      run_on_every_keystroke = true;
+    })
+
+
     local cmp = require'cmp'
 
     cmp.setup({
@@ -538,6 +548,7 @@ lua << EOF
           ['<CR>'] = cmp.mapping.confirm({ select = true }),
       },
       sources = {
+        { name = 'cmp_tabnine' },
         { name = 'nvim_lsp' },
         { name = 'vsnip' },
         { name = 'path' },
