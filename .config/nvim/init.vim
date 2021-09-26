@@ -110,20 +110,11 @@ let g:indentLine_fileTypeExclude = ['json', 'md']
 " Automatically redraw on focus
 " au FocusGained * :redraw!
 
-" Trigger completion menu when space is pressed
-inoremap <silent><expr> <C-Space> compe#complete()
-
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
 " remap up and down when context menu is open
 inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
 inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
-
-
-" function! s:check_back_space() abort
-"   let col = col('.') - 1
-"   return !col || getline('.')[col - 1]  =~# '\s'
-" endfunction
 
 " vsnip configuration
 let g:vsnip_filetypes = {}
@@ -308,21 +299,26 @@ Plug 'vim-scripts/Tabmerge'
 Plug 'itchyny/lightline.vim'
 Plug 'AndrewRadev/tagalong.vim'
 Plug 'easymotion/vim-easymotion'
-Plug 'wakatime/vim-wakatime'
+" Plug 'wakatime/vim-wakatime'
 Plug 'majutsushi/tagbar'
 Plug 'alvan/vim-closetag'
 Plug 'neovim/nvim-lspconfig'
-Plug 'hrsh7th/nvim-compe'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
-Plug 'hrsh7th/vim-vsnip'
-Plug 'hrsh7th/vim-vsnip-integ'
 Plug 'wfxr/minimap.vim'
 Plug 'maximbaz/lightline-ale'
 Plug 'unblevable/quick-scope'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
+Plug 'jupyter-vim/jupyter-vim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -509,110 +505,92 @@ augroup END
 " set slim filetype when .slim extention detected
 autocmd BufNewFile,BufRead *.slim set ft=slim
 
+set completeopt=menu,menuone,noselect
+
 lua << EOF
-require'lspconfig'.solargraph.setup{
-  settings = {
-    solargraph = {
-      commandPath = '/Users/glen/.rbenv/shims/solargraph',
-      completion = true
+    require'lspconfig'.solargraph.setup {
+      settings = {
+        solargraph = {
+          commandPath = '/Users/glen/.rbenv/shims/solargraph',
+          completion = true
+        }
+      },
+      capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
     }
-  }
-}
 
-require'lspconfig'.tsserver.setup{}
-require'lspconfig'.yamlls.setup{}
-require'lspconfig'.dockerls.setup{}
+    require'lspconfig'.tsserver.setup {}
+    require'lspconfig'.yamlls.setup {}
+    require'lspconfig'.dockerls.setup {}
 
--- Compe setup
-require'compe'.setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 1;
-  preselect = 'enable';
-  throttle_time = 80;
-  source_timeout = 200;
-  incomplete_delay = 400;
-  max_abbr_width = 100;
-  max_kind_width = 100;
-  max_menu_width = 100;
-  documentation = true;
+    local cmp = require'cmp'
 
-  source = {
-    path = true;
-    nvim_lsp = true;
-    buffer = true;
-    vsnip = true;
-  };
-}
+    cmp.setup({
+      snippet = {
+        expand = function(args)
+          vim.fn["vsnip#anonymous"](args.body)
+        end,
+      },
+      mapping = {
+          ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          ['<C-Space>'] = cmp.mapping.complete(),
+          ['<C-e>'] = cmp.mapping.close(),
+          ['<CR>'] = cmp.mapping.confirm({ select = true }),
+      },
+      sources = {
+        { name = 'nvim_lsp' },
+        { name = 'vsnip' },
+        { name = 'path' },
+        { name = 'buffer' },
+      }
+    })
 
-local t = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
-end
-
-local check_back_space = function()
-    local col = vim.fn.col('.') - 1
-    if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
-        return true
-    else
-        return false
+    local t = function(str)
+      return vim.api.nvim_replace_termcodes(str, true, true, true)
     end
-end
 
--- Use (s-)tab to:
---- move to prev/next item in completion menuone
---- jump to prev/next snippet's placeholder
-_G.tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-j>"
-  elseif check_back_space() then
-    return t "<Tab>"
-  else
-    return vim.fn['compe#complete']()
-  end
-end
-_G.s_tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-k>"
-  else
-    return t "<S-Tab>"
-  end
-end
+    local check_back_space = function()
+      local col = vim.fn.col('.') - 1
+      if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
+        return true
+      else
+        return false
+      end
+    end
 
-vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+    -- vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+    -- vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+    -- vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+    -- vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
-local actions = require('telescope.actions')
+    local actions = require('telescope.actions')
 
-require('telescope').setup{
-  defaults = {
-    file_ignore_patterns = {
-        "app/assets/*",
-        ".gradle/*",
-        "android/.gradle/*",
-        "android/app/src/main/res/*",
-        "android/app/src/staging/res/*"
-    },
-    mappings = {
-      i = {
-        ["<C-j>"] = actions.move_selection_next,
-        ["<C-k>"] = actions.move_selection_previous,
+    require('telescope').setup{
+    defaults = {
+        file_ignore_patterns = {
+          "app/assets/*",
+          ".gradle/*",
+          "android/.gradle/*",
+          "android/app/src/main/res/*",
+          "android/app/src/staging/res/*"
+        },
+        mappings = {
+        i = {
+          ["<C-j>"] = actions.move_selection_next,
+          ["<C-k>"] = actions.move_selection_previous,
+        },
       },
     },
-  },
-  extensions = {
-    fzf = {
-      fuzzy = true,                    -- false will only do exact matching
-      override_generic_sorter = false, -- override the generic sorter
-      override_file_sorter = true,     -- override the file sorter
-      case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
-                                       -- the default case_mode is "smart_case"
+    extensions = {
+        fzf = {
+        fuzzy = true,                    -- false will only do exact matching
+        override_generic_sorter = false, -- override the generic sorter
+        override_file_sorter = true,     -- override the file sorter
+        case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+                                        -- the default case_mode is "smart_case"
+        }
+      }
     }
-  }
-}
 
-require('telescope').load_extension('fzf')
-
+    require('telescope').load_extension('fzf')
 EOF
