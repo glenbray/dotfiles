@@ -11,6 +11,13 @@
       "<% $1 %>"
     ]
   },
+  "if": {
+    "prefix": "if",
+    "body": [
+      "<% if $1 %>",
+      "<% end %>"
+    ]
+  },
   "raise": {
     "prefix": "raise",
     "body": [
@@ -23,6 +30,18 @@
       "<% $1.each do |$2| %>",
       "  <%= $3 %>",
       "<% end %>"
+    ]
+  },
+  "end": {
+    "prefix": "end",
+    "body": [
+      "<% end %>"
+    ]
+  },
+  "link": {
+    "prefix": "link",
+    "body": [
+      "<%= link_to '$1', $2 %>"
     ]
   }
 }

@@ -129,6 +129,7 @@ inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
 let g:vsnip_filetypes = {}
 let g:vsnip_filetypes.javascriptreact = ['javascript']
 let g:vsnip_filetypes.typescriptreact = ['typescript']
+let g:vsnip_filetypes.eruby = ['html', 'eruby']
 
 imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
 smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
@@ -253,9 +254,9 @@ let NERDTreeIgnore = ['.*sw.', 'Session.vim']
 " Display extra whitespace
 set list listchars=tab:»·,trail:·,nbsp:·
 
-let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*js,*jsx'
+let g:closetag_filenames = '*.html,*.xhtml,*.phtml,*js,*jsx,*erb'
 let g:closetag_xhtml_filenames = '*.xhtml'
-let g:closetag_filetypes = 'html,xhtml,phtml,js,jsx'
+let g:closetag_filetypes = 'html,xhtml,phtml,js,jsx,erb'
 let g:closetag_xhtml_filetypes = 'xhtml,jsx'
 let g:closetag_emptyTags_caseSensitive = 1
 let g:closetag_regions = {
@@ -588,8 +589,8 @@ local actions = require('telescope.actions')
 
 require('telescope').setup{
   defaults = {
+    selection_caret = "> ",
     file_ignore_patterns = {
-        "app/assets/*",
         ".gradle/*",
         "android/.gradle/*",
         "android/app/src/main/res/*",
@@ -613,6 +614,6 @@ require('telescope').setup{
   }
 }
 
-require('telescope').load_extension('fzf')
+--require('telescope').load_extension('fzf')
 
 EOF
