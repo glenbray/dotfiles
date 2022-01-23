@@ -321,6 +321,7 @@ Plug 'maximbaz/lightline-ale'
 Plug 'unblevable/quick-scope'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'jupyter-vim/jupyter-vim'
+Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -440,8 +441,8 @@ nmap <silent> <leader>tl :TestLast<cr>
 nmap <silent> <leader>tg :TestVisit<cr>
 
 " system keyboard
-noremap <leader>y "*yy
-noremap <leader>p "*p
+noremap <leader>y "+yy
+noremap <leader>p "+p
 noremap <leader>Y "+y
 noremap <leader>P "+p
 

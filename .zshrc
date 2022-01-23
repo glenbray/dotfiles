@@ -15,7 +15,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git zsh-completions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -40,11 +40,19 @@ platform="$(uname | tr '[:upper:]' '[:lower:]')"
 projects=""
 
 if [[ $platform == 'linux' ]]; then
-  projects=$HOME/projects
-  source /usr/share/fzf/key-bindings.zsh
+  projects=$HOME/Documents/projects
+  source /usr/share/doc/fzf/examples/key-bindings.zsh
+  source /usr/share/doc/fzf/examples/completion.zsh
+  source /opt/conda/etc/profile.d/conda.sh
+
   export ANDROID_HOME=/opt/android-sdk
   export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
   export ANDROID_SDK_ROOT=$ANDROID_HOME
+
+  # define an open command similar to mac
+  open() {
+    xdg-open $1 &
+  }
 elif [[ $platform == 'darwin' ]]; then
   projects=$HOME/Documents/projects
   export ANDROID_HOME=$HOME/Library/Android/sdk
@@ -57,7 +65,7 @@ alias v="nvim ."
 alias vim="nvim"
 alias n="nvim ."
 alias zc="nvim ~/.zshrc"
-alias vc="nvim ~/.vimrc"
+alias vc="nvim ~/.config/nvim/init.vim"
 alias ss="source ~/.zshrc"
 alias h="cd ~/"
 
@@ -69,8 +77,6 @@ alias bi="bundle install"
 alias br="bundle exec rspec"
 alias d="docker-compose"
 alias dr="docker-compose run"
-# alias ls="exa"
-# alias cat="bat"
 
 source $projects/git/zsh-git-prompt/zshrc.sh
 
@@ -155,5 +161,4 @@ ZSH_THEME_GIT_PROMPT_LOCAL=""
 PROMPT='$(get_prompt)'
 
 eval "$(direnv hook zsh)"
-source <(kubectl completion zsh)
 
