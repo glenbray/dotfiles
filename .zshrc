@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH="/Users/glen/.oh-my-zsh"
+export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time oh-my-zsh is loaded, in which case,
@@ -15,7 +15,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git zsh-completions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -36,15 +36,39 @@ export EDITOR='nvim'
 # users are encouraged to define aliases within the ZSH_CUSTOM folder.
 # For a full list of active aliases, run `alias`.
 
-alias config='/usr/bin/git --git-dir=/Users/glen/.cfg/ --work-tree=/Users/glen'
+platform="$(uname | tr '[:upper:]' '[:lower:]')"
+projects=""
+
+if [[ $platform == 'linux' ]]; then
+  projects=$HOME/Documents/projects
+  source /usr/share/doc/fzf/examples/key-bindings.zsh
+  source /usr/share/doc/fzf/examples/completion.zsh
+  source /opt/conda/etc/profile.d/conda.sh
+
+  export ANDROID_HOME=/opt/android-sdk
+  export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
+  export ANDROID_SDK_ROOT=$ANDROID_HOME
+
+  # define an open command similar to mac
+  open() {
+    xdg-open $1 &
+  }
+elif [[ $platform == 'darwin' ]]; then
+  projects=$HOME/Documents/projects
+  export ANDROID_HOME=$HOME/Library/Android/sdk
+  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+fi
+
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+alias p="cd $projects"
 alias v="nvim ."
 alias vim="nvim"
 alias n="nvim ."
 alias zc="nvim ~/.zshrc"
-alias vc="nvim ~/.vimrc"
+alias vc="nvim ~/.config/nvim/init.vim"
 alias ss="source ~/.zshrc"
 alias h="cd ~/"
-alias p="cd ~/Documents/projects"
+
 alias b="bundle exec"
 alias bo="bundle open"
 alias bout="bundle outdated"
@@ -53,11 +77,10 @@ alias bi="bundle install"
 alias br="bundle exec rspec"
 alias d="docker-compose"
 alias dr="docker-compose run"
-# alias ls="exa"
-# alias cat="bat"
 
-source /Users/glen/Documents/projects/git/zsh-git-prompt/zshrc.sh
-$(antibody bundle < ~/.zsh_plugins.txt)
+source $projects/git/zsh-git-prompt/zshrc.sh
+
+# $(antibody bundle < ~/.zsh_plugins.txt)
 
 # HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000000
@@ -82,17 +105,22 @@ export PATH="/Users/glen/.vim/plugged/fzf/bin:$PATH"
 export PATH="/Users/glen/.emacs.d/bin:$PATH"
 export PGHOST="/var/pgsql_socket"
 export PATH="$PATH:/Users/glen/Documents/flutter/bin"
+export PATH="$PATH:$HOME/.local/bin/"
 
 # Android Dev (React native)
-export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
+export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
+export PATH=$JAVA_HOME/bin:$PATH
+
 # Flutter
 export PATH="$PATH":"$HOME/Documents/flutter/.pub-cache/bin"
 export PATH="$PATH":"$HOME/Documents/flutter/bin/cache/dart-sdk/bin"
+
+export PATH="$HOME/.local/bin:$PATH"
 
 autoload compinit; compinit; zstyle :completion:\* menu select
 
@@ -101,8 +129,6 @@ bindkey  "^[[F"   end-of-line
 bindkey  "^[[3~"  delete-char
 
 eval "$(rbenv init -)"
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 precmd() {
   # sets the tab title to current dir
@@ -135,5 +161,4 @@ ZSH_THEME_GIT_PROMPT_LOCAL=""
 PROMPT='$(get_prompt)'
 
 eval "$(direnv hook zsh)"
-source <(kubectl completion zsh)
 
