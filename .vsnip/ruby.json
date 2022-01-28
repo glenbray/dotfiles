@@ -10,6 +10,12 @@
   "pry": {
     "prefix": "pry",
     "body": [
+      "binding.pry"
+    ]
+  },
+  "rpry": {
+    "prefix": "pry",
+    "body": [
       "require \"pry\"; binding.pry"
     ]
   },
