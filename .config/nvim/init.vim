@@ -322,6 +322,9 @@ Plug 'unblevable/quick-scope'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'jupyter-vim/jupyter-vim'
 Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
+Plug 'tyru/open-browser.vim'
+Plug 'tyru/open-browser-github.vim'
+" Plug 'hoschi/yode-nvim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -396,7 +399,7 @@ map <leader>x :q<cr>
 map <leader>w :w<cr>
 
 " NERDTree mappings
-noremap <leader>c :NERDTreeToggle<cr>
+noremap <leader>nn :NERDTreeToggle<cr>
 noremap <leader>nf :NERDTreeFind<cr>
 
 " WinResizer
@@ -607,3 +610,4 @@ lua << EOF
 
   require('telescope').load_extension('fzf')
 EOF
+
