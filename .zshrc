@@ -45,19 +45,26 @@ if [[ $platform == 'linux' ]]; then
   source /usr/share/doc/fzf/examples/completion.zsh
   source /opt/conda/etc/profile.d/conda.sh
 
-  export ANDROID_HOME=/opt/android-sdk
   export CHROME_EXECUTABLE=/usr/bin/google-chrome-stable
-  export ANDROID_SDK_ROOT=$ANDROID_HOME
+  export ANDROID_HOME=$HOME/Android/Sdk
 
   # define an open command similar to mac
   open() {
     xdg-open $1 &
   }
+
+  eval $(keychain --eval ~/.ssh/id_ed25519)
 elif [[ $platform == 'darwin' ]]; then
   projects=$HOME/Documents/projects
   export ANDROID_HOME=$HOME/Library/Android/sdk
   [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 fi
+
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+
+eval "$(pyenv init -)"
 
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 alias p="cd $projects"
@@ -77,6 +84,8 @@ alias bi="bundle install"
 alias br="bundle exec rspec"
 alias d="docker-compose"
 alias dr="docker-compose run"
+alias python="$(pyenv which python)"
+alias pip="$(pyenv which pip)"
 
 source $projects/git/zsh-git-prompt/zshrc.sh
 
@@ -113,7 +122,7 @@ export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
-export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
+export JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64'
 export PATH=$JAVA_HOME/bin:$PATH
 
 # Flutter
@@ -134,11 +143,6 @@ precmd() {
   # sets the tab title to current dir
   echo -ne "\e]1;${PWD##*/}\a"
 }
-
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-
-eval "$(pyenv init -)"
 
 get_prompt() {
   echo -n "\n"
@@ -162,3 +166,7 @@ PROMPT='$(get_prompt)'
 
 eval "$(direnv hook zsh)"
 
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

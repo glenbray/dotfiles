@@ -1,4 +1,4 @@
-set colorcolumn=+1
+:Let colorcolumn=+1
 set number
 set numberwidth=5
 set ruler
@@ -324,6 +324,7 @@ Plug 'jupyter-vim/jupyter-vim'
 Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 Plug 'tyru/open-browser.vim'
 Plug 'tyru/open-browser-github.vim'
+Plug 'williamboman/nvim-lsp-installer'
 " Plug 'hoschi/yode-nvim'
 
 " List ends here. Plugins become visible to Vim after this call.
@@ -609,5 +610,14 @@ lua << EOF
   }
 
   require('telescope').load_extension('fzf')
+
+
+  local lsp_installer = require("nvim-lsp-installer")
+
+  lsp_installer.on_server_ready(function(server)
+      local opts = {}
+      server:setup(opts)
+  end)
+
 EOF
 
