@@ -1,4 +1,6 @@
-:Let colorcolumn=+1
+set nomore
+
+set colorcolumn=+1
 set number
 set numberwidth=5
 set ruler
@@ -97,9 +99,6 @@ let g:gitgutter_async = 1
 let NERDTreeShowHidden = 1
 let g:NERDTreeHijackNetrw=0
 
-" minimap
-" let g:minimap_auto_start = 1
-" let g:minimap_auto_start_win_enter = 1
 
 " let g:indentLine_setConceal = 0
 let g:vim_json_syntax_conceal = 0
@@ -108,7 +107,7 @@ let g:indentLine_concealcursor='nc'
 let g:indentLine_fileTypeExclude = ['json', 'md']
 
 " Automatically redraw on focus
-" au FocusGained * :redraw!
+au FocusGained * :redraw!
 
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
@@ -185,7 +184,7 @@ let g:lightline = {
 \ 'tab_component_function': {
 \   'filename': 'LightlineTabname'
 \ },
-\ 'colorscheme': 'powerline',
+\ 'colorscheme': 'onedark',
 \ }
 
 let g:lightline.component_expand = {
@@ -240,7 +239,7 @@ let g:ruby_indent_assignment_style = 'variable'
 let test#strategy = "neovim"
 
 
-let NERDTreeIgnore = ['.*sw.', 'Session.vim']
+" let NERDTreeIgnore = ['.*sw.', 'Session.vim']
 
 " Display extra whitespace
 set list listchars=tab:»·,trail:·,nbsp:·
@@ -260,6 +259,19 @@ let g:closetag_close_shortcut = '<leader>>'
 
 " Terminal remap escape to change to motion mode
 tnoremap <Esc> <C-\><C-n>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Flutter
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+ " Show hover
+nnoremap K <Cmd>lua vim.lsp.buf.hover()<CR>
+ " Jump to definition
+nnoremap gd <Cmd>lua vim.lsp.buf.definition()<CR>
+ " Open code actions using the default lsp UI, if you want to change this please see the plugins above
+nnoremap <leader>ca <Cmd>lua vim.lsp.buf.code_action()<CR>
+ " Open code actions for the selected visual range
+xnoremap <leader>ca <Cmd>lua vim.lsp.buf.range_code_action()<CR>
 
 
 call plug#begin('~/.vim/plugged')
@@ -285,21 +297,19 @@ Plug 'dense-analysis/ale'
 Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'janko/vim-test'
 Plug 'airblade/vim-gitgutter'
-" Plug 'jremmen/vim-ripgrep'
-" Plug 'gruvbox-community/gruvbox'
 Plug 'sainnhe/gruvbox-material'
 Plug 'mattn/emmet-vim'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 Plug 'Yggdroot/indentLine'
-Plug 'Valloric/MatchTagAlways'
+" Plug 'Valloric/MatchTagAlways'
 Plug 'honza/vim-snippets'
 Plug 'mkitt/tabline.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'vim-scripts/Tabmerge'
 Plug 'itchyny/lightline.vim'
 Plug 'AndrewRadev/tagalong.vim'
-Plug 'easymotion/vim-easymotion'
+" Plug 'easymotion/vim-easymotion'
 " Plug 'wakatime/vim-wakatime'
 Plug 'majutsushi/tagbar'
 Plug 'alvan/vim-closetag'
@@ -316,7 +326,6 @@ Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
-Plug 'wfxr/minimap.vim'
 Plug 'maximbaz/lightline-ale'
 Plug 'unblevable/quick-scope'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
@@ -325,7 +334,14 @@ Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 Plug 'tyru/open-browser.vim'
 Plug 'tyru/open-browser-github.vim'
 Plug 'williamboman/nvim-lsp-installer'
-" Plug 'hoschi/yode-nvim'
+" Plug 'dart-lang/dart-vim-plugin'
+Plug 'akinsho/flutter-tools.nvim'
+Plug 'mfussenegger/nvim-dap'
+Plug 'rcarriga/nvim-dap-ui'
+Plug 'rcarriga/nvim-notify'
+Plug 'Neevash/awesome-flutter-snippets'
+Plug 'joshdick/onedark.vim'
+Plug 'phaazon/hop.nvim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -338,8 +354,10 @@ let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
 let g:gruvbox_material_better_performance = 1
 let g:gruvbox_material_background = 'hard'
+let g:onedark_terminal_italics = 1
+syntax on
 colorscheme gruvbox-material
-
+" colorscheme onedark
 
 " NERDTree open if directories are present
 autocmd StdinReadPre * let s:std_in=1
@@ -357,7 +375,11 @@ autocmd BufNewFile,BufRead *_spec.rb set syntax=ruby filetype=ruby
 
 " " Tagbar
 " nnoremap <silent> <Leader>b :TagbarToggle<CR>
-nnoremap <silent> <Leader>b :Buffers<CR>
+" nnoremap <silent> <Leader>b :Buffers<CR>
+nnoremap <silent> <Leader>b :lua require'telescope.builtin'.buffers{}<CR>
+nnoremap <silent> <Leader>co :lua require'telescope.builtin'.commands{}<CR>
+nnoremap <silent> <Leader>ch :lua require'telescope.builtin'.command_history{}<CR>
+nnoremap <silent> <Leader>r :lua require'vim.lsp.buf'.rename()<CR>
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
@@ -436,6 +458,12 @@ nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fe <cmd>Telescope grep_string<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+
+" hop mappings
+nnoremap <leader>j <cmd>HopWord<cr>
+nnoremap <leader>k <cmd>HopPattern<cr>
+nnoremap <leader>hl <cmd>HopLine<cr>
+
 
 " vim-test mappings
 nmap <silent> <leader>tn :TestNearest<cr>
@@ -555,11 +583,10 @@ lua << EOF
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
     },
     sources = {
-      { name = 'cmp_tabnine' },
-      { name = 'nvim_lsp' },
-      { name = 'vsnip' },
-      { name = 'path' },
-      { name = 'buffer' },
+      { name = 'nvim_lsp', priority = 1 },
+      { name = 'vsnip', priority = 2 },
+      { name = 'path', priority = 5 },
+      { name = 'buffer', priority = 4 },
     }
   })
 
@@ -575,11 +602,6 @@ lua << EOF
       return false
     end
   end
-
-  -- vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-  -- vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-  -- vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-  -- vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
   local actions = require('telescope.actions')
 
@@ -611,6 +633,23 @@ lua << EOF
 
   require('telescope').load_extension('fzf')
 
+  require('flutter-tools').setup({
+    outline = { auto_open = false },
+    decorations = {
+      statusline = { device = true, app_version = true },
+    },
+    widget_guides = { enabled = true, debug = true },
+    lsp = {
+      settings = {
+        showTodos = true,
+        renameFilesWithClasses = 'prompt',
+      }
+    }
+  })
+
+  require("telescope").load_extension("flutter")
+
+  require'hop'.setup()
 
   local lsp_installer = require("nvim-lsp-installer")
 
