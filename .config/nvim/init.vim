@@ -252,6 +252,8 @@ let g:closetag_emptyTags_caseSensitive = 1
 let g:closetag_regions = {
     \ 'typescript.tsx': 'jsxRegion,tsxRegion',
     \ 'javascript.jsx': 'jsxRegion',
+    \ 'typescriptreact': 'jsxRegion,tsxRegion',
+    \ 'javascriptreact': 'jsxRegion',
     \ }
 
 let g:closetag_shortcut = '>'
@@ -294,15 +296,15 @@ Plug 'scrooloose/nerdtree'
 Plug 'sheerun/vim-polyglot'
 Plug 'simeji/winresizer'
 Plug 'dense-analysis/ale'
-Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'janko/vim-test'
 Plug 'airblade/vim-gitgutter'
 Plug 'sainnhe/gruvbox-material'
 Plug 'mattn/emmet-vim'
 Plug 'dhruvasagar/vim-table-mode'
-Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
+" Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 Plug 'Yggdroot/indentLine'
 " Plug 'Valloric/MatchTagAlways'
+Plug 'leafOfTree/vim-matchtag'
 Plug 'honza/vim-snippets'
 Plug 'mkitt/tabline.vim'
 Plug 'jiangmiao/auto-pairs'
@@ -321,7 +323,7 @@ Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
-Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
+" Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -556,14 +558,6 @@ lua << EOF
   require'lspconfig'.tsserver.setup {}
   require'lspconfig'.yamlls.setup {}
   require'lspconfig'.dockerls.setup {}
-
-  local tabnine = require('cmp_tabnine.config')
-  tabnine:setup({
-    max_lines = 1000;
-    max_num_results = 20;
-    sort = true;
-    run_on_every_keystroke = true;
-  })
 
   local cmp = require'cmp'
 
