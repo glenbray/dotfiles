@@ -1,3 +1,7 @@
+" prevent errors/warning from blocking movement keys
+" https://stackoverflow.com/questions/890802/how-do-i-disable-the-press-enter-or-type-command-to-continue-prompt-in-vim
+set nomore
+
 set colorcolumn=+1
 set number
 set numberwidth=5
@@ -435,6 +439,7 @@ nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fe <cmd>Telescope grep_string<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+nnoremap <leader>fc <cmd>Telescope current_buffer_fuzzy_find<cr>
 
 " vim-test mappings
 nmap <silent> <leader>tn :TestNearest<cr>
@@ -595,6 +600,7 @@ lua << EOF
         i = {
           ["<C-j>"] = actions.move_selection_next,
           ["<C-k>"] = actions.move_selection_previous,
+          ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
         }
       },
       extensions = {
