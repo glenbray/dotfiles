@@ -7,10 +7,11 @@ https://www.atlassian.com/git/tutorials/dotfiles
 
 ## General
 
+- `echo 'eval $(/opt/homebrew/bin/brew shellenv)' >> $HOME/.zprofile`
+
+
+- `brew install git fzf rbenv pyenv nvm direnv`
 - install python (use pyenv and set global python version)
-- `brew install git`
-- `brew install pyenv`
-- `brew install nvm`
 - `mkdir -p ~/Documents/projects/git && git clone git@github.com:olivierverdier/zsh-git-prompt.git`
 - `sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
 
