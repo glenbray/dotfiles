@@ -8,9 +8,10 @@ https://www.atlassian.com/git/tutorials/dotfiles
 ## General
 
 - install python (use pyenv and set global python version)
+- `brew install git`
 - `brew install pyenv`
 - `brew install nvm`
-- install [antibody](https://github.com/getantibody/antibody)
+- `mkdir -p ~/Documents/projects/git && git clone git@github.com:olivierverdier/zsh-git-prompt.git`
 
 
 ## Neovim Setup
