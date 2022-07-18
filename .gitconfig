@@ -8,3 +8,5 @@ mail = glen.bray@gmail.com
 	excludesfile = ~/.gitignore
 [pull]
 	rebase = false
+[init]
+	defaultBranch = main

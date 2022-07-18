@@ -1026,7 +1026,11 @@ awful.rules.rules = {
           properties = { floating = false } },
 
     { rule = { name = "Android Emulator - Pixel_5_API_30:5554" },
-          properties = { floating = true } },
+          properties = { floating = true, ontop = true } },
+
+    { rule = { name = "Android Emulator - Pixel_5_API_32:5554" },
+          properties = { floating = true, ontop = true } },
+
 
     -- { rule = { class = "Android Emulator - Pixel_5_API_30:5554" },
     --       properties = { floating = true } },
