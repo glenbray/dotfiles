@@ -8,37 +8,29 @@ https://www.atlassian.com/git/tutorials/dotfiles
 ## General
 
 - `echo 'eval $(/opt/homebrew/bin/brew shellenv)' >> $HOME/.zprofile`
-
-
-- `brew install git fzf rbenv pyenv nvm direnv`
+- `brew install git fzf rbenv pyenv nvm direnv xz overmind ripgrep bat`
+- `pyenv install 3.10:latest`
 - install python (use pyenv and set global python version)
 - `mkdir -p ~/Documents/projects/git && git clone git@github.com:olivierverdier/zsh-git-prompt.git`
 - `sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
+- `$(brew --prefix)/opt/fzf/install`
 
 
 ## Neovim Setup
 
 - `brew install neovim --HEAD`
 - install [vim-plug](https://github.com/junegunn/vim-plug#neovim)
-- `brew install ripgrep`
 - `brew tap homebrew/cask-fonts`
 - `brew install font-fira-mono-nerd-font --cask`
-- `brew install code-minimap`
 
 
-## Vim prerequisites (deprecated - switched to neovim)
+## Postgres setup and pg gem install
 
-Uninstall vim & reinstall if current version is `< 8.2`
+- https://postgresapp.com
+- `sudo mkdir -p /etc/paths.d && echo /Applications/Postgres.app/Contents/Versions/latest/bin | sudo tee /etc/paths.d/postgresapp`
+- sudo ARCHFLAGS="-arch x86_64" gem install pg
 
-- install [fzf](https://github.com/junegunn/fzf)
-- install bat (for syntax colours in ripgrep previews)
-- ensure system is using vim 8.2 with python support
-- `brew install ripgrep`
-- `brew tap homebrew/cask-fonts`
-- `brew install font-fira-mono-nerd-font --cask`
-- `brew install code-minimap`
 
 ## ctags for ruby/rails projects
 
 `ripper-tags -R --exclude=vendor . $(bundle list --paths | sed 's/$/\/lib/')`
-
