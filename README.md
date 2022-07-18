@@ -9,6 +9,7 @@ https://www.atlassian.com/git/tutorials/dotfiles
 
 - install python (use pyenv and set global python version)
 - `brew install pyenv`
+- `brew install nvm`
 - install [antibody](https://github.com/getantibody/antibody)
 
 
