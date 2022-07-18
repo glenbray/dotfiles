@@ -31,6 +31,12 @@ https://www.atlassian.com/git/tutorials/dotfiles
 - `sudo ARCHFLAGS="-arch x86_64" gem install pg`
 
 
+## Mac configuration
+
+- `defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false` (Disable character variations when holding down key)
+
+
+
 ## ctags for ruby/rails projects
 
 `ripper-tags -R --exclude=vendor . $(bundle list --paths | sed 's/$/\/lib/')`
