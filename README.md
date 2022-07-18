@@ -28,7 +28,7 @@ https://www.atlassian.com/git/tutorials/dotfiles
 
 - https://postgresapp.com
 - `sudo mkdir -p /etc/paths.d && echo /Applications/Postgres.app/Contents/Versions/latest/bin | sudo tee /etc/paths.d/postgresapp`
-- sudo ARCHFLAGS="-arch x86_64" gem install pg
+- `sudo ARCHFLAGS="-arch x86_64" gem install pg`
 
 
 ## ctags for ruby/rails projects
