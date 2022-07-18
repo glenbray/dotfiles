@@ -12,6 +12,7 @@ https://www.atlassian.com/git/tutorials/dotfiles
 - `brew install pyenv`
 - `brew install nvm`
 - `mkdir -p ~/Documents/projects/git && git clone git@github.com:olivierverdier/zsh-git-prompt.git`
+- `sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
 
 
 ## Neovim Setup
