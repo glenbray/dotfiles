@@ -8,7 +8,7 @@ https://www.atlassian.com/git/tutorials/dotfiles
 ## General
 
 - `echo 'eval $(/opt/homebrew/bin/brew shellenv)' >> $HOME/.zprofile`
-- `brew install git fzf rbenv pyenv nvm direnv xz overmind ripgrep bat redis`
+- `brew install git fzf rbenv pyenv nvm direnv xz overmind ripgrep bat redis yarn`
 - `pyenv install 3.10:latest`
 - install python (use pyenv and set global python version)
 - `mkdir -p ~/Documents/projects/git && git clone git@github.com:olivierverdier/zsh-git-prompt.git`
