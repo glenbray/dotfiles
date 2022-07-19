@@ -610,7 +610,8 @@ lua << EOF
           ".gradle/*",
           "android/.gradle/*",
           "android/app/src/main/res/*",
-          "android/app/src/staging/res/*"
+          "android/app/src/staging/res/*",
+          "node_modules/*"
       },
       mappings = {
         i = {
