@@ -8,7 +8,7 @@ https://www.atlassian.com/git/tutorials/dotfiles
 ## General
 
 - `echo 'eval $(/opt/homebrew/bin/brew shellenv)' >> $HOME/.zprofile`
-- `brew install git fzf rbenv pyenv nvm direnv xz overmind ripgrep bat redis`
+- `brew install git fzf rbenv pyenv nvm direnv xz overmind ripgrep bat redis yarn libxml2`
 - `pyenv install 3.10:latest`
 - install python (use pyenv and set global python version)
 - `mkdir -p ~/Documents/projects/git && git clone git@github.com:olivierverdier/zsh-git-prompt.git`
@@ -29,6 +29,12 @@ https://www.atlassian.com/git/tutorials/dotfiles
 - https://postgresapp.com
 - `sudo mkdir -p /etc/paths.d && echo /Applications/Postgres.app/Contents/Versions/latest/bin | sudo tee /etc/paths.d/postgresapp`
 - `sudo ARCHFLAGS="-arch x86_64" gem install pg`
+
+
+## Mac configuration
+
+- `defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false` (Disable character variations when holding down key)
+
 
 
 ## ctags for ruby/rails projects
