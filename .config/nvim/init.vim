@@ -393,8 +393,8 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-=> <C-w>=
 
 " Quick change tab left and right
-nnoremap <C-j> gT
-nnoremap <C-k> gt
+nnoremap <C-,> gT
+nnoremap <C-.> gt
 
 " open ctags in new tab
 " nnoremap <C-]> :execute "vertical ptag " . expand("<cword>")<CR><C-w>=
