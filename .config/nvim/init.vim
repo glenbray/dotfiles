@@ -549,6 +549,34 @@ autocmd BufNewFile,BufRead *.slim set ft=slim
 set completeopt=menu,menuone,noselect
 
 lua << EOF
+
+  local lsp_installer = require("nvim-lsp-installer")
+  local capabilities = require'cmp_nvim_lsp'.update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+  lsp_installer.on_server_ready(function(server)
+      local opts = {}
+      local config = {}
+
+      if server.name == "tailwindcss" then
+        config.settings = {
+          tailwindCSS = {
+            experimental = {
+              classRegex = {
+                "tw`([^`]*)", -- tw`...`
+                "tw=\"([^\"]*)", -- <div tw="..." />
+                "tw={\"([^\"}]*)", -- <div tw={"..."} />
+                "tw\\.\\w+`([^`]*)", -- tw.xxx`...`
+                "tw\\(.*?\\)`([^`]*)"
+              }
+            }
+          }
+        }
+        config.capabilities = capabilities
+      end
+
+      server:setup(config)
+  end)
+
   require'lspconfig'.solargraph.setup {
     settings = {
       solargraph = {
@@ -556,12 +584,13 @@ lua << EOF
         completion = true
       }
     },
-    capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+    capabilities = capabilities
   }
 
   require'lspconfig'.tsserver.setup {}
   require'lspconfig'.yamlls.setup {}
   require'lspconfig'.dockerls.setup {}
+  require"lspconfig".tailwindcss.setup {}
 
   local cmp = require'cmp'
 
@@ -581,10 +610,10 @@ lua << EOF
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
     },
     sources = {
-      { name = 'nvim_lsp', priority = 1 },
-      { name = 'vsnip', priority = 2 },
-      { name = 'path', priority = 5 },
-      { name = 'buffer', priority = 4 },
+      { name = 'nvim_lsp' },
+      { name = 'vsnip' },
+      { name = 'path' },
+      { name = 'buffer' },
     }
   })
 
@@ -611,7 +640,9 @@ lua << EOF
           "android/.gradle/*",
           "android/app/src/main/res/*",
           "android/app/src/staging/res/*",
-          "node_modules/*"
+          "node_modules/*",
+          "build*/",
+          "ios*/",
       },
       mappings = {
         i = {
@@ -650,13 +681,6 @@ lua << EOF
   require("telescope").load_extension("flutter")
 
   require'hop'.setup()
-
-  local lsp_installer = require("nvim-lsp-installer")
-
-  lsp_installer.on_server_ready(function(server)
-      local opts = {}
-      server:setup(opts)
-  end)
 
 EOF
 

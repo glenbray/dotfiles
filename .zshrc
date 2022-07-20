@@ -62,6 +62,7 @@ fi
 
 
 export GEM_HOME="$HOME/.gem"
+export PATH=$GEM_HOME/bin:$PATH
 
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
