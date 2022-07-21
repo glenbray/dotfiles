@@ -122,6 +122,7 @@ let g:vsnip_filetypes = {}
 let g:vsnip_filetypes.javascriptreact = ['javascript']
 let g:vsnip_filetypes.typescriptreact = ['typescript']
 let g:vsnip_filetypes.eruby = ['html', 'eruby']
+let g:vsnip_filetypes.ruby = ['rails']
 
 imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
 smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
@@ -346,6 +347,8 @@ Plug 'rcarriga/nvim-notify'
 Plug 'Neevash/awesome-flutter-snippets'
 Plug 'joshdick/onedark.vim'
 Plug 'phaazon/hop.nvim'
+Plug 'AndrewRadev/sideways.vim'
+Plug 'rafamadriz/friendly-snippets'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
