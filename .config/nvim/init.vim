@@ -346,6 +346,7 @@ Plug 'rcarriga/nvim-notify'
 Plug 'Neevash/awesome-flutter-snippets'
 Plug 'joshdick/onedark.vim'
 Plug 'phaazon/hop.nvim'
+Plug 'AndrewRadev/sideways.vim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
