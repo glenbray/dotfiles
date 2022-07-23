@@ -14,7 +14,7 @@ https://www.atlassian.com/git/tutorials/dotfiles
 - `mkdir -p ~/Documents/projects/git && git clone git@github.com:olivierverdier/zsh-git-prompt.git`
 - `sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
 - `$(brew --prefix)/opt/fzf/install`
-- `brew install --cask alt-tab`
+- `brew install --cask alt-tab tableplus `
 
 
 ## Neovim Setup
