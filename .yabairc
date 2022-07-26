@@ -47,6 +47,7 @@ yabai -m rule --add app="^Notes" manage=off
 yabai -m rule --add app="^Talend Studio" manage=off
 yabai -m rule --add app="^DataGrip" manage=off
 yabai -m rule --add app="^Mos" manage=off
+yabai -m rule --add app="^AltTab" manage=off
 
 yabai -m config layout bsp
 yabai -m window --toggle border

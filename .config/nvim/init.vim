@@ -123,6 +123,7 @@ let g:vsnip_filetypes.javascriptreact = ['javascript']
 let g:vsnip_filetypes.typescriptreact = ['typescript']
 let g:vsnip_filetypes.eruby = ['html', 'eruby']
 let g:vsnip_filetypes.ruby = ['rails']
+let g:vsnip_filetypes.javascript = ['react']
 
 imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
 smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
@@ -226,7 +227,7 @@ function LightLineModified()
 endfunction
 
 function! LightlineFilename()
-  return pathshorten(expand('%')) . LightLineModified()
+  return pathshorten(fnamemodify(expand("%"), ":~:.")) . LightLineModified()
 endfunction
 
 function! LightlineTabname(n) abort
@@ -447,17 +448,7 @@ noremap <leader>7 7gt
 noremap <leader>8 8gt
 noremap <leader>9 9gt
 noremap <leader>0 :tablast<cr>
-
 noremap <leader>. :tabnew<cr>
-
-" fzf search mappings
-
-" noremap <leader>fs :Snippets<cr>
-" noremap <leader>fw :Windows<cr>
-" noremap <leader>ff :RG<cr>
-" noremap <leader>fe :RGE<cr>
-" " remap fzf to ctrl+p
-" nnoremap <silent> <c-p> :Files<cr>
 
 " Find files using Telescope command-line sugar.
 nnoremap <silent> <c-p> <cmd>Telescope find_files<cr>
@@ -469,7 +460,7 @@ nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 nnoremap <leader>fc <cmd>Telescope current_buffer_fuzzy_find<cr>
 
 " hop mappings
-nnoremap <leader>j <cmd>HopWord<cr>
+nnoremap <leader>ff <cmd>HopWord<cr>
 nnoremap <leader>k <cmd>HopPattern<cr>
 nnoremap <leader>hl <cmd>HopLine<cr>
 
@@ -646,6 +637,7 @@ lua << EOF
           "node_modules/*",
           "build*/",
           "ios*/",
+          ".expo/web/cache/*"
       },
       mappings = {
         i = {
@@ -682,8 +674,6 @@ lua << EOF
   })
 
   require("telescope").load_extension("flutter")
-
   require'hop'.setup()
-
 EOF
 
