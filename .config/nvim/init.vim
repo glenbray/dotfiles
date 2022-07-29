@@ -470,13 +470,15 @@ nmap <silent> <leader>tn :TestNearest<cr>
 nmap <silent> <leader>tf :TestFile<cr>
 nmap <silent> <leader>ts :TestSuite<cr>
 nmap <silent> <leader>tl :TestLast<cr>
-nmap <silent> <leader>tg :TestVisit<cr>
+nmap <silent> <leader>tv :TestVisit<cr>
 
 " system keyboard
 noremap <leader>y "+yy
 noremap <leader>p "+p
 noremap <leader>Y "+y
 noremap <leader>P "+p
+
+nnoremap <leader>cp :let @+ = expand("%") \| echo("path copied to clipboard!")<CR>
 
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<cr>
 
