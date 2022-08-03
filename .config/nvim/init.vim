@@ -268,6 +268,15 @@ tnoremap <Esc> <C-\><C-n>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Quickscope
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+let g:qs_buftype_blacklist = ['terminal', 'nofile']
+
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Flutter
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
  " Show hover
@@ -297,7 +306,7 @@ Plug 'tpope/vim-obsession'
 Plug 'vim-ruby/vim-ruby'
 Plug 'mg979/vim-visual-multi'
 Plug 'scrooloose/nerdtree'
-Plug 'sheerun/vim-polyglot'
+" Plug 'sheerun/vim-polyglot'
 Plug 'simeji/winresizer'
 Plug 'dense-analysis/ale'
 Plug 'janko/vim-test'
@@ -334,8 +343,8 @@ Plug 'nvim-telescope/telescope.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'maximbaz/lightline-ale'
 Plug 'unblevable/quick-scope'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
-Plug 'jupyter-vim/jupyter-vim'
 Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 Plug 'tyru/open-browser.vim'
 Plug 'tyru/open-browser-github.vim'
@@ -346,10 +355,11 @@ Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
 Plug 'rcarriga/nvim-notify'
 Plug 'Neevash/awesome-flutter-snippets'
-Plug 'joshdick/onedark.vim'
+Plug 'navarasu/onedark.nvim'
 Plug 'phaazon/hop.nvim'
 Plug 'AndrewRadev/sideways.vim'
 Plug 'rafamadriz/friendly-snippets'
+" Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -362,10 +372,13 @@ let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
 let g:gruvbox_material_better_performance = 1
 let g:gruvbox_material_background = 'hard'
-let g:onedark_terminal_italics = 1
 syntax on
-colorscheme gruvbox-material
-" colorscheme onedark
+" colorscheme gruvbox-material
+let g:onedark_config = {
+    \ 'style': 'warm',
+\}
+
+colorscheme onedark
 
 " NERDTree open if directories are present
 autocmd StdinReadPre * let s:std_in=1
@@ -407,6 +420,7 @@ nnoremap <C-]> :execute "vertical ptag " . expand("<cword>")<CR><C-w>l<C-w>T
 
 " split pane and fix position
 nnoremap <C-W>s Hmx`` \|:split<CR>`xzt``
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Spell checking
@@ -545,6 +559,11 @@ autocmd BufNewFile,BufRead *.slim set ft=slim
 set completeopt=menu,menuone,noselect
 
 lua << EOF
+  require'nvim-treesitter.configs'.setup {
+    ensure_installed = { "ruby", "javascript", "dart", "html", "json", "markdown", "css", "dockerfile", "python", "regex", "sql", "tsx", "vim", "lua", "yaml" },
+    auto_install = true
+  }
+
 
   local lsp_installer = require("nvim-lsp-installer")
   local capabilities = require'cmp_nvim_lsp'.update_capabilities(vim.lsp.protocol.make_client_capabilities())
