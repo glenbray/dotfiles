@@ -312,6 +312,7 @@ Plug 'dense-analysis/ale'
 Plug 'janko/vim-test'
 Plug 'airblade/vim-gitgutter'
 Plug 'sainnhe/gruvbox-material'
+Plug 'sainnhe/sonokai'
 Plug 'mattn/emmet-vim'
 Plug 'dhruvasagar/vim-table-mode'
 " Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
@@ -359,6 +360,7 @@ Plug 'navarasu/onedark.nvim'
 Plug 'phaazon/hop.nvim'
 Plug 'AndrewRadev/sideways.vim'
 Plug 'rafamadriz/friendly-snippets'
+Plug 'dominikduda/vim_current_word'
 " Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 
 " List ends here. Plugins become visible to Vim after this call.
@@ -370,15 +372,22 @@ endif
 
 let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
+let g:gruvbox_material_foreground = 'material'
 let g:gruvbox_material_better_performance = 1
 let g:gruvbox_material_background = 'hard'
+let g:gruvbox_material_disable_italic_comment = 1
+
+let g:sonokai_style = 'shusia'
+
 syntax on
 " colorscheme gruvbox-material
+colorscheme sonokai
+
 let g:onedark_config = {
-    \ 'style': 'warm',
+    \ 'style': 'cool',
 \}
 
-colorscheme onedark
+" colorscheme onedark
 
 " NERDTree open if directories are present
 autocmd StdinReadPre * let s:std_in=1
