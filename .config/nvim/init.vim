@@ -97,10 +97,6 @@ let g:VM_leader = '\'
 let g:gitgutter_enabled = 1
 let g:gitgutter_async = 1
 
-" Nerd Tree
-let NERDTreeShowHidden = 1
-let g:NERDTreeHijackNetrw=0
-
 
 " let g:indentLine_setConceal = 0
 let g:vim_json_syntax_conceal = 0
@@ -233,8 +229,9 @@ endfunction
 function! LightlineTabname(n) abort
   let bufnr = tabpagebuflist(a:n)[tabpagewinnr(a:n) - 1]
   let fname = expand('#' . bufnr . ':t')
+
   return fname =~ '__Tagbar__' ? 'Tagbar' :
-        \ fname =~ 'NERD_tree' ? 'NERDTree' :
+        \ fname =~ 'NvimTree_1' ? 'NvimTree' :
         \ ('' != fname ? fname : '[No Name]')
 endfunction
 
@@ -242,8 +239,6 @@ let g:ruby_indent_assignment_style = 'variable'
 
 let test#strategy = "neovim"
 
-
-" let NERDTreeIgnore = ['.*sw.', 'Session.vim']
 
 " Display extra whitespace
 set list listchars=tab:»·,trail:·,nbsp:·
@@ -305,8 +300,6 @@ Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-obsession'
 Plug 'vim-ruby/vim-ruby'
 Plug 'mg979/vim-visual-multi'
-Plug 'scrooloose/nerdtree'
-" Plug 'sheerun/vim-polyglot'
 Plug 'simeji/winresizer'
 Plug 'dense-analysis/ale'
 Plug 'janko/vim-test'
@@ -315,7 +308,6 @@ Plug 'sainnhe/gruvbox-material'
 Plug 'sainnhe/sonokai'
 Plug 'mattn/emmet-vim'
 Plug 'dhruvasagar/vim-table-mode'
-" Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app & yarn install'  }
 Plug 'Yggdroot/indentLine'
 " Plug 'Valloric/MatchTagAlways'
 Plug 'leafOfTree/vim-matchtag'
@@ -325,7 +317,6 @@ Plug 'jiangmiao/auto-pairs'
 Plug 'vim-scripts/Tabmerge'
 Plug 'itchyny/lightline.vim'
 Plug 'AndrewRadev/tagalong.vim'
-" Plug 'easymotion/vim-easymotion'
 " Plug 'wakatime/vim-wakatime'
 Plug 'majutsushi/tagbar'
 Plug 'alvan/vim-closetag'
@@ -337,7 +328,6 @@ Plug 'hrsh7th/cmp-vsnip'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/vim-vsnip'
 Plug 'hrsh7th/vim-vsnip-integ'
-" Plug 'tzachar/cmp-tabnine', { 'do': './install.sh' }
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -350,17 +340,18 @@ Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 Plug 'tyru/open-browser.vim'
 Plug 'tyru/open-browser-github.vim'
 Plug 'williamboman/nvim-lsp-installer'
-" Plug 'dart-lang/dart-vim-plugin'
 Plug 'akinsho/flutter-tools.nvim'
 Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
 Plug 'rcarriga/nvim-notify'
 Plug 'Neevash/awesome-flutter-snippets'
-Plug 'navarasu/onedark.nvim'
+Plug 'joshdick/onedark.vim'
 Plug 'phaazon/hop.nvim'
 Plug 'AndrewRadev/sideways.vim'
 Plug 'rafamadriz/friendly-snippets'
 Plug 'dominikduda/vim_current_word'
+Plug 'kyazdani42/nvim-tree.lua'
+
 " Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 
 " List ends here. Plugins become visible to Vim after this call.
@@ -391,7 +382,9 @@ let g:onedark_config = {
 
 " NERDTree open if directories are present
 autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
+" autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
+" autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NvimTreeOpen' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
+" autocmd BufEnter * if (winnr("$") == 1 && &filetype == "NvimTree") | q | endif
 
 " automatically remove trailing whitespaces
 autocmd BufWritePre * :%s/\s\+$//e
@@ -453,9 +446,9 @@ map <leader>x :q<cr>
 " Save
 map <leader>w :w<cr>
 
-" NERDTree mappings
-noremap <leader>nn :NERDTreeToggle<cr>
-noremap <leader>nf :NERDTreeFind<cr>
+" NvimTree mappings
+noremap <leader>nn :NvimTreeToggle<cr>
+noremap <leader>nf :NvimTreeFindFile<cr>
 
 " WinResizer
 map <leader>e :WinResizerStartResize<cr>
@@ -568,6 +561,18 @@ autocmd BufNewFile,BufRead *.slim set ft=slim
 set completeopt=menu,menuone,noselect
 
 lua << EOF
+  require("nvim-tree").setup {
+    open_on_setup = true,
+    open_on_setup_file = false,
+    open_on_tab = true,
+    renderer = {
+      root_folder_modifier = ":t:r"
+    },
+    live_filter = {
+      always_show_folders = false,
+    },
+  }
+
   require'nvim-treesitter.configs'.setup {
     ensure_installed = { "ruby", "javascript", "dart", "html", "json", "markdown", "css", "dockerfile", "python", "regex", "sql", "tsx", "vim", "lua", "yaml" },
     auto_install = true
