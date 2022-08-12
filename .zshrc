@@ -89,6 +89,7 @@ alias d="docker-compose"
 alias dr="docker-compose run"
 alias python="$(pyenv which python)"
 alias pip="$(pyenv which pip)"
+alias ctags="$(readlink -f $(brew --prefix universal-ctags))/bin/ctags"
 
 source $projects/git/zsh-git-prompt/zshrc.sh
 
@@ -124,9 +125,6 @@ export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
-
-export JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64'
-export PATH=$JAVA_HOME/bin:$PATH
 
 # Flutter
 export PATH="$PATH":"$HOME/Documents/flutter/.pub-cache/bin"

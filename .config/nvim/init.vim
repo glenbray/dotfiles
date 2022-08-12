@@ -150,7 +150,7 @@ let g:ale_fixers = {
 \  'typescript': ['prettier', 'tslint'],
 \  'css': ['prettier'],
 \  'python': ['autopep8', 'yapf'],
-\  'dart': ['dartfmt'],
+\  'dart': ['dart-format'],
 \}
 
 
@@ -236,7 +236,6 @@ function! LightlineTabname(n) abort
 endfunction
 
 let g:ruby_indent_assignment_style = 'variable'
-
 let test#strategy = "neovim"
 
 
@@ -267,7 +266,6 @@ tnoremap <Esc> <C-\><C-n>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 let g:qs_buftype_blacklist = ['terminal', 'nofile']
-
 
 
 
@@ -302,6 +300,7 @@ Plug 'vim-ruby/vim-ruby'
 Plug 'mg979/vim-visual-multi'
 Plug 'simeji/winresizer'
 Plug 'dense-analysis/ale'
+Plug 'maximbaz/lightline-ale'
 Plug 'janko/vim-test'
 Plug 'airblade/vim-gitgutter'
 Plug 'sainnhe/gruvbox-material'
@@ -332,7 +331,6 @@ Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
-Plug 'maximbaz/lightline-ale'
 Plug 'unblevable/quick-scope'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
@@ -351,7 +349,7 @@ Plug 'AndrewRadev/sideways.vim'
 Plug 'rafamadriz/friendly-snippets'
 Plug 'dominikduda/vim_current_word'
 Plug 'kyazdani42/nvim-tree.lua'
-
+Plug 'mtdl9/vim-log-highlighting'
 " Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
 
 " List ends here. Plugins become visible to Vim after this call.
@@ -496,6 +494,7 @@ noremap <leader>P "+p
 
 nnoremap <leader>cp :let @+ = expand("%") \| echo("path copied to clipboard!")<CR>
 
+" clear search highlight
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<cr>
 
 augroup DisableMappings
@@ -560,6 +559,7 @@ autocmd BufNewFile,BufRead *.slim set ft=slim
 
 set completeopt=menu,menuone,noselect
 
+
 lua << EOF
   require("nvim-tree").setup {
     open_on_setup = true,
@@ -578,9 +578,11 @@ lua << EOF
     auto_install = true
   }
 
-
   local lsp_installer = require("nvim-lsp-installer")
   local capabilities = require'cmp_nvim_lsp'.update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+  -- set nvim-notify as default notify function
+  vim.notify = require("notify")
 
   lsp_installer.on_server_ready(function(server)
       local opts = {}
@@ -704,6 +706,7 @@ lua << EOF
       settings = {
         showTodos = true,
         renameFilesWithClasses = 'prompt',
+        enableSnippets = true
       }
     }
   })
