@@ -127,6 +127,7 @@ export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 
 # Flutter
+export PATH="$PATH":"$HOME/.pub-cache/bin"
 export PATH="$PATH":"$HOME/Documents/flutter/.pub-cache/bin"
 export PATH="$PATH":"$HOME/Documents/flutter/bin/cache/dart-sdk/bin"
 

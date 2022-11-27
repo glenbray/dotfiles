@@ -37,6 +37,9 @@ au FocusGained,BufEnter * checktime
 " (useful for handling the permission-denied error)
 command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 
+" auto resize when splits are added
+autocmd VimResized * wincmd =
+
 " Better tabbing
 vnoremap < <gv
 vnoremap > >gv
@@ -302,14 +305,14 @@ Plug 'simeji/winresizer'
 Plug 'dense-analysis/ale'
 Plug 'maximbaz/lightline-ale'
 Plug 'janko/vim-test'
-Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter'
 Plug 'sainnhe/gruvbox-material'
 Plug 'sainnhe/sonokai'
 Plug 'mattn/emmet-vim'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'Yggdroot/indentLine'
 " Plug 'Valloric/MatchTagAlways'
-Plug 'leafOfTree/vim-matchtag'
+" Plug 'leafOfTree/vim-matchtag'
 Plug 'honza/vim-snippets'
 Plug 'mkitt/tabline.vim'
 Plug 'jiangmiao/auto-pairs'
@@ -350,7 +353,10 @@ Plug 'rafamadriz/friendly-snippets'
 Plug 'dominikduda/vim_current_word'
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'mtdl9/vim-log-highlighting'
-" Plug 'liuchengxu/vim-which-key', { 'on': ['WhichKey', 'WhichKey!'] }
+Plug 'lewis6991/gitsigns.nvim'
+Plug 'JoosepAlviste/nvim-ts-context-commentstring'
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'github/copilot.vim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -574,15 +580,18 @@ lua << EOF
   }
 
   require'nvim-treesitter.configs'.setup {
-    ensure_installed = { "ruby", "javascript", "dart", "html", "json", "markdown", "css", "dockerfile", "python", "regex", "sql", "tsx", "vim", "lua", "yaml" },
-    auto_install = true
+    ensure_installed = { "ruby", "javascript", "dart", "html", "json", "markdown", "css", "dockerfile", "python", "regex", "sql", "tsx", "vim", "lua", "yaml", "typescript" },
+    auto_install = true,
+    context_commentstring = {
+      enable = true
+    }
   }
 
   local lsp_installer = require("nvim-lsp-installer")
-  local capabilities = require'cmp_nvim_lsp'.update_capabilities(vim.lsp.protocol.make_client_capabilities())
+  local capabilities = require'cmp_nvim_lsp'.default_capabilities()
 
   -- set nvim-notify as default notify function
-  vim.notify = require("notify")
+  --vim.notify = require("notify")
 
   lsp_installer.on_server_ready(function(server)
       local opts = {}
@@ -713,5 +722,6 @@ lua << EOF
 
   require("telescope").load_extension("flutter")
   require'hop'.setup()
+  require('gitsigns').setup()
 EOF
 
