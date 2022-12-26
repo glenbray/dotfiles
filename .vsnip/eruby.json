@@ -23,7 +23,9 @@
     "prefix": "ife",
     "body": [
       "<% if $1 %>",
+      "  $2",
       "<% else %>",
+      "  $3",
       "<% end %>"
     ]
   },
@@ -50,7 +52,32 @@
   "link": {
     "prefix": "link",
     "body": [
-      "<%= link_to '$1', $2 %>"
+      "<%= link_to \"$1\", $2 %>"
+    ]
+  },
+  "turbo_frame": {
+    "prefix": "turbo_frame",
+    "body": [
+      "<%= turbo_frame_tag \"$1\" do %>",
+      "  $2",
+      "<% end %>"
+    ]
+  },
+  "bootstrap_table": {
+    "prefix": "bs_table",
+    "body": [
+      "<table class=\"table table-striped\">",
+      "  <thead>",
+      "    <th></th>",
+      "  </thead>",
+      "  <tbody>",
+      "    <% $1.each do |$2| %>",
+      "      <tr>",
+      "        <td></td>",
+      "      </tr>",
+      "    <% end %>",
+      "  </tbody>",
+      "<% end %>"
     ]
   }
 }

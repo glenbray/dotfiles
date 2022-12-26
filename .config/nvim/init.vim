@@ -350,7 +350,7 @@ Plug 'joshdick/onedark.vim'
 Plug 'phaazon/hop.nvim'
 Plug 'AndrewRadev/sideways.vim'
 Plug 'rafamadriz/friendly-snippets'
-Plug 'dominikduda/vim_current_word'
+" Plug 'dominikduda/vim_current_word'
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'mtdl9/vim-log-highlighting'
 Plug 'lewis6991/gitsigns.nvim'
@@ -369,20 +369,17 @@ let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
 let g:gruvbox_material_foreground = 'material'
 let g:gruvbox_material_better_performance = 1
-let g:gruvbox_material_background = 'hard'
+let g:gruvbox_material_background = 'medium'
 let g:gruvbox_material_disable_italic_comment = 1
 
+" let g:sonokai_style = 'maia'
 let g:sonokai_style = 'shusia'
+" let g:sonokai_style = 'espresso'
 
 syntax on
 " colorscheme gruvbox-material
 colorscheme sonokai
 
-let g:onedark_config = {
-    \ 'style': 'cool',
-\}
-
-" colorscheme onedark
 
 " NERDTree open if directories are present
 autocmd StdinReadPre * let s:std_in=1
@@ -481,7 +478,7 @@ nnoremap <leader>fc <cmd>Telescope current_buffer_fuzzy_find<cr>
 
 " hop mappings
 nnoremap <leader>ff <cmd>HopWord<cr>
-nnoremap <leader>k <cmd>HopPattern<cr>
+nnoremap <leader>fp <cmd>HopPattern<cr>
 nnoremap <leader>hl <cmd>HopLine<cr>
 
 
@@ -570,7 +567,7 @@ lua << EOF
   require("nvim-tree").setup {
     open_on_setup = true,
     open_on_setup_file = false,
-    open_on_tab = true,
+    open_on_tab = false,
     renderer = {
       root_folder_modifier = ":t:r"
     },

@@ -49,6 +49,7 @@ yabai -m rule --add app="^DataGrip" manage=off
 yabai -m rule --add app="^Mos" manage=off
 yabai -m rule --add app="^AltTab" manage=off
 yabai -m rule --add app="^qemu-system-aarch64" manage=off
+yabai -m rule --add app="^Raycast" manage=off
 
 yabai -m config layout bsp
 yabai -m window --toggle border

@@ -14,7 +14,7 @@
     ]
   },
   "rpry": {
-    "prefix": "pry",
+    "prefix": "rpry",
     "body": [
       "require \"pry\"; binding.pry"
     ]
