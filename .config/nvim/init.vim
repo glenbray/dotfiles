@@ -138,6 +138,7 @@ let g:ale_fix_on_save = 1
 let g:ale_set_highlights = 0 " Disable highligting
 let g:ale_python_flake8_executable = 'python3'
 let g:ale_python_pyflakes_executable = 'pyflakes3'
+let g:ale_ruby_rubocop_executable = 'standardrb'
 
 let g:ale_linters = {
 \  'ruby': ['standardrb'],
@@ -413,8 +414,8 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-=> <C-w>=
 
 " Quick change tab left and right
-nnoremap <C-,> gT
-nnoremap <C-.> gt
+map <C-,> gT
+map <C-.> gt
 
 " open ctags in new tab
 " nnoremap <C-]> :execute "vertical ptag " . expand("<cword>")<CR><C-w>=
@@ -565,8 +566,8 @@ set completeopt=menu,menuone,noselect
 
 lua << EOF
   require("nvim-tree").setup {
-    open_on_setup = true,
-    open_on_setup_file = false,
+    -- open_on_setup = true,
+    -- open_on_setup_file = false,
     open_on_tab = false,
     renderer = {
       root_folder_modifier = ":t:r"
@@ -668,6 +669,28 @@ lua << EOF
   end
 
   local actions = require('telescope.actions')
+
+  local function open_nvim_tree(data)
+    -- buffer is a [No Name]
+    local no_name = data.file == "" and vim.bo[data.buf].buftype == ""
+
+    -- buffer is a directory
+    local directory = vim.fn.isdirectory(data.file) == 1
+
+    if not no_name and not directory then
+      return
+    end
+
+    -- change to the directory
+    if directory then
+      vim.cmd.cd(data.file)
+    end
+
+    -- open the tree
+    require("nvim-tree.api").tree.open()
+  end
+
+  vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
 
   require('telescope').setup{
     defaults = {

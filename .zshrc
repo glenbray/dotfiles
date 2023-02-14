@@ -87,13 +87,10 @@ alias bi="bundle install"
 alias br="bundle exec rspec"
 alias d="docker-compose"
 alias dr="docker-compose run"
-alias python="$(pyenv which python)"
 alias pip="$(pyenv which pip)"
 alias ctags="$(readlink -f $(brew --prefix universal-ctags))/bin/ctags"
 
 source $projects/git/zsh-git-prompt/zshrc.sh
-
-# $(antibody bundle < ~/.zsh_plugins.txt)
 
 # HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000000
@@ -107,8 +104,6 @@ setopt HIST_FIND_NO_DUPS         # Do not display a line previously found.
 setopt HIST_IGNORE_SPACE         # Don't record an entry starting with a space.
 setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history file.
 setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
-
-# export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 
 # export FZF_DEFAULT_OPTS='--color bg+:#334455'
 export FZF_DEFAULT_COMMAND="rg --files"
@@ -130,7 +125,6 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH="$PATH":"$HOME/.pub-cache/bin"
 export PATH="$PATH":"$HOME/Documents/flutter/.pub-cache/bin"
 export PATH="$PATH":"$HOME/Documents/flutter/bin/cache/dart-sdk/bin"
-
 export PATH="$HOME/.local/bin:$PATH"
 
 autoload compinit; compinit; zstyle :completion:\* menu select
@@ -160,7 +154,6 @@ get_prompt() {
   echo -n "\n"
 }
 
-
 ZSH_THEME_GIT_PROMPT_PREFIX="("
 ZSH_THEME_GIT_PROMPT_SUFFIX=")"
 ZSH_THEME_GIT_PROMPT_LOCAL=""
@@ -168,7 +161,8 @@ PROMPT='$(get_prompt)'
 
 eval "$(direnv hook zsh)"
 
-
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# export PATH="/opt/homebrew/opt/ruby@2.6/bin:$PATH"
