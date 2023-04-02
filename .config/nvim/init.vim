@@ -143,7 +143,7 @@ let g:ale_ruby_rubocop_executable = 'standardrb'
 let g:ale_linters = {
 \  'ruby': ['standardrb'],
 \  'python': ['flake8'],
-\  'eruby': [],
+\  'eruby': ['erblint'],
 \}
 
 let g:ale_fixers = {
@@ -155,6 +155,7 @@ let g:ale_fixers = {
 \  'css': ['prettier'],
 \  'python': ['autopep8', 'yapf'],
 \  'dart': ['dart-format'],
+\  'eruby': ['erblint'],
 \}
 
 
@@ -262,7 +263,7 @@ let g:closetag_shortcut = '>'
 let g:closetag_close_shortcut = '<leader>>'
 
 " Terminal remap escape to change to motion mode
-tnoremap <Esc> <C-\><C-n>
+" tnoremap <Esc> <C-\><C-n>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -272,6 +273,11 @@ let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 let g:qs_buftype_blacklist = ['terminal', 'nofile']
 
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => vim-dodge
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:doge_enable_mappings = 1
+let g:doge_mapping = '<leader>d'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Flutter
@@ -306,7 +312,6 @@ Plug 'simeji/winresizer'
 Plug 'dense-analysis/ale'
 Plug 'maximbaz/lightline-ale'
 Plug 'janko/vim-test'
-" Plug 'airblade/vim-gitgutter'
 Plug 'sainnhe/gruvbox-material'
 Plug 'sainnhe/sonokai'
 Plug 'mattn/emmet-vim'
@@ -315,7 +320,7 @@ Plug 'Yggdroot/indentLine'
 " Plug 'Valloric/MatchTagAlways'
 " Plug 'leafOfTree/vim-matchtag'
 Plug 'honza/vim-snippets'
-Plug 'mkitt/tabline.vim'
+Plug 'crispgm/nvim-tabline'
 Plug 'jiangmiao/auto-pairs'
 Plug 'vim-scripts/Tabmerge'
 Plug 'itchyny/lightline.vim'
@@ -358,6 +363,7 @@ Plug 'lewis6991/gitsigns.nvim'
 Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'github/copilot.vim'
+Plug 'kkoomen/vim-doge', { 'do': 'npm i --no-save && npm run build:binary:unix' }
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -370,7 +376,7 @@ let &t_ZH="\e[3m"
 let &t_ZR="\e[23m"
 let g:gruvbox_material_foreground = 'material'
 let g:gruvbox_material_better_performance = 1
-let g:gruvbox_material_background = 'medium'
+let g:gruvbox_material_background = 'hard'
 let g:gruvbox_material_disable_italic_comment = 1
 
 " let g:sonokai_style = 'maia'
@@ -380,13 +386,6 @@ let g:sonokai_style = 'shusia'
 syntax on
 " colorscheme gruvbox-material
 colorscheme sonokai
-
-
-" NERDTree open if directories are present
-autocmd StdinReadPre * let s:std_in=1
-" autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
-" autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NvimTreeOpen' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
-" autocmd BufEnter * if (winnr("$") == 1 && &filetype == "NvimTree") | q | endif
 
 " automatically remove trailing whitespaces
 autocmd BufWritePre * :%s/\s\+$//e
@@ -414,8 +413,8 @@ nnoremap <C-l> <C-w>l
 nnoremap <C-=> <C-w>=
 
 " Quick change tab left and right
-map <C-,> gT
-map <C-.> gt
+nmap <C-,> gT
+nmap <C-.> gt
 
 " open ctags in new tab
 " nnoremap <C-]> :execute "vertical ptag " . expand("<cword>")<CR><C-w>=
@@ -439,8 +438,11 @@ map <leader>sa zg
 map <leader>s? z=
 
 " Opens a new tab with the current buffer's path
-" Super useful when editing files in the same directory
+" useful when editing files in the same directory
 map <leader>te :tabedit <C-r>=expand("%:p:h")<cr>/
+
+" open terminal in a new vsplit and focus it
+map <leader>tt :vnew<cr> :terminal<cr> i
 
 " Quit
 map <leader>x :q<cr>
@@ -450,7 +452,7 @@ map <leader>w :w<cr>
 
 " NvimTree mappings
 noremap <leader>nn :NvimTreeToggle<cr>
-noremap <leader>nf :NvimTreeFindFile<cr>
+noremap <leader>nf :NvimTreeFindFile<cr> :NvimTreeFocus<cr>
 
 " WinResizer
 map <leader>e :WinResizerStartResize<cr>
@@ -467,6 +469,7 @@ noremap <leader>8 8gt
 noremap <leader>9 9gt
 noremap <leader>0 :tablast<cr>
 noremap <leader>. :tabnew<cr>
+noremap <leader>v :vnew<cr>
 
 " Find files using Telescope command-line sugar.
 nnoremap <silent> <c-p> <cmd>Telescope find_files<cr>
@@ -488,7 +491,7 @@ nmap <silent> <leader>tn :TestNearest<cr>
 nmap <silent> <leader>tf :TestFile<cr>
 nmap <silent> <leader>ts :TestSuite<cr>
 nmap <silent> <leader>tl :TestLast<cr>
-nmap <silent> <leader>tv :TestVisit<cr>
+nmap <silent> <leader>tv :vnew<cr> :TestVisit<cr> zz
 
 " system keyboard
 noremap <leader>y "+yy
@@ -496,7 +499,8 @@ noremap <leader>p "+p
 noremap <leader>Y "+y
 noremap <leader>P "+p
 
-nnoremap <leader>cp :let @+ = expand("%") \| echo("path copied to clipboard!")<CR>
+" copy relative path to current file to clipboard
+nnoremap <leader>cp :let @+ = substitute(expand("%"), getcwd() . '/', '', '') \| echo("relative path copied to clipboard!")<CR>
 
 " clear search highlight
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<cr>
@@ -604,7 +608,9 @@ lua << EOF
                 "tw=\"([^\"]*)", -- <div tw="..." />
                 "tw={\"([^\"}]*)", -- <div tw={"..."} />
                 "tw\\.\\w+`([^`]*)", -- tw.xxx`...`
-                "tw\\(.*?\\)`([^`]*)"
+                "tw\\(.*?\\)`([^`]*)",
+                "class: \'([^\']*)'",
+                "class: \"([^\"]*)",
               }
             }
           }
@@ -703,7 +709,9 @@ lua << EOF
           "node_modules/*",
           "build*/",
           "ios*/",
-          ".expo/web/cache/*"
+          ".expo/web/cache/*",
+          ".cache",
+          ".keep"
       },
       mappings = {
         i = {
@@ -738,6 +746,16 @@ lua << EOF
         enableSnippets = true
       }
     }
+  })
+
+
+  require('tabline').setup({
+    show_index = true,        -- show tab index
+    show_modify = true,       -- show buffer modification indicator
+    show_icon = true,         -- show file extension icon
+    modify_indicator = '[+]', -- modify indicator
+    no_name = 'No name',      -- no name buffer name
+    brackets = { '[', ']' },  -- file name brackets surrounding
   })
 
   require("telescope").load_extension("flutter")
