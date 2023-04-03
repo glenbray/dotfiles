@@ -2,3 +2,5 @@
 .envrc
 .DS_STORE
 tags
+.python-version
+.nvmrc

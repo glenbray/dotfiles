@@ -158,7 +158,6 @@ let g:ale_fixers = {
 \  'eruby': ['erblint'],
 \}
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Tagbar settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -350,7 +349,7 @@ Plug 'williamboman/nvim-lsp-installer'
 Plug 'akinsho/flutter-tools.nvim'
 Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
-Plug 'rcarriga/nvim-notify'
+" Plug 'rcarriga/nvim-notify'
 Plug 'Neevash/awesome-flutter-snippets'
 Plug 'joshdick/onedark.vim'
 Plug 'phaazon/hop.nvim'
@@ -393,6 +392,10 @@ autocmd BufWritePre * :%s/\s\+$//e
 " Set comment string for rspec file type
 autocmd FileType rspec setlocal commentstring=#\ %s
 
+" Set filetype for Gemfile_next.lock
+autocmd BufNewFile,BufRead Gemfile_next.lock set filetype=gemfilelock
+
+" Set filetype for _spec.rb files
 autocmd BufNewFile,BufRead *_spec.rb set syntax=ruby filetype=ruby
 
 " autocmd BufWritePost *.rb !ripper-tags -R --exclude=vendor . $(bundle list --paths | sed 's/$/\/lib/')

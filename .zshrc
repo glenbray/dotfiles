@@ -15,7 +15,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git zsh-completions)
+plugins=(git git-auto-fetch)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -60,15 +60,6 @@ elif [[ $platform == 'darwin' ]]; then
   [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 fi
 
-
-export GEM_HOME="$HOME/.gem"
-export PATH=$GEM_HOME/bin:$PATH
-
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-
-eval "$(pyenv init -)"
-
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 alias p="cd $projects"
 alias v="nvim ."
@@ -79,16 +70,26 @@ alias vc="nvim ~/.config/nvim/init.vim"
 alias ss="source ~/.zshrc"
 alias h="cd ~/"
 
-alias b="bundle exec"
+alias b="bundle"
+alias be="bundle exec"
+alias br="bundle exec rspec"
+alias bu="bundle update"
 alias bo="bundle open"
 alias bout="bundle outdated"
+
+alias nb="DEPENDENCIES_NEXT=1 bundle"
+alias nbe="DEPENDENCIES_NEXT=1 bundle exec"
+alias nbu="DEPENDENCIES_NEXT=1 bundle update"
+alias nbo="DEPENDENCIES_NEXT=1 bundle open"
+alias nbout="DEPENDENCIES_NEXT=1 bundle outdated"
+alias nbr="DEPENDENCIES_NEXT=1 bundle exec rspec"
+
 alias yout="yarn outdated"
-alias bi="bundle install"
-alias br="bundle exec rspec"
 alias d="docker-compose"
 alias dr="docker-compose run"
 alias pip="$(pyenv which pip)"
 alias ctags="$(readlink -f $(brew --prefix universal-ctags))/bin/ctags"
+alias vimdiff='nvim -d'
 
 source $projects/git/zsh-git-prompt/zshrc.sh
 
@@ -105,7 +106,6 @@ setopt HIST_IGNORE_SPACE         # Don't record an entry starting with a space.
 setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history file.
 setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
 
-# export FZF_DEFAULT_OPTS='--color bg+:#334455'
 export FZF_DEFAULT_COMMAND="rg --files"
 export PATH="/usr/local/bin:$PATH"
 export PATH="$HOME/.rbenv/bin:$PATH"
@@ -126,14 +126,28 @@ export PATH="$PATH":"$HOME/.pub-cache/bin"
 export PATH="$PATH":"$HOME/Documents/flutter/.pub-cache/bin"
 export PATH="$PATH":"$HOME/Documents/flutter/bin/cache/dart-sdk/bin"
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="/usr/local/sbin:$PATH"
+
+export THOR_MERGE="nvim -d"
+
+# Setup python env
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+
+# show ruby deprecation warnings
+export RUBYOPT='-W:deprecated'
+
+eval "$(rbenv init -)"
+eval "$(pyenv init -)"
 
 autoload compinit; compinit; zstyle :completion:\* menu select
 
+# ctrl + home move cursor to beginning of line
 bindkey  "^[[H"   beginning-of-line
+# ctrl + end move cursor to end of line
 bindkey  "^[[F"   end-of-line
+# delete key delete char under cursor
 bindkey  "^[[3~"  delete-char
-
-eval "$(rbenv init -)"
 
 precmd() {
   # sets the tab title to current dir
@@ -154,6 +168,8 @@ get_prompt() {
   echo -n "\n"
 }
 
+
+# print git related info in prompt
 ZSH_THEME_GIT_PROMPT_PREFIX="("
 ZSH_THEME_GIT_PROMPT_SUFFIX=")"
 ZSH_THEME_GIT_PROMPT_LOCAL=""
@@ -165,4 +181,4 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# export PATH="/opt/homebrew/opt/ruby@2.6/bin:$PATH"
+ulimit -n 1024
