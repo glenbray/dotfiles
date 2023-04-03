@@ -109,8 +109,6 @@ setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording en
 export FZF_DEFAULT_COMMAND="rg --files"
 export PATH="/usr/local/bin:$PATH"
 export PATH="$HOME/.rbenv/bin:$PATH"
-export PATH="/Users/glen/.vim/plugged/fzf/bin:$PATH"
-export PATH="/Users/glen/.emacs.d/bin:$PATH"
 export PGHOST="/var/pgsql_socket"
 export PATH="$PATH:/Users/glen/Documents/flutter/bin"
 export PATH="$PATH:$HOME/.local/bin/"
