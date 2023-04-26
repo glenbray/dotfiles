@@ -278,8 +278,9 @@ let g:qs_buftype_blacklist = ['terminal', 'nofile']
 let g:doge_enable_mappings = 1
 let g:doge_mapping = '<leader>d'
 
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Flutter
+" => LSP actions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
  " Show hover
 nnoremap K <Cmd>lua vim.lsp.buf.hover()<CR>
@@ -349,6 +350,7 @@ Plug 'williamboman/nvim-lsp-installer'
 Plug 'akinsho/flutter-tools.nvim'
 Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
+Plug 'mfussenegger/nvim-dap-python'
 " Plug 'rcarriga/nvim-notify'
 Plug 'Neevash/awesome-flutter-snippets'
 Plug 'joshdick/onedark.vim'
@@ -599,45 +601,42 @@ lua << EOF
   --vim.notify = require("notify")
 
   lsp_installer.on_server_ready(function(server)
-      local opts = {}
-      local config = {}
+    local opts = {}
+    local config = {}
 
-      if server.name == "tailwindcss" then
-        config.settings = {
-          tailwindCSS = {
-            experimental = {
-              classRegex = {
-                "tw`([^`]*)", -- tw`...`
-                "tw=\"([^\"]*)", -- <div tw="..." />
-                "tw={\"([^\"}]*)", -- <div tw={"..."} />
-                "tw\\.\\w+`([^`]*)", -- tw.xxx`...`
-                "tw\\(.*?\\)`([^`]*)",
-                "class: \'([^\']*)'",
-                "class: \"([^\"]*)",
-              }
+    if server.name == "tailwindcss" then
+      config.settings = {
+        tailwindCSS = {
+          experimental = {
+            classRegex = {
+              "tw`([^`]*)", -- tw`...`
+              "tw=\"([^\"]*)", -- <div tw="..." />
+              "tw={\"([^\"}]*)", -- <div tw={"..."} />
+              "tw\\.\\w+`([^`]*)", -- tw.xxx`...`
+              "tw\\(.*?\\)`([^`]*)",
+              "class: \'([^\']*)'",
+              "class: \"([^\"]*)",
             }
           }
         }
-        config.capabilities = capabilities
-      end
+      }
+      config.capabilities = capabilities
+    end
 
-      server:setup(config)
+    server:setup(config)
   end)
 
-  require'lspconfig'.solargraph.setup {
-    settings = {
-      solargraph = {
-        commandPath = '/Users/glen/.rbenv/shims/solargraph',
-        completion = true
-      }
-    },
-    capabilities = capabilities
+
+  require'lspconfig'.ruby_ls.setup {
+    cmd = { "bundle", "exec", "ruby-lsp" }
   }
 
   require'lspconfig'.tsserver.setup {}
   require'lspconfig'.yamlls.setup {}
   require'lspconfig'.dockerls.setup {}
   require"lspconfig".tailwindcss.setup {}
+  -- require"lspconfig".pyright.setup {}
+  require'lspconfig'.jedi_language_server.setup{}
 
   local cmp = require'cmp'
 
@@ -700,6 +699,17 @@ lua << EOF
   end
 
   vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
+
+  local dap, dapui = require("dap"), require("dapui")
+  dap.listeners.after.event_initialized["dapui_config"] = function()
+    dapui.open()
+  end
+  dap.listeners.before.event_terminated["dapui_config"] = function()
+    dapui.close()
+  end
+  dap.listeners.before.event_exited["dapui_config"] = function()
+    dapui.close()
+  end
 
   require('telescope').setup{
     defaults = {
@@ -764,5 +774,7 @@ lua << EOF
   require("telescope").load_extension("flutter")
   require'hop'.setup()
   require('gitsigns').setup()
+  require("dapui").setup()
+
 EOF
 
