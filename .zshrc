@@ -132,9 +132,6 @@ export THOR_MERGE="nvim -d"
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
 
-# show ruby deprecation warnings
-export RUBYOPT='-W:deprecated'
-
 eval "$(rbenv init -)"
 eval "$(pyenv init -)"
 
