@@ -713,7 +713,7 @@ lua << EOF
           "build*/",
           "ios*/",
           ".expo/web/cache/*",
-          ".cache",
+          -- ".cache",
           ".keep"
       },
       mappings = {
