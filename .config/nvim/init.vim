@@ -285,6 +285,12 @@ let g:doge_mapping = '<leader>d'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" =>tagalong
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:tagalong_mappings = ['c', 'C', 'i', 'a']
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => LSP actions
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
  " Show hover
@@ -340,7 +346,7 @@ Plug 'crispgm/nvim-tabline'
 Plug 'jiangmiao/auto-pairs'
 Plug 'vim-scripts/Tabmerge'
 Plug 'itchyny/lightline.vim'
-" Plug 'AndrewRadev/tagalong.vim'
+Plug 'AndrewRadev/tagalong.vim'
 " Plug 'wakatime/vim-wakatime'
 Plug 'majutsushi/tagbar'
 Plug 'alvan/vim-closetag'
