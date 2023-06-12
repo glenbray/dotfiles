@@ -15,7 +15,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git git-auto-fetch)
+plugins=(git git-auto-fetch poetry)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -130,7 +130,10 @@ export THOR_MERGE="nvim -d"
 
 # Setup python env
 export PYENV_ROOT="$HOME/.pyenv"
+export PIPENV_PYTHON="$PYENV_ROOT/shims/python"
 export PATH="$PYENV_ROOT/bin:$PATH"
+
+export JAVA_HOME=$(/usr/libexec/java_home)
 
 eval "$(rbenv init -)"
 eval "$(pyenv init -)"
@@ -177,3 +180,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 ulimit -n 1024
+
+#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"

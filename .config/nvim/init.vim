@@ -142,7 +142,7 @@ let g:ale_ruby_rubocop_executable = 'standardrb'
 
 let g:ale_linters = {
 \  'ruby': ['standardrb'],
-\  'python': ['flake8'],
+\  'python': ['black'],
 \  'eruby': ['erblint'],
 \}
 
@@ -153,7 +153,7 @@ let g:ale_fixers = {
 \  'javascript.jsx': [],
 \  'typescript': ['prettier', 'tslint'],
 \  'css': ['prettier'],
-\  'python': ['autopep8', 'yapf'],
+\  'python': ['black'],
 \  'dart': ['dart-format'],
 \  'eruby': ['erblint'],
 \}
@@ -241,6 +241,11 @@ endfunction
 
 let g:ruby_indent_assignment_style = 'variable'
 let test#strategy = "neovim"
+" au TermOpen * setlocal listchars= nonumber norelativenumber
+" au TermOpen * startinsert
+" au BufLeave term://* stopinsert
+" au BufEnter,BufWinEnter,WinEnter term://* if !has_key(b:, '_termdone') | startinsert | endif
+" au TermClose * ++nested stopinsert | let b:_termdone = 1 | au TermEnter <buffer> stopinsert
 
 
 " Display extra whitespace
@@ -290,6 +295,17 @@ nnoremap gd <Cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <leader>ca <Cmd>lua vim.lsp.buf.code_action()<CR>
  " Open code actions for the selected visual range
 xnoremap <leader>ca <Cmd>lua vim.lsp.buf.range_code_action()<CR>
+
+
+nnoremap <A-o> <Cmd>lua require'jdtls'.organize_imports()<CR>
+nnoremap crv <Cmd>lua require('jdtls').extract_variable()<CR>
+vnoremap crv <Esc><Cmd>lua require('jdtls').extract_variable(true)<CR>
+nnoremap crc <Cmd>lua require('jdtls').extract_constant()<CR>
+vnoremap crc <Esc><Cmd>lua require('jdtls').extract_constant(true)<CR>
+vnoremap crm <Esc><Cmd>lua require('jdtls').extract_method(true)<CR>
+nnoremap <leader>df <Cmd>lua require'jdtls'.test_class()<CR>
+nnoremap <leader>dn <Cmd>lua require'jdtls'.test_nearest_method()<CR>
+
 
 
 call plug#begin('~/.vim/plugged')
@@ -365,6 +381,7 @@ Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'github/copilot.vim'
 Plug 'kkoomen/vim-doge', { 'do': 'npm i --no-save && npm run build:binary:unix' }
+Plug 'mfussenegger/nvim-jdtls'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -409,6 +426,7 @@ nnoremap <silent> <Leader>b :lua require'telescope.builtin'.buffers{}<CR>
 nnoremap <silent> <Leader>co :lua require'telescope.builtin'.commands{}<CR>
 nnoremap <silent> <Leader>ch :lua require'telescope.builtin'.command_history{}<CR>
 nnoremap <silent> <Leader>r :lua require'vim.lsp.buf'.rename()<CR>
+nnoremap <silent> <Leader>m :lua require'telescope.builtin'.marks{}<CR>
 
 " Quicker window movement
 nnoremap <C-j> <C-w>j
@@ -454,6 +472,7 @@ map <leader>x :q<cr>
 
 " Save
 map <leader>w :w<cr>
+map <leader>nw :noa w<cr>
 
 " NvimTree mappings
 noremap <leader>nn :NvimTreeToggle<cr>
@@ -616,6 +635,7 @@ lua << EOF
               "tw\\(.*?\\)`([^`]*)",
               "class: \'([^\']*)'",
               "class: \"([^\"]*)",
+              "classList\\.add\\(([^)]*)\\);"
             }
           }
         }
@@ -637,6 +657,7 @@ lua << EOF
   require"lspconfig".tailwindcss.setup {}
   -- require"lspconfig".pyright.setup {}
   require'lspconfig'.jedi_language_server.setup{}
+  -- require'lspconfig'.pylsp.setup{}
 
   local cmp = require'cmp'
 
@@ -715,7 +736,6 @@ lua << EOF
     defaults = {
       selection_caret = "> ",
       file_ignore_patterns = {
-          ".gradle/*",
           "android/.gradle/*",
           "android/app/src/main/res/*",
           "android/app/src/staging/res/*",
@@ -724,7 +744,8 @@ lua << EOF
           "ios*/",
           ".expo/web/cache/*",
           -- ".cache",
-          ".keep"
+          ".keep",
+          "coverage/"
       },
       mappings = {
         i = {
@@ -776,5 +797,10 @@ lua << EOF
   require('gitsigns').setup()
   require("dapui").setup()
 
+  -- local jdtls_config = {
+  --     cmd = {'/path/to/jdt-language-server/bin/jdtls'},
+  --     root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, { upward = true })[1]),
+  -- }
+  -- require('jdtls').start_or_attach(jdtls_config)
 EOF
 
