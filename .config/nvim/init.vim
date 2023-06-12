@@ -340,7 +340,7 @@ Plug 'crispgm/nvim-tabline'
 Plug 'jiangmiao/auto-pairs'
 Plug 'vim-scripts/Tabmerge'
 Plug 'itchyny/lightline.vim'
-Plug 'AndrewRadev/tagalong.vim'
+" Plug 'AndrewRadev/tagalong.vim'
 " Plug 'wakatime/vim-wakatime'
 Plug 'majutsushi/tagbar'
 Plug 'alvan/vim-closetag'
@@ -375,12 +375,12 @@ Plug 'AndrewRadev/sideways.vim'
 Plug 'rafamadriz/friendly-snippets'
 " Plug 'dominikduda/vim_current_word'
 Plug 'kyazdani42/nvim-tree.lua'
-Plug 'mtdl9/vim-log-highlighting'
+" Plug 'mtdl9/vim-log-highlighting'
 Plug 'lewis6991/gitsigns.nvim'
-Plug 'JoosepAlviste/nvim-ts-context-commentstring'
+" Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'github/copilot.vim'
-Plug 'kkoomen/vim-doge', { 'do': 'npm i --no-save && npm run build:binary:unix' }
+" Plug 'kkoomen/vim-doge', { 'do': 'npm i --no-save && npm run build:binary:unix' }
 Plug 'mfussenegger/nvim-jdtls'
 
 " List ends here. Plugins become visible to Vim after this call.
@@ -522,6 +522,7 @@ noremap <leader>y "+yy
 noremap <leader>p "+p
 noremap <leader>Y "+y
 noremap <leader>P "+p
+vnoremap p "_dP
 
 " copy relative path to current file to clipboard
 nnoremap <leader>cp :let @+ = substitute(expand("%"), getcwd() . '/', '', '') \| echo("relative path copied to clipboard!")<CR>
