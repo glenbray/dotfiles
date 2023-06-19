@@ -63,6 +63,12 @@
       "<% end %>"
     ]
   },
+  "component": {
+    "prefix": "component",
+    "body": [
+      "<%= render($1::Component.new) %>"
+    ]
+  },
   "bootstrap_table": {
     "prefix": "bs_table",
     "body": [

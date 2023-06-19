@@ -327,7 +327,7 @@ Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-ragtag'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-obsession'
+" Plug 'tpope/vim-obsession'
 Plug 'vim-ruby/vim-ruby'
 Plug 'mg979/vim-visual-multi'
 Plug 'simeji/winresizer'
@@ -342,7 +342,7 @@ Plug 'Yggdroot/indentLine'
 " Plug 'Valloric/MatchTagAlways'
 " Plug 'leafOfTree/vim-matchtag'
 Plug 'honza/vim-snippets'
-Plug 'crispgm/nvim-tabline'
+" Plug 'crispgm/nvim-tabline'
 Plug 'jiangmiao/auto-pairs'
 Plug 'vim-scripts/Tabmerge'
 Plug 'itchyny/lightline.vim'
@@ -385,7 +385,7 @@ Plug 'kyazdani42/nvim-tree.lua'
 Plug 'lewis6991/gitsigns.nvim'
 " Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 Plug 'maxmellon/vim-jsx-pretty'
-Plug 'github/copilot.vim'
+Plug 'zbirenbaum/copilot.lua'
 " Plug 'kkoomen/vim-doge', { 'do': 'npm i --no-save && npm run build:binary:unix' }
 Plug 'mfussenegger/nvim-jdtls'
 
@@ -503,7 +503,6 @@ noremap <leader>v :vnew<cr>
 
 " Find files using Telescope command-line sugar.
 nnoremap <silent> <c-p> <cmd>Telescope find_files<cr>
-" nnoremap <leader>ff <cmd>Telescope find_files<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fe <cmd>Telescope grep_string<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
@@ -542,12 +541,12 @@ augroup DisableMappings
 augroup END
 
 " Start vim obsession when opening vim
-if has('autocmd')
-  autocmd VimEnter * nested
-        \ if !argc() && empty(v:this_session) && filereadable('Session.vim') && !&modified |
-        \   source Session.vim |
-        \ endif
-endif
+" if has('autocmd')
+"   autocmd VimEnter * nested
+"         \ if !argc() && empty(v:this_session) && filereadable('Session.vim') && !&modified |
+"         \   source Session.vim |
+"         \ endif
+" endif
 
 function! s:isAtStartOfLine(mapping)
   let text_before_cursor = getline('.')[0 : col('.')-1]
@@ -680,6 +679,7 @@ lua << EOF
         ['<C-d>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(),
+        ['<C-l>'] = cmp.mapping.confirm({ select = true }),
         ['<C-e>'] = cmp.mapping.close(),
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
     },
@@ -789,25 +789,26 @@ lua << EOF
     }
   })
 
-
-  require('tabline').setup({
-    show_index = true,        -- show tab index
-    show_modify = true,       -- show buffer modification indicator
-    show_icon = true,         -- show file extension icon
-    modify_indicator = '[+]', -- modify indicator
-    no_name = 'No name',      -- no name buffer name
-    brackets = { '[', ']' },  -- file name brackets surrounding
-  })
+  --require('tabline').setup({
+    --show_index = true,        -- show tab index
+    --show_modify = true,       -- show buffer modification indicator
+    --show_icon = true,         -- show file extension icon
+    --modify_indicator = '[+]', -- modify indicator
+    --no_name = 'No name',      -- no name buffer name
+    --brackets = { '[', ']' },  -- file name brackets surrounding
+  --})
 
   require("telescope").load_extension("flutter")
   require'hop'.setup()
   require('gitsigns').setup()
-  require("dapui").setup()
+  -- require("dapui").setup()
 
   -- local jdtls_config = {
   --     cmd = {'/path/to/jdt-language-server/bin/jdtls'},
   --     root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, { upward = true })[1]),
   -- }
   -- require('jdtls').start_or_attach(jdtls_config)
+
+  require("copilot").setup({})
 EOF
 
