@@ -110,11 +110,6 @@ let g:indentLine_fileTypeExclude = ['json', 'md']
 " Automatically redraw on focus
 au FocusGained * :redraw!
 
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-" remap up and down when context menu is open
-inoremap <expr> <C-j> pumvisible() ? "\<C-n>" : "\<C-j>"
-inoremap <expr> <C-k> pumvisible() ? "\<C-p>" : "\<C-k>"
 
 " vsnip configuration
 let g:vsnip_filetypes = {}
@@ -131,6 +126,7 @@ smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => Ale settings
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:ale_linters_explicit = 1
 let g:ale_linter_aliases = {'javascriptreact': 'javascript'}
 let g:ale_lint_on_save = 1
 " let g:ale_yaml_yamllint_executable = 'prettier'
@@ -152,6 +148,7 @@ let g:ale_fixers = {
 \  'javascriptreact': ['prettier'],
 \  'javascript.jsx': [],
 \  'typescript': ['prettier', 'tslint'],
+\  'typescriptreact': ['prettier', 'tslint'],
 \  'css': ['prettier'],
 \  'python': ['black'],
 \  'dart': ['dart-format'],
@@ -343,13 +340,13 @@ Plug 'Yggdroot/indentLine'
 " Plug 'leafOfTree/vim-matchtag'
 Plug 'honza/vim-snippets'
 " Plug 'crispgm/nvim-tabline'
-Plug 'jiangmiao/auto-pairs'
+" Plug 'jiangmiao/auto-pairs'
 Plug 'vim-scripts/Tabmerge'
 Plug 'itchyny/lightline.vim'
 Plug 'AndrewRadev/tagalong.vim'
 " Plug 'wakatime/vim-wakatime'
 Plug 'majutsushi/tagbar'
-Plug 'alvan/vim-closetag'
+" Plug 'alvan/vim-closetag'
 Plug 'neovim/nvim-lspconfig'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
@@ -388,6 +385,9 @@ Plug 'maxmellon/vim-jsx-pretty'
 Plug 'zbirenbaum/copilot.lua'
 " Plug 'kkoomen/vim-doge', { 'do': 'npm i --no-save && npm run build:binary:unix' }
 Plug 'mfussenegger/nvim-jdtls'
+Plug 'windwp/nvim-autopairs'
+Plug 'windwp/nvim-ts-autotag'
+Plug 'nvim-pack/nvim-spectre'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -603,12 +603,17 @@ lua << EOF
     -- open_on_setup = true,
     -- open_on_setup_file = false,
     open_on_tab = false,
+    hijack_cursor = true,
+    sync_root_with_cwd = true,
     renderer = {
       root_folder_modifier = ":t:r"
     },
     live_filter = {
       always_show_folders = false,
     },
+    update_focused_file = {
+      enable = true,
+    }
   }
 
   require'nvim-treesitter.configs'.setup {
@@ -641,7 +646,10 @@ lua << EOF
               "tw\\(.*?\\)`([^`]*)",
               "class: \'([^\']*)'",
               "class: \"([^\"]*)",
-              "classList\\.add\\(([^)]*)\\);"
+              "classList\\.add\\(([^)]*)\\);",
+              "classList\\.add\\(([^)]*)\\);",
+              "className=\"([^\"]*)", -- <div className="..." />
+              "className:\"([^\"]*)" -- <div className="..." />
             }
           }
         }
@@ -665,7 +673,13 @@ lua << EOF
   require'lspconfig'.jedi_language_server.setup{}
   -- require'lspconfig'.pylsp.setup{}
 
+  local cmp_autopairs = require('nvim-autopairs.completion.cmp')
   local cmp = require'cmp'
+
+  cmp.event:on(
+    'confirm_done',
+    cmp_autopairs.on_confirm_done()
+  )
 
   cmp.setup({
     snippet = {
@@ -676,6 +690,24 @@ lua << EOF
     mapping = {
         ['<C-j>'] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert }),
         ['<C-k>'] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert }),
+        -- ['<C-j>'] = cmp.mapping({
+          -- c = function(fallback)
+            -- if cmp.visible() then
+              -- return cmp.select_next_item()
+            -- end
+
+            -- fallback()
+          -- end,
+        -- }),
+        -- ['<C-k>'] = cmp.mapping({
+          -- c = function(fallback)
+            -- if cmp.visible() then
+              -- return cmp.select_previous_item()
+            -- end
+
+            -- fallback()
+          -- end,
+        -- }),
         ['<C-d>'] = cmp.mapping.scroll_docs(-4),
         ['<C-f>'] = cmp.mapping.scroll_docs(4),
         ['<C-Space>'] = cmp.mapping.complete(),
@@ -810,5 +842,7 @@ lua << EOF
   -- require('jdtls').start_or_attach(jdtls_config)
 
   require("copilot").setup({})
+  require('nvim-ts-autotag').setup()
+  require("nvim-autopairs").setup {}
 EOF
 
