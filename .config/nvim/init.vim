@@ -383,6 +383,7 @@ Plug 'lewis6991/gitsigns.nvim'
 " Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'zbirenbaum/copilot.lua'
+" Plug 'github/copilot.vim'
 " Plug 'kkoomen/vim-doge', { 'do': 'npm i --no-save && npm run build:binary:unix' }
 Plug 'mfussenegger/nvim-jdtls'
 Plug 'windwp/nvim-autopairs'
@@ -612,7 +613,7 @@ lua << EOF
       always_show_folders = false,
     },
     update_focused_file = {
-      enable = true,
+      enable = false,
     }
   }
 
@@ -714,6 +715,18 @@ lua << EOF
         ['<C-l>'] = cmp.mapping.confirm({ select = true }),
         ['<C-e>'] = cmp.mapping.close(),
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
+        ["<Tab>"] = cmp.mapping(function(fallback)
+          if require("copilot.suggestion").is_visible() then
+            require("copilot.suggestion").accept()
+          elseif cmp.visible() then
+            cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+          else
+            fallback()
+          end
+        end, {
+          "i",
+          "s",
+        }),
     },
     sources = {
       { name = 'nvim_lsp' },
@@ -841,7 +854,17 @@ lua << EOF
   -- }
   -- require('jdtls').start_or_attach(jdtls_config)
 
-  require("copilot").setup({})
+  require("copilot").setup({
+    suggestion = {
+        auto_trigger = true,
+        keymap = {
+          accept = false,
+          accept_word = false,
+          accept_line = false,
+        },
+      }
+  })
+
   require('nvim-ts-autotag').setup()
   require("nvim-autopairs").setup {}
 EOF
