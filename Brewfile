@@ -32,6 +32,7 @@ brew "zsh"
 brew "lazygit"
 brew "lazydocker"
 
+cask "google-chrome"
 cask "firefox"
 cask "alt-tab"
 cask "raycast"
