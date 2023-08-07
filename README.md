@@ -11,13 +11,12 @@ https://www.atlassian.com/git/tutorials/dotfiles
 ## General
 
 - `echo 'eval $(/opt/homebrew/bin/brew shellenv)' >> $HOME/.zprofile`
-- `brew install git fzf rbenv pyenv nvm direnv xz overmind ripgrep bat redis yarn libxml2 gh universal-ctags`
+- `brew bundle --no-lock`
 - `pyenv install 3.10:latest`
 - install python (use pyenv and set global python version)
 - `mkdir -p ~/Documents/projects/git && git clone git@github.com:olivierverdier/zsh-git-prompt.git`
 - `sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
 - `$(brew --prefix)/opt/fzf/install`
-- `brew install --cask alt-tab tableplus postman mos`
 
 
 ## Neovim Setup
