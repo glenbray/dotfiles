@@ -5,26 +5,16 @@
 - `brew install git`
 - `alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'`
 - `git clone --bare git@github.com:glenbray/dotfiles.git $HOME/.cfg`
-
-https://www.atlassian.com/git/tutorials/dotfiles
+- follow remaining instructions https://www.atlassian.com/git/tutorials/dotfiles
 
 ## General
 
+- `(mkdir -p ~/Documents/projects/git && cd "$_" && git clone git@github.com:olivierverdier/zsh-git-prompt.git)`
 - `echo 'eval $(/opt/homebrew/bin/brew shellenv)' >> $HOME/.zprofile`
 - `brew bundle --no-lock`
 - `pyenv install 3.10:latest`
-- install python (use pyenv and set global python version)
-- `mkdir -p ~/Documents/projects/git && git clone git@github.com:olivierverdier/zsh-git-prompt.git`
 - `sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
 - `$(brew --prefix)/opt/fzf/install`
-
-
-## Neovim Setup
-
-- `brew install neovim --HEAD`
-- install [vim-plug](https://github.com/junegunn/vim-plug#neovim)
-- `brew tap homebrew/cask-fonts`
-- `brew install font-fira-mono-nerd-font --cask`
 
 
 ## Postgres setup and pg gem install
