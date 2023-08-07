@@ -1,5 +1,6 @@
 tap "homebrew/cask"
 tap "homebrew/cask-fonts"
+tap "koekeishiya/formulae"
 
 brew "git"
 brew "fzf"
@@ -24,6 +25,7 @@ brew "readline"
 brew "libyaml"
 brew "gmp"
 brew "gnu-sed"
+brew "skhd"
 
 cask "alt-tab"
 cask "raycast"
