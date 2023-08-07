@@ -2,8 +2,11 @@
 
 ## Setup config command
 
-https://www.atlassian.com/git/tutorials/dotfiles
+- `brew install git`
+- `alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'`
+- `git clone --bare git@github.com:glenbray/dotfiles.git $HOME/.cfg`
 
+https://www.atlassian.com/git/tutorials/dotfiles
 
 ## General
 
