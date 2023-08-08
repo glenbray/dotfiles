@@ -31,6 +31,7 @@ brew "skhd"
 brew "zsh"
 brew "lazygit"
 brew "lazydocker"
+brew "shared-mime-info"
 
 cask "google-chrome"
 cask "firefox"
