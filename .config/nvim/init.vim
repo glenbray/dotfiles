@@ -153,6 +153,7 @@ let g:ale_fixers = {
 \  'python': ['black'],
 \  'dart': ['dart-format'],
 \  'eruby': ['erblint'],
+\  'java': ['prettier'],
 \}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -309,6 +310,18 @@ vnoremap crm <Esc><Cmd>lua require('jdtls').extract_method(true)<CR>
 nnoremap <leader>df <Cmd>lua require'jdtls'.test_class()<CR>
 nnoremap <leader>dn <Cmd>lua require'jdtls'.test_nearest_method()<CR>
 
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => trouble
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+nnoremap <C-x><C-x> <cmd>TroubleToggle<cr>
+nnoremap <C-x><C-w> <cmd>TroubleToggle workspace_diagnostics<cr>
+nnoremap <C-x><C-d> <cmd>TroubleToggle document_diagnostics<cr>
+nnoremap <C-x><C-q> <cmd>TroubleToggle quickfix<cr>
+nnoremap <C-x><C-l> <cmd>TroubleToggle loclist<cr>
+nnoremap gR <cmd>TroubleToggle lsp_references<cr>
+
+
 " Auto install vim-plug
 let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
 if empty(glob(data_dir . '/autoload/plug.vim'))
@@ -395,6 +408,8 @@ Plug 'mfussenegger/nvim-jdtls'
 Plug 'windwp/nvim-autopairs'
 Plug 'windwp/nvim-ts-autotag'
 Plug 'nvim-pack/nvim-spectre'
+Plug 'nvim-telescope/telescope-ui-select.nvim'
+Plug 'folke/trouble.nvim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -612,6 +627,9 @@ lua << EOF
     open_on_tab = false,
     hijack_cursor = true,
     sync_root_with_cwd = true,
+    view = {
+      preserve_window_proportions = false,
+    },
     renderer = {
       root_folder_modifier = ":t:r"
     },
@@ -620,6 +638,11 @@ lua << EOF
     },
     update_focused_file = {
       enable = false,
+    },
+    actions = {
+      open_file = {
+        resize_window = true
+      }
     }
   }
 
@@ -652,7 +675,7 @@ lua << EOF
               "tw\\.\\w+`([^`]*)", -- tw.xxx`...`
               "tw\\(.*?\\)`([^`]*)",
               "class: \'([^\']*)'",
-              "class: \"([^\"]*)",
+              "class: \"([^\"]*)\"",
               "classList\\.add\\(([^)]*)\\);",
               "classList\\.add\\(([^)]*)\\);",
               "className=\"([^\"]*)", -- <div className="..." />
@@ -824,6 +847,7 @@ lua << EOF
   }
 
   require('telescope').load_extension('fzf')
+  require("telescope").load_extension("ui-select")
 
   require('flutter-tools').setup({
     outline = { auto_open = false },
@@ -853,12 +877,6 @@ lua << EOF
   require'hop'.setup()
   require('gitsigns').setup()
   -- require("dapui").setup()
-
-  -- local jdtls_config = {
-  --     cmd = {'/path/to/jdt-language-server/bin/jdtls'},
-  --     root_dir = vim.fs.dirname(vim.fs.find({'gradlew', '.git', 'mvnw'}, { upward = true })[1]),
-  -- }
-  -- require('jdtls').start_or_attach(jdtls_config)
 
   require("copilot").setup({
     suggestion = {
