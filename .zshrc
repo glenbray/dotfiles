@@ -133,7 +133,7 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PIPENV_PYTHON="$PYENV_ROOT/shims/python"
 export PATH="$PYENV_ROOT/bin:$PATH"
 
-export JAVA_HOME=$(/usr/libexec/java_home)
+# export JAVA_HOME=$(/usr/libexec/java_home)
 
 eval "$(rbenv init -)"
 eval "$(pyenv init -)"
@@ -182,5 +182,6 @@ export NVM_DIR="$HOME/.nvm"
 ulimit -n 1024
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export JAVA_HOME=${SDKMAN_CANDIDATES_DIR}/java/${CURRENT}
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
