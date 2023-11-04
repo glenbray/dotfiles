@@ -55,6 +55,12 @@
       "<%= link_to \"$1\", $2 %>"
     ]
   },
+  "render": {
+    "prefix": "ren",
+    "body": [
+      "<%= render \"$1\" %>"
+    ]
+  },
   "turbo_frame": {
     "prefix": "turbo_frame",
     "body": [
@@ -69,21 +75,21 @@
       "<%= render($1::Component.new) %>"
     ]
   },
-  "bootstrap_table": {
-    "prefix": "bs_table",
+  "simple_form_for": {
+    "prefix": "sff",
     "body": [
-      "<table class=\"table table-striped\">",
-      "  <thead>",
-      "    <th></th>",
-      "  </thead>",
-      "  <tbody>",
-      "    <% $1.each do |$2| %>",
-      "      <tr>",
-      "        <td></td>",
-      "      </tr>",
-      "    <% end %>",
-      "  </tbody>",
+      "<%= simple_form_for($1) do |f| %>",
+      "  <%= render \"shared/form_errors\", record: f.object %>",
+      "  ",
+      "  <%= f.input :$2 %>",
+      "  <%= f.button :submit, f.object.new_record? ? \"Create\" : \"Update\" %>",
       "<% end %>"
+    ]
+  },
+  "react_component": {
+    "prefix": "rc",
+    "body": [
+      "<%= react_component(\"$1\", {$2}) %>"
     ]
   }
 }

@@ -309,6 +309,36 @@ vnoremap crc <Esc><Cmd>lua require('jdtls').extract_constant(true)<CR>
 vnoremap crm <Esc><Cmd>lua require('jdtls').extract_method(true)<CR>
 nnoremap <leader>df <Cmd>lua require'jdtls'.test_class()<CR>
 nnoremap <leader>dn <Cmd>lua require'jdtls'.test_nearest_method()<CR>
+" nnoremap <leader>tb lua require'dap'.toggle_breakpoint()
+
+nnoremap <F4> :lua require('dapui').toggle()<CR>
+nnoremap <F5> :lua require('dap').toggle_breakpoint()<CR>
+nnoremap <F9> :lua require('dap').continue()<CR>
+
+nnoremap <F1> :lua require('dap').step_over()<CR>
+nnoremap <F2> :lua require('dap').step_into()<CR>
+nnoremap <F3> :lua require('dap').step_out()<CR>
+
+nnoremap <Leader>dsc :lua require('dap').continue()<CR>
+nnoremap <Leader>dsv :lua require('dap').step_over()<CR>
+nnoremap <Leader>dsi :lua require('dap').step_into()<CR>
+nnoremap <Leader>dso :lua require('dap').step_out()<CR>
+
+nnoremap <Leader>dhh :lua require('dap.ui.variables').hover()<CR>
+vnoremap <Leader>dhv :lua require('dap.ui.variables').visual_hover()<CR>
+
+nnoremap <Leader>duh :lua require('dap.ui.widgets').hover()<CR>
+nnoremap <Leader>duf :lua local widgets=require('dap.ui.widgets');widgets.centered_float(widgets.scopes)<CR>
+
+nnoremap <Leader>dro :lua require('dap').repl.open()<CR>
+nnoremap <Leader>drl :lua require('dap').repl.run_last()<CR>
+
+nnoremap <Leader>dbc :lua require('dap').set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>
+nnoremap <Leader>dbm :lua require('dap').set_breakpoint({ nil, nil, vim.fn.input('Log point message: ') })<CR>
+nnoremap <Leader>dbt :lua require('dap').toggle_breakpoint()<CR>
+
+nnoremap <Leader>dc :lua require('dap.ui.variables').scopes()<CR>
+nnoremap <Leader>di :lua require('dapui').toggle()<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -351,6 +381,7 @@ Plug 'dense-analysis/ale'
 Plug 'maximbaz/lightline-ale'
 Plug 'janko/vim-test'
 Plug 'sainnhe/gruvbox-material'
+Plug 'xero/miasma.nvim'
 Plug 'sainnhe/sonokai'
 Plug 'mattn/emmet-vim'
 Plug 'dhruvasagar/vim-table-mode'
@@ -384,7 +415,9 @@ Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 Plug 'glacambre/firenvim', { 'do': { _ -> firenvim#install(0) } }
 Plug 'tyru/open-browser.vim'
 Plug 'tyru/open-browser-github.vim'
-Plug 'williamboman/nvim-lsp-installer'
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'neovim/nvim-lspconfig'
 Plug 'akinsho/flutter-tools.nvim'
 Plug 'mfussenegger/nvim-dap'
 Plug 'rcarriga/nvim-dap-ui'
@@ -402,7 +435,6 @@ Plug 'lewis6991/gitsigns.nvim'
 " Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 Plug 'maxmellon/vim-jsx-pretty'
 Plug 'zbirenbaum/copilot.lua'
-" Plug 'github/copilot.vim'
 " Plug 'kkoomen/vim-doge', { 'do': 'npm i --no-save && npm run build:binary:unix' }
 Plug 'mfussenegger/nvim-jdtls'
 Plug 'windwp/nvim-autopairs'
@@ -432,6 +464,7 @@ let g:sonokai_style = 'shusia'
 syntax on
 " colorscheme gruvbox-material
 colorscheme sonokai
+" colorscheme miasma
 
 " automatically remove trailing whitespaces
 autocmd BufWritePre * :%s/\s\+$//e
@@ -654,42 +687,10 @@ lua << EOF
     }
   }
 
-  local lsp_installer = require("nvim-lsp-installer")
-  local capabilities = require'cmp_nvim_lsp'.default_capabilities()
-
-  -- set nvim-notify as default notify function
-  --vim.notify = require("notify")
-
-  lsp_installer.on_server_ready(function(server)
-    local opts = {}
-    local config = {}
-
-    if server.name == "tailwindcss" then
-      config.settings = {
-        tailwindCSS = {
-          experimental = {
-            classRegex = {
-              "tw`([^`]*)", -- tw`...`
-              "tw=\"([^\"]*)", -- <div tw="..." />
-              "tw={\"([^\"}]*)", -- <div tw={"..."} />
-              "tw\\.\\w+`([^`]*)", -- tw.xxx`...`
-              "tw\\(.*?\\)`([^`]*)",
-              "class: \'([^\']*)'",
-              "class: \"([^\"]*)\"",
-              "classList\\.add\\(([^)]*)\\);",
-              "classList\\.add\\(([^)]*)\\);",
-              "className=\"([^\"]*)", -- <div className="..." />
-              "className:\"([^\"]*)" -- <div className="..." />
-            }
-          }
-        }
-      }
-      config.capabilities = capabilities
-    end
-
-    server:setup(config)
-  end)
-
+  require("mason").setup()
+  require("mason-lspconfig").setup {
+    ensure_installed = { "tailwindcss" },
+  }
 
   require'lspconfig'.ruby_ls.setup {
     cmd = { "bundle", "exec", "ruby-lsp" }
@@ -698,9 +699,29 @@ lua << EOF
   require'lspconfig'.tsserver.setup {}
   require'lspconfig'.yamlls.setup {}
   require'lspconfig'.dockerls.setup {}
-  require"lspconfig".tailwindcss.setup {}
-  -- require"lspconfig".pyright.setup {}
+  require"lspconfig".tailwindcss.setup {
+    settings = {
+      tailwindCSS = {
+        experimental = {
+          classRegex = {
+            "tw`([^`]*)", -- tw`...`
+            "tw=\"([^\"]*)", -- <div tw="..." />
+            "tw={\"([^\"}]*)", -- <div tw={"..."} />
+            "tw\\.\\w+`([^`]*)", -- tw.xxx`...`
+            "tw\\(.*?\\)`([^`]*)",
+            "class: \'([^\']*)'",
+            "class: \"([^\"]*)\"",
+            "classList\\.add\\(([^)]*)\\);",
+            "classList\\.add\\(([^)]*)\\);",
+            "className=\"([^\"]*)", -- <div className="..." />
+            "className:\"([^\"]*)" -- <div className="..." />
+          }
+        }
+      }
+    }
+  }
   require'lspconfig'.jedi_language_server.setup{}
+  -- require"lspconfig".pyright.setup {}
   -- require'lspconfig'.pylsp.setup{}
 
   local cmp_autopairs = require('nvim-autopairs.completion.cmp')
@@ -813,6 +834,21 @@ lua << EOF
     dapui.close()
   end
 
+  local select_one_or_multi = function(prompt_bufnr)
+    local picker = require('telescope.actions.state').get_current_picker(prompt_bufnr)
+    local multi = picker:get_multi_selection()
+    if not vim.tbl_isempty(multi) then
+      require('telescope.actions').close(prompt_bufnr)
+      for _, j in pairs(multi) do
+        if j.path ~= nil then
+          vim.cmd(string.format("%s %s", "vsplit", j.path))
+        end
+      end
+    else
+      require('telescope.actions').select_default(prompt_bufnr)
+    end
+  end
+
   require('telescope').setup{
     defaults = {
       selection_caret = "> ",
@@ -833,6 +869,7 @@ lua << EOF
           ["<C-j>"] = actions.move_selection_next,
           ["<C-k>"] = actions.move_selection_previous,
           ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+          ["<CR>"] = select_one_or_multi,
         }
       },
       extensions = {
@@ -876,7 +913,7 @@ lua << EOF
   require("telescope").load_extension("flutter")
   require'hop'.setup()
   require('gitsigns').setup()
-  -- require("dapui").setup()
+  require("dapui").setup()
 
   require("copilot").setup({
     suggestion = {
