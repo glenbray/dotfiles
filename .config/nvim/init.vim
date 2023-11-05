@@ -40,7 +40,7 @@ command! W execute 'w !sudo tee % > /dev/null' <bar> edit!
 " auto resize when splits are added
 autocmd VimResized * wincmd =
 
-" Better tabbing
+" Better tabbing (This breaks on iterm when zooming ctrl + & ctrl -)
 vnoremap < <gv
 vnoremap > >gv
 
@@ -844,6 +844,8 @@ lua << EOF
           vim.cmd(string.format("%s %s", "vsplit", j.path))
         end
       end
+
+      require("nvim-tree.api").tree.close()
     else
       require('telescope.actions').select_default(prompt_bufnr)
     end
