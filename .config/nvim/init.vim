@@ -442,6 +442,9 @@ Plug 'windwp/nvim-ts-autotag'
 Plug 'nvim-pack/nvim-spectre'
 Plug 'nvim-telescope/telescope-ui-select.nvim'
 Plug 'folke/trouble.nvim'
+Plug 'ThePrimeagen/harpoon'
+Plug 'jay-babu/mason-nvim-dap.nvim'
+Plug 'theHamsta/nvim-dap-virtual-text'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -691,6 +694,9 @@ lua << EOF
   require("mason-lspconfig").setup {
     ensure_installed = { "tailwindcss" },
   }
+  require("mason-nvim-dap").setup({
+    ensure_installed = { "javadbg", "javatest", "dart" }
+  })
 
   require'lspconfig'.ruby_ls.setup {
     cmd = { "bundle", "exec", "ruby-lsp" }
@@ -885,10 +891,10 @@ lua << EOF
     }
   }
 
-  require('telescope').load_extension('fzf')
+  require("telescope").load_extension("fzf")
   require("telescope").load_extension("ui-select")
 
-  require('flutter-tools').setup({
+  require("flutter-tools").setup({
     outline = { auto_open = false },
     decorations = {
       statusline = { device = true, app_version = true },
@@ -897,7 +903,7 @@ lua << EOF
     lsp = {
       settings = {
         showTodos = true,
-        renameFilesWithClasses = 'prompt',
+        renameFilesWithClasses = "prompt",
         enableSnippets = true
       }
     }
@@ -930,5 +936,6 @@ lua << EOF
 
   require('nvim-ts-autotag').setup()
   require("nvim-autopairs").setup {}
+  require("nvim-dap-virtual-text").setup()
 EOF
 
