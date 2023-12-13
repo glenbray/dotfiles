@@ -37,10 +37,8 @@ export EDITOR='nvim'
 # For a full list of active aliases, run `alias`.
 
 platform="$(uname | tr '[:upper:]' '[:lower:]')"
-projects=""
 
 if [[ $platform == 'linux' ]]; then
-  projects=$HOME/Documents/projects
   source /usr/share/doc/fzf/examples/key-bindings.zsh
   source /usr/share/doc/fzf/examples/completion.zsh
   source /opt/conda/etc/profile.d/conda.sh
@@ -55,13 +53,12 @@ if [[ $platform == 'linux' ]]; then
 
   eval $(keychain --eval ~/.ssh/id_ed25519)
 elif [[ $platform == 'darwin' ]]; then
-  projects=$HOME/Documents/projects
   export ANDROID_HOME=$HOME/Library/Android/sdk
   [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 fi
 
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-alias p="cd $projects"
+alias p="cd $HOME/Documents/projects"
 alias v="nvim ."
 alias vim="nvim"
 alias n="nvim ."
@@ -76,13 +73,6 @@ alias br="bundle exec rspec"
 alias bu="bundle update"
 alias bo="bundle open"
 alias bout="bundle outdated"
-
-alias nb="DEPENDENCIES_NEXT=1 bundle"
-alias nbe="DEPENDENCIES_NEXT=1 bundle exec"
-alias nbu="DEPENDENCIES_NEXT=1 bundle update"
-alias nbo="DEPENDENCIES_NEXT=1 bundle open"
-alias nbout="DEPENDENCIES_NEXT=1 bundle outdated"
-alias nbr="DEPENDENCIES_NEXT=1 bundle exec rspec"
 
 alias yout="yarn outdated"
 alias d="docker-compose"
@@ -176,8 +166,9 @@ PROMPT='$(get_prompt)'
 eval "$(direnv hook zsh)"
 
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+[ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
+[ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"
+
 
 ulimit -n 1024
 
