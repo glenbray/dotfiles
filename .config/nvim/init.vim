@@ -445,6 +445,8 @@ Plug 'folke/trouble.nvim'
 Plug 'ThePrimeagen/harpoon'
 Plug 'jay-babu/mason-nvim-dap.nvim'
 Plug 'theHamsta/nvim-dap-virtual-text'
+Plug 'suketa/nvim-dap-ruby'
+Plug 'takkii/neoruby-debugger'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -830,6 +832,35 @@ lua << EOF
   vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
 
   local dap, dapui = require("dap"), require("dapui")
+  dap.set_log_level('TRACE')
+
+  dapui.setup {
+    icons = {},
+    layouts = {
+      {
+        elements = {
+          {
+            id = "watches",
+            size = 1
+          },
+        },
+        position = "bottom",
+        size = 5
+      },
+      {
+        elements = {
+          {
+            id = "scopes",
+            size = 1
+          },
+        },
+        position = "bottom",
+        size = 5
+      }
+    },
+  } -- use default
+
+
   dap.listeners.after.event_initialized["dapui_config"] = function()
     dapui.open()
   end
@@ -839,6 +870,13 @@ lua << EOF
   dap.listeners.before.event_exited["dapui_config"] = function()
     dapui.close()
   end
+
+  require("nvim-dap-virtual-text").setup {
+    commented = true,
+  }
+
+  require('neoruby-debugger').setup()
+  require("dapui").setup()
 
   local select_one_or_multi = function(prompt_bufnr)
     local picker = require('telescope.actions.state').get_current_picker(prompt_bufnr)
@@ -921,7 +959,6 @@ lua << EOF
   require("telescope").load_extension("flutter")
   require'hop'.setup()
   require('gitsigns').setup()
-  require("dapui").setup()
 
   require("copilot").setup({
     suggestion = {
@@ -936,6 +973,5 @@ lua << EOF
 
   require('nvim-ts-autotag').setup()
   require("nvim-autopairs").setup {}
-  require("nvim-dap-virtual-text").setup()
 EOF
 
