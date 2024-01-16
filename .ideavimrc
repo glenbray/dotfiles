@@ -1,0 +1,100 @@
+Plug 'easymotion/vim-easymotion'
+Plug 'preservim/nerdtree'
+Plug 'tommcdo/vim-exchange'
+
+let mapleader=","
+set easymotion
+
+set ignorecase
+set hlsearch
+
+nnoremap \e :e ~/.ideavimrc<CR>
+nnoremap \r :action IdeaVim.ReloadVimRc.reload<CR>
+
+
+""" IdeaVim options
+" Smart join for <C-J>
+set ideajoin
+" Map vim marks to IDEA global marks
+set ideamarks
+
+" save file
+nmap <leader>w :action SaveAll<CR>
+
+nmap <leader>nn :NERDTreeToggle<CR>
+nmap <leader>nf :NERDTreeFind<CR>
+nmap <leader>nr :NERDTreeRefreshRoot<CR>
+
+" move between tabs
+noremap <C-j> <C-w>j
+noremap <C-k> <C-w>k
+noremap <C-h> <C-w>h
+noremap <C-l> <C-w>l
+
+" move between tab groups
+nmap <C-,> gT
+nmap <C-.> gt
+
+" Better tabbing
+vnoremap < <gv
+vnoremap > >gv
+
+" close current tab
+map <leader>x :q<cr>
+
+" easy motion
+nmap <leader>ff <Plug>(easymotion-bd-w)
+omap <leader>ff <Plug>(easymotion-bd-w)
+
+" comment out line of code
+vnoremap gcc <Action>(CommentByLineComment)<CR>
+" vnoremap gcc <Action>(CommentByLineComment)<CR>
+
+" split and move right
+map <leader>v <Action>(MoveTabRight)
+
+" # split and move down
+" map <leader> <Action>(MoveTabDown)
+
+nmap <leader>re :action RenameElement<CR>
+
+map <leader>fe <Action>(FindInPath)
+
+"map <leader>rr <Action>(Run)
+
+nnoremap <Leader>d :action Debug<CR>
+"nnoremap <Leader>rc :action Stop<CR>
+"nnoremap <Leader>rr :action Rerun<CR>
+nnoremap <Leader>rc :action RunClass<CR>
+nnoremap <Leader>cd :action ChooseDebugConfiguration<CR>
+nnoremap <Leader>cr :action ChooseRunConfiguration<CR>
+
+
+map <leader>dd <Action>(Debug)
+map <leader>D <Action>(ContextDebug)
+"map <leader>db <Action>(AddBreakpoint)
+map <leader>db :action ToggleLineBreakpoint<CR>
+map <leader>dcb <Action>(AddConditionalBreakpoint)
+
+""""""""""""""""""""""""""""""""""""""Show""""""""""""""""""""""""""""""""
+nnoremap <Leader>sd :action ShowUmlDiagram<CR>
+nnoremap <Leader>th :action TypeHierarchy<CR>
+nnoremap <Leader>fu :action FindUsages<CR>
+nnoremap <Leader>su :action ShowUsages<CR>
+nnoremap <Leader>mh :action MethodHierarchy<CR>
+nnoremap <Leader>ss :action ShowSettings<CR>
+nnoremap <Leader>sp :action ShowFilePath<CR>
+nnoremap <Leader>se :action ShowErrorDescription<CR>
+nnoremap <Leader>rf :action RecentFiles<CR>
+nnoremap <Leader>jd :action QuickJavaDoc<CR>
+nnoremap <leader>a :action Annotate<CR>
+nnoremap <leader>sn :action ShowNavBar<CR>
+""""""""""""""""""""""""""""""""""""""popup""""""""""""""""""""""""""""""""
+nnoremap <Leader>ps :action FileStructurePopup<CR>
+nnoremap <leader>pg :action Generate<CR>
+nnoremap <Leader>pm :action ShowPopupMenu<CR>
+""""""""""""""""""""""""""""""""""""""Search""""""""""""""""""""""""""""""""
+nnoremap <Leader>ga :action GotoAction<CR>
+nnoremap <Leader>gc :action GotoClass<CR>
+nnoremap <Leader>gf :action GotoFile<CR>
+nnoremap <Leader>gs :action GotoSymbol<CR>
