@@ -4,12 +4,14 @@ Plug 'tommcdo/vim-exchange'
 
 let mapleader=","
 set easymotion
+set quickscope
 
 set ignorecase
 set hlsearch
 
 nnoremap \e :e ~/.ideavimrc<CR>
 nnoremap \r :action IdeaVim.ReloadVimRc.reload<CR>
+nnoremap <C-m> :action TabShiftActions.ToggleMaximizeRestore<CR>
 
 
 """ IdeaVim options
@@ -57,12 +59,9 @@ map <leader>v <Action>(MoveTabRight)
 " map <leader> <Action>(MoveTabDown)
 
 nmap <leader>re :action RenameElement<CR>
-
 map <leader>fe <Action>(FindInPath)
 
 "map <leader>rr <Action>(Run)
-
-nnoremap <Leader>d :action Debug<CR>
 "nnoremap <Leader>rc :action Stop<CR>
 "nnoremap <Leader>rr :action Rerun<CR>
 nnoremap <Leader>rc :action RunClass<CR>
@@ -72,7 +71,6 @@ nnoremap <Leader>cr :action ChooseRunConfiguration<CR>
 
 map <leader>dd <Action>(Debug)
 map <leader>D <Action>(ContextDebug)
-"map <leader>db <Action>(AddBreakpoint)
 map <leader>db :action ToggleLineBreakpoint<CR>
 map <leader>dcb <Action>(AddConditionalBreakpoint)
 
@@ -87,7 +85,7 @@ nnoremap <Leader>sp :action ShowFilePath<CR>
 nnoremap <Leader>se :action ShowErrorDescription<CR>
 nnoremap <Leader>rf :action RecentFiles<CR>
 nnoremap <Leader>jd :action QuickJavaDoc<CR>
-nnoremap <leader>a :action Annotate<CR>
+nnoremap <leader>aa :action Annotate<CR>
 nnoremap <leader>sn :action ShowNavBar<CR>
 """"""""""""""""""""""""""""""""""""""popup""""""""""""""""""""""""""""""""
 nnoremap <Leader>ps :action FileStructurePopup<CR>

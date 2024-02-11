@@ -81,7 +81,7 @@ alias pip="$(pyenv which pip)"
 alias ctags="$(readlink -f $(brew --prefix universal-ctags))/bin/ctags"
 alias vimdiff='nvim -d'
 
-source $projects/git/zsh-git-prompt/zshrc.sh
+source $HOME/Documents/projects/git/zsh-git-prompt/zshrc.sh
 
 # HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000000
