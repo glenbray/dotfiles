@@ -295,6 +295,8 @@ let g:tagalong_mappings = ['c', 'C', 'i', 'a']
 nnoremap K <Cmd>lua vim.lsp.buf.hover()<CR>
  " Jump to definition
 nnoremap gd <Cmd>lua vim.lsp.buf.definition()<CR>
+nnoremap gD <cmd>tab split \| lua vim.lsp.buf.definition()<cr>
+
  " Open code actions using the default lsp UI, if you want to change this please see the plugins above
 nnoremap <leader>ca <Cmd>lua vim.lsp.buf.code_action()<CR>
  " Open code actions for the selected visual range
@@ -447,6 +449,10 @@ Plug 'jay-babu/mason-nvim-dap.nvim'
 Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'suketa/nvim-dap-ruby'
 Plug 'takkii/neoruby-debugger'
+Plug 'stevearc/overseer.nvim'
+Plug 'antoinemadec/FixCursorHold.nvim'
+Plug 'nvim-neotest/neotest'
+Plug 'olimorris/neotest-rspec'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -711,7 +717,7 @@ lua << EOF
       client.request("textDocument/diagnostic", { textDocument = params }, function(err, result)
         if err then
           local err_msg = string.format("diagnostics error - %s", vim.inspect(err))
-          vim.lsp.log.error(err_msg)
+           vim.lsp.log.error(err_msg)
         end
         local diagnostic_items = {}
         if result then
@@ -742,11 +748,6 @@ lua << EOF
     })
   end
 
-  require("lspconfig").ruby_ls.setup({
-    on_attach = function(client, buffer)
-      setup_diagnostics(client, buffer)
-    end,
-  })
 
   require'lspconfig'.tsserver.setup {}
   require'lspconfig'.yamlls.setup {}
@@ -1015,7 +1016,18 @@ lua << EOF
       }
   })
 
+  require("neotest-rspec")({
+    rspec_cmd = function()
+      return vim.tbl_flatten({
+        "bundle",
+        "exec",
+        "rspec",
+      })
+    end
+  })
+
   require('nvim-ts-autotag').setup()
   require("nvim-autopairs").setup {}
+  require('overseer').setup()
 EOF
 
