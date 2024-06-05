@@ -447,6 +447,7 @@ Plug 'jay-babu/mason-nvim-dap.nvim'
 Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'suketa/nvim-dap-ruby'
 Plug 'takkii/neoruby-debugger'
+Plug 'nvim-neotest/nvim-nio'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -742,7 +743,7 @@ lua << EOF
     })
   end
 
-  require("lspconfig").ruby_ls.setup({
+  require("lspconfig").ruby_lsp.setup({
     on_attach = function(client, buffer)
       setup_diagnostics(client, buffer)
     end,

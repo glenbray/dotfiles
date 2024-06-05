@@ -47,10 +47,10 @@ map <leader>x :q<cr>
 " easy motion
 nmap <leader>ff <Plug>(easymotion-bd-w)
 omap <leader>ff <Plug>(easymotion-bd-w)
+map <Leader>ff <Plug>(easymotion-bd-w)
 
 " comment out line of code
 vnoremap gcc <Action>(CommentByLineComment)<CR>
-" vnoremap gcc <Action>(CommentByLineComment)<CR>
 
 " split and move right
 map <leader>v <Action>(MoveTabRight)
@@ -88,7 +88,7 @@ nnoremap <Leader>jd :action QuickJavaDoc<CR>
 nnoremap <leader>aa :action Annotate<CR>
 nnoremap <leader>sn :action ShowNavBar<CR>
 """"""""""""""""""""""""""""""""""""""popup""""""""""""""""""""""""""""""""
-nnoremap <Leader>ps :action FileStructurePopup<CR>
+nnoremap <Leader>fs :action FileStructurePopup<CR>
 nnoremap <leader>pg :action Generate<CR>
 nnoremap <Leader>pm :action ShowPopupMenu<CR>
 """"""""""""""""""""""""""""""""""""""Search""""""""""""""""""""""""""""""""
@@ -96,3 +96,4 @@ nnoremap <Leader>ga :action GotoAction<CR>
 nnoremap <Leader>gc :action GotoClass<CR>
 nnoremap <Leader>gf :action GotoFile<CR>
 nnoremap <Leader>gs :action GotoSymbol<CR>
+

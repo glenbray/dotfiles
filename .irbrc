@@ -1,5 +1,3 @@
-require "awesome_print"
-AwesomePrint.irb!
 
 def m(klass)
   klass.public_instance_methods - Object.public_instance_methods
@@ -7,6 +5,12 @@ end
 
 if defined?(Rails)
   env = Rails.env
+
+  if !env.production?
+    require "awesome_print"
+    AwesomePrint.irb!
+  end
+
   env_color = if env.production?
     "\e[31m#{env}\e[0m"
   else
