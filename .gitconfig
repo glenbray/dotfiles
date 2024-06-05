@@ -2,7 +2,7 @@
 [user]
 # Please adapt and uncomment the following lines:
 	name = Glen Bray
-mail = glen.bray@gmail.com
+  mail = glen.bray@gmail.com
 	email = glen.bray@gmail.com
 [core]
 	excludesfile = ~/.gitignore

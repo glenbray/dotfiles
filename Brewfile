@@ -1,9 +1,8 @@
-tap "homebrew/cask"
 tap "homebrew/cask-fonts"
 tap "koekeishiya/formulae"
 
 brew "git"
-brew "neovim", args: ["--HEAD"]
+brew "neovim", args: ["HEAD"]
 brew "fzf"
 brew "rbenv"
 brew "pyenv"
