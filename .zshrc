@@ -26,8 +26,8 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-# export EDITOR='nvim'
-export EDITOR="/Applications/IntelliJ\ IDEA.app/Contents/MacOS/idea"
+export EDITOR='nvim'
+# export EDITOR="/Applications/IntelliJ\ IDEA.app/Contents/MacOS/idea"
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"

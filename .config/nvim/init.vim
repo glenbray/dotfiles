@@ -448,12 +448,13 @@ Plug 'ThePrimeagen/harpoon'
 Plug 'jay-babu/mason-nvim-dap.nvim'
 Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'suketa/nvim-dap-ruby'
-Plug 'takkii/neoruby-debugger'
+" Plug 'takkii/neoruby-debugger'
 Plug 'nvim-neotest/nvim-nio'
 Plug 'stevearc/overseer.nvim'
 Plug 'antoinemadec/FixCursorHold.nvim'
 Plug 'nvim-neotest/neotest'
 Plug 'olimorris/neotest-rspec'
+Plug 'polirritmico/monokai-nightasty.nvim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -475,8 +476,10 @@ let g:sonokai_style = 'shusia'
 
 syntax on
 " colorscheme gruvbox-material
-colorscheme sonokai
+" colorscheme sonokai
 " colorscheme miasma
+set background=dark
+colorscheme monokai-nightasty
 
 " automatically remove trailing whitespaces
 autocmd BufWritePre * :%s/\s\+$//e
@@ -926,7 +929,7 @@ lua << EOF
     commented = true,
   }
 
-  require('neoruby-debugger').setup()
+  -- require('neoruby-debugger').setup()
   require("dapui").setup()
 
   local select_one_or_multi = function(prompt_bufnr)
