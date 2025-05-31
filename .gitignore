@@ -4,9 +4,12 @@
 tags
 .python-version
 .nvmrc
+<<<<<<< HEAD
 .cursor
 .cursorignore
 .idea
 .vscode
 .claude
 CLAUDE.md
+bigquery-keyfile.json
+bigquery*.json

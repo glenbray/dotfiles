@@ -456,6 +456,7 @@ Plug 'nvim-neotest/neotest'
 Plug 'olimorris/neotest-rspec'
 Plug 'sourcegraph/sg.nvim', { 'do': 'nvim -l build/init.lua' }
 Plug 'sindrets/diffview.nvim'
+Plug 'polirritmico/monokai-nightasty.nvim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -477,8 +478,10 @@ let g:sonokai_style = 'shusia'
 
 syntax on
 " colorscheme gruvbox-material
-colorscheme sonokai
+" colorscheme sonokai
 " colorscheme miasma
+set background=dark
+colorscheme monokai-nightasty
 
 " automatically remove trailing whitespaces
 autocmd BufWritePre * :%s/\s\+$//e
