@@ -902,11 +902,14 @@ lua << EOF
         }),
     },
     sources = {
-      { name = 'nvim_lsp' },
-      { name = 'vsnip' },
-      { name = 'path' },
-      { name = 'buffer' },
-    }
+      { name = 'nvim_lsp', priority = 1000 },
+      { name = 'vsnip', priority = 750 },
+      { name = 'path', priority = 500 },
+      { name = 'buffer', priority = 250 },
+    },
+    completion = {
+      autocomplete = { require('cmp.types').cmp.TriggerEvent.TextChanged },
+    },
   })
 
   local t = function(str)
