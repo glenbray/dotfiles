@@ -466,7 +466,6 @@ Plug 'stevearc/overseer.nvim'
 Plug 'antoinemadec/FixCursorHold.nvim'
 Plug 'nvim-neotest/neotest'
 Plug 'olimorris/neotest-rspec'
-Plug 'sourcegraph/sg.nvim', { 'do': 'nvim -l build/init.lua' }
 Plug 'sindrets/diffview.nvim'
 Plug 'polirritmico/monokai-nightasty.nvim'
 
@@ -1102,7 +1101,6 @@ lua << EOF
   require('nvim-ts-autotag').setup()
   require("nvim-autopairs").setup {}
   require('overseer').setup()
-  require('sg').setup()
   require("diffview")
 EOF
 
