@@ -300,7 +300,7 @@ nnoremap gD <Cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap gC <Cmd>lua vim.lsp.buf.declaration()<CR>
  " Go to implementation
 nnoremap gi <Cmd>lua vim.lsp.buf.implementation()<CR>
- " Go to type definition  
+ " Go to type definition
 nnoremap gt <Cmd>lua vim.lsp.buf.type_definition()<CR>
  " Find references
 nnoremap gr <Cmd>lua vim.lsp.buf.references()<CR>
@@ -488,11 +488,11 @@ let g:sonokai_style = 'shusia'
 " let g:sonokai_style = 'espresso'
 
 syntax on
-" colorscheme gruvbox-material
-" colorscheme sonokai
-" colorscheme miasma
 set background=dark
-colorscheme monokai-nightasty
+" colorscheme gruvbox-material
+colorscheme sonokai
+" colorscheme miasma
+" colorscheme monokai-nightasty
 
 " automatically remove trailing whitespaces
 autocmd BufWritePre * :%s/\s\+$//e
@@ -770,7 +770,7 @@ lua << EOF
   end
 
   local ruby_lsp_setup = require("ruby_lsp_setup")
-  
+
   require("lspconfig").ruby_lsp.setup({
     on_attach = function(client, buffer)
       setup_diagnostics(client, buffer)
@@ -783,7 +783,7 @@ lua << EOF
       rubyLsp = {
         enabledFeatures = {
           "codeActions",
-          "diagnostics", 
+          "diagnostics",
           "documentHighlights",
           "documentLink",
           "documentSymbols",
@@ -791,7 +791,7 @@ lua << EOF
           "formatting",
           "hover",
           "inlayHints",
-          "onTypeFormatting", 
+          "onTypeFormatting",
           "selectionRanges",
           "semanticHighlighting",
           "completion",
@@ -816,7 +816,7 @@ lua << EOF
       experimentalFeaturesEnabled = true,
     },
   })
-  
+
   -- Setup Ruby project environment
   ruby_lsp_setup.setup_ruby_project()
 
