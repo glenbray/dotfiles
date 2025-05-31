@@ -4,3 +4,9 @@
 tags
 .python-version
 .nvmrc
+.cursor
+.cursorignore
+.idea
+.vscode
+.claude
+CLAUDE.md

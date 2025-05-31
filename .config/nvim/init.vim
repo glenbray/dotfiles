@@ -294,8 +294,8 @@ let g:tagalong_mappings = ['c', 'C', 'i', 'a']
  " Show hover
 nnoremap K <Cmd>lua vim.lsp.buf.hover()<CR>
  " Jump to definition
-nnoremap gd <Cmd>lua vim.lsp.buf.definition()<CR>
-nnoremap gD <cmd>tab split \| lua vim.lsp.buf.definition()<cr>
+nnoremap gd <cmd>tab split \| lua vim.lsp.buf.definition()<cr>
+nnoremap gD <Cmd>lua vim.lsp.buf.definition()<CR>
 
  " Open code actions using the default lsp UI, if you want to change this please see the plugins above
 nnoremap <leader>ca <Cmd>lua vim.lsp.buf.code_action()<CR>
@@ -436,7 +436,7 @@ Plug 'kyazdani42/nvim-tree.lua'
 Plug 'lewis6991/gitsigns.nvim'
 " Plug 'JoosepAlviste/nvim-ts-context-commentstring'
 Plug 'maxmellon/vim-jsx-pretty'
-Plug 'zbirenbaum/copilot.lua'
+" Plug 'zbirenbaum/copilot.lua'
 " Plug 'kkoomen/vim-doge', { 'do': 'npm i --no-save && npm run build:binary:unix' }
 Plug 'mfussenegger/nvim-jdtls'
 Plug 'windwp/nvim-autopairs'
@@ -448,12 +448,14 @@ Plug 'ThePrimeagen/harpoon'
 Plug 'jay-babu/mason-nvim-dap.nvim'
 Plug 'theHamsta/nvim-dap-virtual-text'
 Plug 'suketa/nvim-dap-ruby'
-Plug 'takkii/neoruby-debugger'
+" Plug 'takkii/neoruby-debugger'
 Plug 'nvim-neotest/nvim-nio'
 Plug 'stevearc/overseer.nvim'
 Plug 'antoinemadec/FixCursorHold.nvim'
 Plug 'nvim-neotest/neotest'
 Plug 'olimorris/neotest-rspec'
+Plug 'sourcegraph/sg.nvim', { 'do': 'nvim -l build/init.lua' }
+Plug 'sindrets/diffview.nvim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -755,7 +757,7 @@ lua << EOF
     end,
   })
 
-  require'lspconfig'.tsserver.setup {}
+  require'lspconfig'.ts_ls.setup {}
   require'lspconfig'.yamlls.setup {}
   require'lspconfig'.dockerls.setup {}
   require"lspconfig".tailwindcss.setup {
@@ -825,9 +827,7 @@ lua << EOF
         ['<C-e>'] = cmp.mapping.close(),
         ['<CR>'] = cmp.mapping.confirm({ select = true }),
         ["<Tab>"] = cmp.mapping(function(fallback)
-          if require("copilot.suggestion").is_visible() then
-            require("copilot.suggestion").accept()
-          elseif cmp.visible() then
+          if cmp.visible() then
             cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
           else
             fallback()
@@ -926,7 +926,7 @@ lua << EOF
     commented = true,
   }
 
-  require('neoruby-debugger').setup()
+  -- require('neoruby-debugger').setup()
   require("dapui").setup()
 
   local select_one_or_multi = function(prompt_bufnr)
@@ -1011,16 +1011,16 @@ lua << EOF
   require'hop'.setup()
   require('gitsigns').setup()
 
-  require("copilot").setup({
-    suggestion = {
-        auto_trigger = true,
-        keymap = {
-          accept = false,
-          accept_word = false,
-          accept_line = false,
-        },
-      }
-  })
+  -- require("copilot").setup({
+  --   suggestion = {
+  --       auto_trigger = true,
+  --       keymap = {
+  --         accept = false,
+  --         accept_word = false,
+  --         accept_line = false,
+  --       },
+  --     }
+  -- })
 
   require("neotest-rspec")({
     rspec_cmd = function()
@@ -1035,5 +1035,7 @@ lua << EOF
   require('nvim-ts-autotag').setup()
   require("nvim-autopairs").setup {}
   require('overseer').setup()
+  require('sg').setup()
+  require("diffview")
 EOF
 

@@ -49,25 +49,29 @@ nmap <leader>ff <Plug>(easymotion-bd-w)
 omap <leader>ff <Plug>(easymotion-bd-w)
 map <Leader>ff <Plug>(easymotion-bd-w)
 
-" comment out line of code
+" code
 vnoremap gcc <Action>(CommentByLineComment)<CR>
+map <leader>c <Action>(CommentByLineComment)
+map <leader>C <Action>(CommentByBlockComment)
 
-" split and move right
+" splits
 map <leader>v <Action>(MoveTabRight)
-
-" # split and move down
 " map <leader> <Action>(MoveTabDown)
 
+
+" refactor
 nmap <leader>re :action RenameElement<CR>
+
+"file
 map <leader>fe <Action>(FindInPath)
 
+" debug / run
 "map <leader>rr <Action>(Run)
 "nnoremap <Leader>rc :action Stop<CR>
 "nnoremap <Leader>rr :action Rerun<CR>
 nnoremap <Leader>rc :action RunClass<CR>
 nnoremap <Leader>cd :action ChooseDebugConfiguration<CR>
 nnoremap <Leader>cr :action ChooseRunConfiguration<CR>
-
 
 map <leader>dd <Action>(Debug)
 map <leader>D <Action>(ContextDebug)

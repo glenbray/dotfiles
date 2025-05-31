@@ -32,6 +32,7 @@ brew "lazygit"
 brew "lazydocker"
 brew "shared-mime-info"
 brew "ngrok/ngrok/ngrok"
+brew "awscli"
 
 cask "google-chrome"
 cask "firefox"

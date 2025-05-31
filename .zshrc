@@ -26,8 +26,7 @@ source $ZSH/oh-my-zsh.sh
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
 
-# export EDITOR='nvim'
-export EDITOR="/Applications/IntelliJ\ IDEA.app/Contents/MacOS/idea"
+export EDITOR='nvim'
 
 # Compilation flags
 # export ARCHFLAGS="-arch x86_64"
@@ -177,3 +176,4 @@ ulimit -n 1024
 export JAVA_HOME=${SDKMAN_CANDIDATES_DIR}/java/${CURRENT}
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
