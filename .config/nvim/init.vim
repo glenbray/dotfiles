@@ -294,13 +294,25 @@ let g:tagalong_mappings = ['c', 'C', 'i', 'a']
  " Show hover
 nnoremap K <Cmd>lua vim.lsp.buf.hover()<CR>
  " Jump to definition
-nnoremap gd <cmd>tab split \| lua vim.lsp.buf.definition()<cr>
+nnoremap gd <cmd>lua require('lsp_utils').go_to_definition_in_tab()<cr>
 nnoremap gD <Cmd>lua vim.lsp.buf.definition()<CR>
+ " Go to declaration
+nnoremap gC <Cmd>lua vim.lsp.buf.declaration()<CR>
+ " Go to implementation
+nnoremap gi <Cmd>lua vim.lsp.buf.implementation()<CR>
+ " Go to type definition  
+nnoremap gt <Cmd>lua vim.lsp.buf.type_definition()<CR>
+ " Find references
+nnoremap gr <Cmd>lua vim.lsp.buf.references()<CR>
 
  " Open code actions using the default lsp UI, if you want to change this please see the plugins above
 nnoremap <leader>ca <Cmd>lua vim.lsp.buf.code_action()<CR>
  " Open code actions for the selected visual range
 xnoremap <leader>ca <Cmd>lua vim.lsp.buf.range_code_action()<CR>
+ " Signature help
+nnoremap <C-k> <Cmd>lua vim.lsp.buf.signature_help()<CR>
+ " Workspace symbols
+nnoremap <leader>ws <Cmd>lua vim.lsp.buf.workspace_symbol()<CR>
 
 
 nnoremap <A-o> <Cmd>lua require'jdtls'.organize_imports()<CR>
@@ -604,6 +616,9 @@ vnoremap p "_dP
 " copy relative path to current file to clipboard
 nnoremap <leader>cp :let @+ = substitute(expand("%"), getcwd() . '/', '', '') \| echo("relative path copied to clipboard!")<CR>
 
+" Ruby LSP status check
+nnoremap <leader>rs :lua require("ruby_lsp_setup").check_status()<CR>
+
 " clear search highlight
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<cr>
 
@@ -706,7 +721,8 @@ lua << EOF
 
   require("mason").setup()
   require("mason-lspconfig").setup {
-    ensure_installed = { "tailwindcss" },
+    ensure_installed = { "tailwindcss", "ruby_lsp" },
+    automatic_installation = true,
   }
   require("mason-nvim-dap").setup({
     ensure_installed = { "javadbg", "javatest", "dart" }
@@ -754,11 +770,56 @@ lua << EOF
     })
   end
 
+  local ruby_lsp_setup = require("ruby_lsp_setup")
+  
   require("lspconfig").ruby_lsp.setup({
     on_attach = function(client, buffer)
       setup_diagnostics(client, buffer)
+      ruby_lsp_setup.on_attach(client, buffer)
     end,
+    cmd = { "rbenv", "exec", "ruby-lsp" },
+    filetypes = { "ruby", "eruby" },
+    root_dir = require("lspconfig.util").root_pattern("Gemfile", ".git", ".ruby-version"),
+    settings = {
+      rubyLsp = {
+        enabledFeatures = {
+          "codeActions",
+          "diagnostics", 
+          "documentHighlights",
+          "documentLink",
+          "documentSymbols",
+          "foldingRanges",
+          "formatting",
+          "hover",
+          "inlayHints",
+          "onTypeFormatting", 
+          "selectionRanges",
+          "semanticHighlighting",
+          "completion",
+          "codeLens",
+          "definition",
+          "workspaceSymbol",
+          "signatureHelp",
+        },
+        featuresConfiguration = {
+          inlayHint = {
+            enableAll = true,
+          },
+        },
+        indexing = {
+          includedPatterns = { "**/*.rb", "**/*.rbi", "**/*.rake", "**/Rakefile", "**/Gemfile" },
+          excludedPatterns = { "**/spec/**/*.rb" },
+        },
+      },
+    },
+    init_options = {
+      enabledFeatures = { "diagnostics", "formatting", "completion", "hover", "definition", "references" },
+      experimentalFeaturesEnabled = true,
+    },
   })
+  
+  -- Setup Ruby project environment
+  ruby_lsp_setup.setup_ruby_project()
 
   require'lspconfig'.ts_ls.setup {}
   require'lspconfig'.yamlls.setup {}
