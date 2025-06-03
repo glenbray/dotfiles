@@ -301,7 +301,7 @@ nnoremap gC <Cmd>lua vim.lsp.buf.declaration()<CR>
  " Go to implementation
 nnoremap gi <Cmd>lua vim.lsp.buf.implementation()<CR>
  " Go to type definition
-nnoremap gt <Cmd>lua vim.lsp.buf.type_definition()<CR>
+nnoremap gy <Cmd>lua vim.lsp.buf.type_definition()<CR>
  " Find references
 nnoremap gr <Cmd>lua vim.lsp.buf.references()<CR>
 
