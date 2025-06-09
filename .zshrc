@@ -177,3 +177,203 @@ export JAVA_HOME=${SDKMAN_CANDIDATES_DIR}/java/${CURRENT}
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
+create-worktree() {
+    # Check if we're in a git repository
+    if ! git rev-parse --git-dir > /dev/null 2>&1; then
+        echo "❌ Not a git repository"
+        return 1
+    fi
+
+    # Check if a name was provided
+    if [ $# -eq 0 ]; then
+        echo "❌ Usage: create-worktree <worktree-name>"
+        echo "📝 Example: create-worktree timeline"
+        return 1
+    fi
+
+    local NAME="$1"
+
+    # Get current directory name and create prefix
+    local CURRENT_DIR=$(basename "$(pwd)")
+    local PREFIX=""
+
+    # Convert directory name to prefix (first letter of each word)
+    if [[ "$CURRENT_DIR" == *"_"* ]]; then
+        # Handle underscore-separated words (e.g., intelligen_app -> ia)
+        PREFIX=$(echo "$CURRENT_DIR" | sed 's/_/ /g' | awk '{for(i=1;i<=NF;i++) printf substr($i,1,1)}')
+    elif [[ "$CURRENT_DIR" == *"-"* ]]; then
+        # Handle hyphen-separated words (e.g., intelligen-optimiser -> io)
+        PREFIX=$(echo "$CURRENT_DIR" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) printf substr($i,1,1)}')
+    else
+        # Single word, take first two characters
+        PREFIX=$(echo "$CURRENT_DIR" | cut -c1-2)
+    fi
+
+    local WORKTREE_DIR="../${PREFIX}-${NAME}"
+    local BRANCH_NAME="${NAME}"
+
+
+    # Check if branch already exists
+    if git show-ref --verify --quiet refs/heads/"${BRANCH_NAME}"; then
+        echo "📋 Creating worktree from existing branch '${BRANCH_NAME}'"
+        git worktree add "${WORKTREE_DIR}" "${BRANCH_NAME}" --quiet
+    else
+        echo "🆕 Creating worktree with new branch '${BRANCH_NAME}'"
+        git worktree add "${WORKTREE_DIR}" -b "${BRANCH_NAME}" --quiet
+    fi
+
+    if [ $? -eq 0 ]; then
+        # Symlink config files
+
+        # Get absolute path to main repo for symlinking
+        local MAIN_REPO_ABS=$(pwd)
+
+        # Symlink common config files if they exist
+        for file in .env.development .env.test CLAUDE.md; do
+            if [ -f "$file" ]; then
+                ln -sf "${MAIN_REPO_ABS}/$file" "${WORKTREE_DIR}/$file"
+            fi
+        done
+
+        # Symlink .claude directory if it exists
+        if [ -d ".claude" ]; then
+            ln -sf "${MAIN_REPO_ABS}/.claude" "${WORKTREE_DIR}/.claude"
+        fi
+
+        # Copy example files if the actual files don't exist
+        if [ ! -f "${WORKTREE_DIR}/.env.development" ] && [ -f ".env.development.example" ]; then
+            cp ".env.development.example" "${WORKTREE_DIR}/.env.development"
+        fi
+
+        if [ ! -f "${WORKTREE_DIR}/.env.test" ] && [ -f ".env.test.example" ]; then
+            cp ".env.test.example" "${WORKTREE_DIR}/.env.test"
+        fi
+
+        echo "✅ Worktree created: ${WORKTREE_DIR}"
+        cd "${WORKTREE_DIR}"
+    else
+        echo "❌ Failed to create worktree"
+        return 1
+    fi
+}
+
+remove-worktree() {
+    # Check if we're in a git repository
+    if ! git rev-parse --git-dir > /dev/null 2>&1; then
+        echo "❌ Not a git repository"
+        return 1
+    fi
+
+    local NAME=""
+    local PREFIX=""
+
+    # Get current directory name and create prefix
+    local CURRENT_DIR_NAME=$(basename "$(pwd)")
+    local REPO_NAME=""
+
+    # Try to determine repository name and prefix
+    if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+        # If we're in a worktree, get the main repo name from git worktree list
+        local WORKTREE_LIST=$(git worktree list)
+        local MAIN_REPO_PATH=$(echo "$WORKTREE_LIST" | head -1 | awk '{print $1}')
+        REPO_NAME=$(basename "$MAIN_REPO_PATH")
+
+        # Convert repository name to prefix
+        if [[ "$REPO_NAME" == *"_"* ]]; then
+            PREFIX=$(echo "$REPO_NAME" | sed 's/_/ /g' | awk '{for(i=1;i<=NF;i++) printf substr($i,1,1)}')
+        elif [[ "$REPO_NAME" == *"-"* ]]; then
+            PREFIX=$(echo "$REPO_NAME" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) printf substr($i,1,1)}')
+        else
+            PREFIX=$(echo "$REPO_NAME" | cut -c1-2)
+        fi
+    fi
+
+    if [ $# -eq 0 ]; then
+        # Try to auto-detect if we're in a worktree
+        if [[ "$CURRENT_DIR_NAME" == ${PREFIX}-* ]]; then
+            NAME="${CURRENT_DIR_NAME#${PREFIX}-}"
+            echo "🔍 Auto-detected worktree: $NAME"
+            echo "📁 Current directory: $(pwd)"
+        else
+            echo "❌ Usage: remove-worktree <worktree-name>"
+            echo "📝 Example: remove-worktree timeline"
+            echo "💡 Or run from within a worktree directory (${PREFIX}-*) to auto-remove"
+            echo "📋 List all worktrees: git worktree list"
+            return 1
+        fi
+    else
+        NAME="$1"
+    fi
+
+    local WORKTREE_DIR="../${PREFIX}-${NAME}"
+    local BRANCH_NAME="${NAME}"
+
+
+    # Check if worktree exists
+    if [ ! -d "${WORKTREE_DIR}" ]; then
+        echo "❌ Worktree directory ${WORKTREE_DIR} does not exist!"
+        return 1
+    fi
+
+    # Check if we're currently in the worktree being removed and change directory FIRST
+    local CURRENT_DIR=$(pwd)
+    local WORKTREE_ABS_PATH=$(cd "${WORKTREE_DIR}" && pwd 2>/dev/null)
+
+    if [[ "${CURRENT_DIR}" == "${WORKTREE_ABS_PATH}"* ]]; then
+        # Find the main repo by going up from the worktree directory
+        local MAIN_REPO_DIR=$(dirname "${WORKTREE_DIR}")/${REPO_NAME}
+        cd "${MAIN_REPO_DIR}" > /dev/null 2>&1
+    fi
+
+    # Check if branch is merged into main
+    local DELETE_BRANCH=false
+    local IS_MERGED=false
+
+    # Switch to main branch to check if current branch is merged
+    local CURRENT_BRANCH=$(git branch --show-current)
+    git checkout main > /dev/null 2>&1 || git checkout master > /dev/null 2>&1
+
+    if git merge-base --is-ancestor "${BRANCH_NAME}" HEAD 2>/dev/null; then
+        IS_MERGED=true
+        echo "✅ Branch '${BRANCH_NAME}' is merged, will delete automatically"
+        DELETE_BRANCH=true
+    else
+        read "REPLY?🗑️  Delete unmerged branch '${BRANCH_NAME}'? (y/N): "
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            DELETE_BRANCH=true
+        fi
+    fi
+
+    # Remove the worktree
+    git worktree remove "${WORKTREE_DIR}" --force > /dev/null 2>&1
+
+    # Delete the branch if requested
+    if [ "$DELETE_BRANCH" = true ]; then
+        git branch -D "${BRANCH_NAME}" > /dev/null 2>&1
+        if [ "$IS_MERGED" = true ]; then
+            echo "✅ Removed worktree and deleted merged branch '${BRANCH_NAME}'"
+        else
+            echo "✅ Removed worktree and deleted branch '${BRANCH_NAME}'"
+        fi
+    else
+        echo "✅ Removed worktree, kept branch '${BRANCH_NAME}'"
+    fi
+
+    # Change directory if we were in the removed worktree
+    if [[ "${CURRENT_DIR}" == "${WORKTREE_ABS_PATH}"* ]]; then
+        local MAIN_REPO_DIR=$(dirname "${WORKTREE_DIR}")/${REPO_NAME}
+        # Try to disable direnv temporarily
+        export DIRENV_DISABLE=1
+        cd "$MAIN_REPO_DIR" 2>/dev/null
+        unset DIRENV_DISABLE
+    fi
+    echo "📋 Remaining worktrees:"
+    git worktree list
+}
+
+# Test function to see if cd works
+test-cd() {
+    echo "Before: $(pwd)"
+    cd ..
+    echo "After: $(pwd)"
+}
