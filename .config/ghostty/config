@@ -1,7 +1,10 @@
 cursor-style = block
 cursor-style-blink = false
 background = 000000
-font-size = 16
+font-size = 15
+font-feature = -liga
+# font-thicken = true
+alpha-blending = linear
 
 # Key bindings for tab navigation
 keybind = cmd+left=previous_tab
@@ -16,10 +19,28 @@ keybind = ctrl+shift+left=move_tab:-1
 keybind = ctrl+shift+right=move_tab:1
 macos-option-as-alt = true
 
+keybind = cmd+h=goto_split:left
+keybind = cmd+l=goto_split:right
+keybind = cmd+j=goto_split:bottom
+keybind = cmd+k=goto_split:top
+
+# Resize splits
+keybind = cmd+shift+h=resize_split:left,15
+keybind = cmd+shift+l=resize_split:right,15
+keybind = cmd+shift+j=resize_split:down,15
+keybind = cmd+shift+k=resize_split:up,15
+
+# Make split borders more visible
+split-divider-color = #666666
+
+# Make inactive splits dimmer to highlight active one
+unfocused-split-opacity = 0.7
+
+
 # Fix Shift+Enter to create newline instead of submitting
 keybind = shift+enter=text:\n
 
-# Fix for Ctrl key with non-US keyboard layouts  
+# Fix for Ctrl key with non-US keyboard layouts
 macos-non-native-fullscreen = false
 window-decoration = true
 

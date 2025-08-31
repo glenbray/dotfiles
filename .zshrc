@@ -99,7 +99,7 @@ setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording en
 export FZF_DEFAULT_COMMAND="rg --files"
 export PATH="/usr/local/bin:$PATH"
 export PATH="$HOME/.rbenv/bin:$PATH"
-export PGHOST="/var/pgsql_socket"
+# export PGHOST="/var/pgsql_socket"
 export PATH="$PATH:/Users/glen/Documents/flutter/bin"
 export PATH="$PATH:$HOME/.local/bin/"
 
@@ -193,25 +193,17 @@ create-worktree() {
 
     local NAME="$1"
 
-    # Get current directory name and create prefix
+    # Get current directory name for worktrees directory
     local CURRENT_DIR=$(basename "$(pwd)")
-    local PREFIX=""
-
-    # Convert directory name to prefix (first letter of each word)
-    if [[ "$CURRENT_DIR" == *"_"* ]]; then
-        # Handle underscore-separated words (e.g., intelligen_app -> ia)
-        PREFIX=$(echo "$CURRENT_DIR" | sed 's/_/ /g' | awk '{for(i=1;i<=NF;i++) printf substr($i,1,1)}')
-    elif [[ "$CURRENT_DIR" == *"-"* ]]; then
-        # Handle hyphen-separated words (e.g., intelligen-optimiser -> io)
-        PREFIX=$(echo "$CURRENT_DIR" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) printf substr($i,1,1)}')
-    else
-        # Single word, take first two characters
-        PREFIX=$(echo "$CURRENT_DIR" | cut -c1-2)
-    fi
-
-    local WORKTREE_DIR="../${PREFIX}-${NAME}"
+    local WORKTREES_DIR="../${CURRENT_DIR}-worktrees"
+    local WORKTREE_DIR="${WORKTREES_DIR}/${NAME}"
     local BRANCH_NAME="${NAME}"
 
+    # Create worktrees directory if it doesn't exist
+    if [ ! -d "${WORKTREES_DIR}" ]; then
+        mkdir -p "${WORKTREES_DIR}"
+        echo "📁 Created worktrees directory: ${WORKTREES_DIR}"
+    fi
 
     # Check if branch already exists
     if git show-ref --verify --quiet refs/heads/"${BRANCH_NAME}"; then
@@ -240,6 +232,7 @@ create-worktree() {
             ln -sf "${MAIN_REPO_ABS}/.claude" "${WORKTREE_DIR}/.claude"
         fi
 
+
         # Copy example files if the actual files don't exist
         if [ ! -f "${WORKTREE_DIR}/.env.development" ] && [ -f ".env.development.example" ]; then
             cp ".env.development.example" "${WORKTREE_DIR}/.env.development"
@@ -265,39 +258,30 @@ remove-worktree() {
     fi
 
     local NAME=""
-    local PREFIX=""
-
-    # Get current directory name and create prefix
     local CURRENT_DIR_NAME=$(basename "$(pwd)")
     local REPO_NAME=""
 
-    # Try to determine repository name and prefix
+    # Try to determine repository name
     if git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
         # If we're in a worktree, get the main repo name from git worktree list
         local WORKTREE_LIST=$(git worktree list)
         local MAIN_REPO_PATH=$(echo "$WORKTREE_LIST" | head -1 | awk '{print $1}')
         REPO_NAME=$(basename "$MAIN_REPO_PATH")
-
-        # Convert repository name to prefix
-        if [[ "$REPO_NAME" == *"_"* ]]; then
-            PREFIX=$(echo "$REPO_NAME" | sed 's/_/ /g' | awk '{for(i=1;i<=NF;i++) printf substr($i,1,1)}')
-        elif [[ "$REPO_NAME" == *"-"* ]]; then
-            PREFIX=$(echo "$REPO_NAME" | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) printf substr($i,1,1)}')
-        else
-            PREFIX=$(echo "$REPO_NAME" | cut -c1-2)
-        fi
     fi
 
+    local WORKTREES_DIR="../${REPO_NAME}-worktrees"
+
     if [ $# -eq 0 ]; then
-        # Try to auto-detect if we're in a worktree
-        if [[ "$CURRENT_DIR_NAME" == ${PREFIX}-* ]]; then
-            NAME="${CURRENT_DIR_NAME#${PREFIX}-}"
+        # Try to auto-detect if we're in a worktree directory
+        local CURRENT_DIR=$(pwd)
+        if [[ "$CURRENT_DIR" == *"${REPO_NAME}-worktrees"* ]]; then
+            NAME="$CURRENT_DIR_NAME"
             echo "🔍 Auto-detected worktree: $NAME"
             echo "📁 Current directory: $(pwd)"
         else
             echo "❌ Usage: remove-worktree <worktree-name>"
             echo "📝 Example: remove-worktree timeline"
-            echo "💡 Or run from within a worktree directory (${PREFIX}-*) to auto-remove"
+            echo "💡 Or run from within a worktree directory to auto-remove"
             echo "📋 List all worktrees: git worktree list"
             return 1
         fi
@@ -305,9 +289,14 @@ remove-worktree() {
         NAME="$1"
     fi
 
-    local WORKTREE_DIR="../${PREFIX}-${NAME}"
+    # If we're inside a worktree directory, use the current directory
+    local CURRENT_DIR=$(pwd)
+    if [[ "$CURRENT_DIR" == *"${REPO_NAME}-worktrees/${NAME}" ]]; then
+        local WORKTREE_DIR="$CURRENT_DIR"
+    else
+        local WORKTREE_DIR="${WORKTREES_DIR}/${NAME}"
+    fi
     local BRANCH_NAME="${NAME}"
-
 
     # Check if worktree exists
     if [ ! -d "${WORKTREE_DIR}" ]; then
@@ -318,11 +307,15 @@ remove-worktree() {
     # Check if we're currently in the worktree being removed and change directory FIRST
     local CURRENT_DIR=$(pwd)
     local WORKTREE_ABS_PATH=$(cd "${WORKTREE_DIR}" && pwd 2>/dev/null)
+    local NEED_TO_CHANGE_DIR=false
+    local MAIN_REPO_DIR=""
 
     if [[ "${CURRENT_DIR}" == "${WORKTREE_ABS_PATH}"* ]]; then
-        # Find the main repo by going up from the worktree directory
-        local MAIN_REPO_DIR=$(dirname "${WORKTREE_DIR}")/${REPO_NAME}
-        cd "${MAIN_REPO_DIR}" > /dev/null 2>&1
+        NEED_TO_CHANGE_DIR=true
+        # When inside a worktree, we need to go up 2 levels to get to main repo
+        MAIN_REPO_DIR="../../${REPO_NAME}"
+        echo "📂 Changing to main repository: ${MAIN_REPO_DIR}"
+        cd "${MAIN_REPO_DIR}"
     fi
 
     # Check if branch is merged into main
@@ -359,14 +352,12 @@ remove-worktree() {
         echo "✅ Removed worktree, kept branch '${BRANCH_NAME}'"
     fi
 
-    # Change directory if we were in the removed worktree
-    if [[ "${CURRENT_DIR}" == "${WORKTREE_ABS_PATH}"* ]]; then
-        local MAIN_REPO_DIR=$(dirname "${WORKTREE_DIR}")/${REPO_NAME}
-        # Try to disable direnv temporarily
-        export DIRENV_DISABLE=1
-        cd "$MAIN_REPO_DIR" 2>/dev/null
-        unset DIRENV_DISABLE
+    # Final directory check and git command
+    if [ "$NEED_TO_CHANGE_DIR" = true ]; then
+        # We should already be in the main repo from the earlier cd command
+        echo "📂 Now in: $(pwd)"
     fi
+
     echo "📋 Remaining worktrees:"
     git worktree list
 }
@@ -377,3 +368,8 @@ test-cd() {
     cd ..
     echo "After: $(pwd)"
 }
+
+
+export PATH="$HOME/.local/bin:$PATH"
+
+export ANTHROPIC_MODEL="claude-sonnet-4-20250514"
