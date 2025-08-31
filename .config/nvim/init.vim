@@ -618,6 +618,11 @@ nnoremap <leader>cp :let @+ = substitute(expand("%"), getcwd() . '/', '', '') \|
 " Ruby LSP status check
 nnoremap <leader>rs :lua require("ruby_lsp_setup").check_status()<CR>
 
+" LSP diagnostics commands
+nnoremap <leader>ld :lua require("lsp_diagnostics").check_lsp_status()<CR>
+nnoremap <leader>lr :lua require("lsp_diagnostics").restart_ruby_lsp()<CR>
+nnoremap <leader>la :lua require("lsp_diagnostics").attach_ruby_lsp()<CR>
+
 " clear search highlight
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<cr>
 

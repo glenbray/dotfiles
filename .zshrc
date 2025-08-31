@@ -59,6 +59,7 @@ fi
 
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 alias p="cd $HOME/Documents/projects"
+alias c="cd $HOME/Documents/projects/camplify/chl"
 alias v="nvim ."
 alias vim="nvim"
 alias n="nvim ."
@@ -81,7 +82,8 @@ alias pip="$(pyenv which pip)"
 alias ctags="$(readlink -f $(brew --prefix universal-ctags))/bin/ctags"
 alias vimdiff='nvim -d'
 
-source $HOME/Documents/projects/git/zsh-git-prompt/zshrc.sh
+# Commented out slow git prompt - using fast vcs_info instead
+# source $HOME/Documents/projects/git/zsh-git-prompt/zshrc.sh
 
 # HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000000
@@ -99,7 +101,7 @@ setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording en
 export FZF_DEFAULT_COMMAND="rg --files"
 export PATH="/usr/local/bin:$PATH"
 export PATH="$HOME/.rbenv/bin:$PATH"
-export PGHOST="/var/pgsql_socket"
+# export PGHOST="/var/pgsql_socket"
 export PATH="$PATH:/Users/glen/Documents/flutter/bin"
 export PATH="$PATH:$HOME/.local/bin/"
 
@@ -123,10 +125,26 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PIPENV_PYTHON="$PYENV_ROOT/shims/python"
 export PATH="$PYENV_ROOT/bin:$PATH"
 
+
 # export JAVA_HOME=$(/usr/libexec/java_home)
 
-eval "$(rbenv init -)"
-eval "$(pyenv init -)"
+# Rbenv - add shims to PATH without loading rbenv
+export PATH="$HOME/.rbenv/shims:$PATH"
+# Lazy load rbenv
+rbenv() {
+  unfunction rbenv
+  eval "$(command rbenv init - --no-rehash)"
+  rbenv "$@"
+}
+
+# Pyenv - add shims to PATH without loading pyenv
+export PATH="$PYENV_ROOT/shims:$PATH"
+# Lazy load pyenv
+pyenv() {
+  unfunction pyenv
+  eval "$(command pyenv init - --no-rehash)"
+  pyenv "$@"
+}
 
 autoload compinit; compinit; zstyle :completion:\* menu select
 
@@ -137,16 +155,21 @@ bindkey  "^[[F"   end-of-line
 # delete key delete char under cursor
 bindkey  "^[[3~"  delete-char
 
+# Disable Oh My Zsh's slow terminal title features
+DISABLE_AUTO_TITLE="true"
+
 precmd() {
-  # sets the tab title to current dir
+  # sets the tab title to current dir (fast version)
   echo -ne "\e]1;${PWD##*/}\a"
+  # Call vcs_info for git status
+  vcs_info
 }
 
 get_prompt() {
   echo -n "\n"
   echo -n "%{$reset_color%}"
   echo -n "%{$fg[cyan]%}[%~]" # Dir
-  echo -n "$(git_super_status) " # Git branch
+  echo -n " ${vcs_info_msg_0_} " # Git branch (fast)
   echo -n "\n"
   echo -n "%{$fg_bold[green]%}➜ " # Right arrow
   echo -n "%{$fg[magenta]%}%n%f " # User
@@ -157,18 +180,84 @@ get_prompt() {
 }
 
 
-# print git related info in prompt
-ZSH_THEME_GIT_PROMPT_PREFIX="("
-ZSH_THEME_GIT_PROMPT_SUFFIX=")"
-ZSH_THEME_GIT_PROMPT_LOCAL=""
+# FAST GIT STATUS - Replace slow python script with built-in vcs_info
+autoload -Uz vcs_info
+setopt prompt_subst
+
+# Enable git in vcs_info
+zstyle ':vcs_info:*' enable git
+
+# Check for untracked files
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git:*' unstagedstr '%F{red}●%f'
+zstyle ':vcs_info:git:*' stagedstr '%F{yellow}●%f'
+
+# Format when not in action (normal operation)
+zstyle ':vcs_info:git:*' formats '(%F{magenta}%b%f%c%u|%m)'
+# Format when in action (merge, rebase, etc)
+zstyle ':vcs_info:git:*' actionformats '(%F{magenta}%b%f%c%u|%F{red}%a%f)'
+
+# Hook to check remote status
+zstyle ':vcs_info:git*+set-message:*' hooks git-st
+function +vi-git-st() {
+    local ahead behind
+    local -a gitstatus
+
+    # Check for commits ahead/behind upstream
+    ahead=$(git rev-list --count @{u}..HEAD 2>/dev/null)
+    behind=$(git rev-list --count HEAD..@{u} 2>/dev/null)
+
+    if [[ -n $ahead ]] && [[ $ahead -gt 0 ]]; then
+        gitstatus+=("%F{green}↑${ahead}%f")
+    fi
+    if [[ -n $behind ]] && [[ $behind -gt 0 ]]; then
+        gitstatus+=("%F{red}↓${behind}%f")
+    fi
+
+    # Check if there are any staged or unstaged changes
+    local has_changes=false
+    if [[ -n $(git status --porcelain 2>/dev/null) ]]; then
+        has_changes=true
+    fi
+
+    if [[ ${#gitstatus[@]} -eq 0 ]]; then
+        if [[ $has_changes == false ]]; then
+            hook_com[misc]="%F{green}✔%f"
+        else
+            hook_com[misc]="%F{blue}~%f"
+        fi
+    else
+        hook_com[misc]="${(j:/:)gitstatus}"
+    fi
+}
+
 PROMPT='$(get_prompt)'
 
 eval "$(direnv hook zsh)"
 
+# NVM lazy loading - but keep npm binaries in PATH
 export NVM_DIR="$HOME/.nvm"
-[ -s "$HOMEBREW_PREFIX/opt/nvm/nvm.sh" ] && \. "$HOMEBREW_PREFIX/opt/nvm/nvm.sh"
-[ -s "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$HOMEBREW_PREFIX/opt/nvm/etc/bash_completion.d/nvm"
+# Add default node version to PATH without loading nvm
+if [ -d "$NVM_DIR/versions/node" ]; then
+  # Find the default node version
+  DEFAULT_NODE_VERSION=$(cat "$NVM_DIR/alias/default" 2>/dev/null || echo "")
+  if [ -n "$DEFAULT_NODE_VERSION" ]; then
+    # Add 'v' prefix if not present
+    [[ "$DEFAULT_NODE_VERSION" != v* ]] && DEFAULT_NODE_VERSION="v$DEFAULT_NODE_VERSION"
+    export PATH="$NVM_DIR/versions/node/$DEFAULT_NODE_VERSION/bin:$PATH"
+  else
+    # If no default, use the latest installed version
+    LATEST_NODE=$(ls -1 "$NVM_DIR/versions/node" | sort -V | tail -1)
+    [ -n "$LATEST_NODE" ] && export PATH="$NVM_DIR/versions/node/$LATEST_NODE/bin:$PATH"
+  fi
+fi
 
+# Only lazy load nvm itself
+nvm() {
+  unfunction nvm
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
+  nvm "$@"
+}
 
 ulimit -n 1024
 
@@ -209,7 +298,9 @@ create-worktree() {
         PREFIX=$(echo "$CURRENT_DIR" | cut -c1-2)
     fi
 
-    local WORKTREE_DIR="../${PREFIX}-${NAME}"
+    # Extract the last part after final slash for directory name, keep full name for branch
+    local DIR_NAME="${NAME##*/}"
+    local WORKTREE_DIR="../${PREFIX}-${DIR_NAME}"
     local BRANCH_NAME="${NAME}"
 
 
@@ -229,9 +320,14 @@ create-worktree() {
         local MAIN_REPO_ABS=$(pwd)
 
         # Symlink common config files if they exist
-        for file in .env.development .env.test CLAUDE.md; do
+        for file in .env .env.development .env.test CLAUDE.md; do
             if [ -f "$file" ]; then
-                ln -sf "${MAIN_REPO_ABS}/$file" "${WORKTREE_DIR}/$file"
+                # Check if file is tracked in Git
+                if git ls-files --error-unmatch "$file" >/dev/null 2>&1; then
+                    echo "⚠️  Skipping symlink for $file (already tracked in Git)"
+                else
+                    ln -sf "${MAIN_REPO_ABS}/$file" "${WORKTREE_DIR}/$file"
+                fi
             fi
         done
 
@@ -305,7 +401,9 @@ remove-worktree() {
         NAME="$1"
     fi
 
-    local WORKTREE_DIR="../${PREFIX}-${NAME}"
+    # Extract the last part after final slash for directory name, keep full name for branch
+    local DIR_NAME="${NAME##*/}"
+    local WORKTREE_DIR="../${PREFIX}-${DIR_NAME}"
     local BRANCH_NAME="${NAME}"
 
 
@@ -377,3 +475,11 @@ test-cd() {
     cd ..
     echo "After: $(pwd)"
 }
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+export PATH="/opt/homebrew/opt/curl/bin:$PATH"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+export PATH="/Applications/RubyMine.app/Contents/MacOS:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
