@@ -1,0 +1,27 @@
+cursor-style = block
+cursor-style-blink = false
+background = 000000
+font-size = 16
+
+# Key bindings for tab navigation
+keybind = cmd+left=previous_tab
+keybind = cmd+right=next_tab
+keybind = ctrl+left=previous_tab
+keybind = ctrl+right=next_tab
+
+# Key bindings for moving tabs left/right
+keybind = cmd+shift+left=move_tab:-1
+keybind = cmd+shift+right=move_tab:1
+keybind = ctrl+shift+left=move_tab:-1
+keybind = ctrl+shift+right=move_tab:1
+macos-option-as-alt = true
+
+# Fix Shift+Enter to create newline instead of submitting
+keybind = shift+enter=text:\n
+
+# Fix for Ctrl key with non-US keyboard layouts  
+macos-non-native-fullscreen = false
+window-decoration = true
+
+# Disable the % symbol for incomplete output
+shell-integration-features = no-cursor
