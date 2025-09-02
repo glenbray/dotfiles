@@ -30,6 +30,9 @@ keybind = cmd+shift+l=resize_split:right,15
 keybind = cmd+shift+j=resize_split:down,15
 keybind = cmd+shift+k=resize_split:up,15
 
+# Equalize all splits to equal size
+keybind = cmd+equal=equalize_splits
+
 # Make split borders more visible
 split-divider-color = #666666
 

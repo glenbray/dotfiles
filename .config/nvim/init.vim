@@ -468,6 +468,7 @@ Plug 'nvim-neotest/neotest'
 Plug 'olimorris/neotest-rspec'
 Plug 'sindrets/diffview.nvim'
 Plug 'polirritmico/monokai-nightasty.nvim'
+Plug 'scottmckendry/cyberdream.nvim'
 
 " List ends here. Plugins become visible to Vim after this call.
 call plug#end()
@@ -490,7 +491,8 @@ let g:sonokai_style = 'shusia'
 syntax on
 set background=dark
 " colorscheme gruvbox-material
-colorscheme sonokai
+" colorscheme sonokai
+colorscheme cyberdream
 " colorscheme miasma
 " colorscheme monokai-nightasty
 
