@@ -239,11 +239,31 @@ endfunction
 
 let g:ruby_indent_assignment_style = 'variable'
 let test#strategy = "neovim"
-" au TermOpen * setlocal listchars= nonumber norelativenumber
-" au TermOpen * startinsert
-" au BufLeave term://* stopinsert
-" au BufEnter,BufWinEnter,WinEnter term://* if !has_key(b:, '_termdone') | startinsert | endif
-" au TermClose * ++nested stopinsert | let b:_termdone = 1 | au TermEnter <buffer> stopinsert
+let test#neovim#term_position = "belowright" 
+let test#neovim#start_normal = 1
+au TermOpen * setlocal listchars= nonumber norelativenumber
+
+" Make it easier to exit terminal insert mode and scroll
+tnoremap <C-o> <C-\><C-n>
+
+" Enable terminal URL handling and clickable links
+au TermOpen * setlocal mouse=a
+au TermOpen * nnoremap <buffer> <LeftMouse> <LeftMouse>gx
+
+" Open URL under cursor in terminal (requires open-browser plugin)
+tnoremap <C-g><C-o> <C-\><C-n>gx
+nnoremap <C-g><C-o> gx
+
+" Move terminal to new tab
+tnoremap <C-w>T <C-\><C-n><C-w>T
+nnoremap <leader>tt <C-w>T
+
+" Copy current file path to clipboard
+command! Fc let @+ = expand('%:p') | echo "File path copied to clipboard: " . expand('%:p')
+
+" Copy current file path with line number (for RSpec) to clipboard
+command! Tcopy let @+ = 'be rspec ' . expand('%') . ':' . line('.') | echo "Test command copied to clipboard: be rspec " . expand('%') . ':' . line('.')
+nnoremap <leader>tc :Tcopy<cr>
 
 
 " Display extra whitespace

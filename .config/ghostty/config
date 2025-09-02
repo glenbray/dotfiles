@@ -49,3 +49,9 @@ window-decoration = true
 
 # Disable the % symbol for incomplete output
 shell-integration-features = no-cursor
+
+# Note: Custom clickable file paths are not yet fully implemented in Ghostty
+# URLs are clickable by default with cmd+click (macOS) or ctrl+click (Linux)
+
+# Fix shift+click selection behavior
+mouse-shift-capture = never
