@@ -12,3 +12,5 @@ tags
 CLAUDE.md
 bigquery-keyfile.json
 bigquery*.json
+CLAUDE.local.md
+prompts/*

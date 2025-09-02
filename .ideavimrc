@@ -44,6 +44,9 @@ vnoremap > >gv
 " close current tab
 map <leader>x :q<cr>
 
+" Go to definition mappings - try these alternatives:
+nnoremap gd :action GotoDeclaration<CR>
+
 " easy motion
 nmap <leader>ff <Plug>(easymotion-bd-w)
 omap <leader>ff <Plug>(easymotion-bd-w)
