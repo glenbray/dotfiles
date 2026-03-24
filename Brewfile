@@ -32,6 +32,7 @@ brew "lazydocker"
 brew "shared-mime-info"
 cask "ngrok"
 brew "awscli"
+brew "starship"
 
 cask "google-chrome"
 cask "firefox"
@@ -44,3 +45,4 @@ cask "insomnia"
 cask "mos"
 cask "bettertouchtool"
 cask "obsidian"
+
