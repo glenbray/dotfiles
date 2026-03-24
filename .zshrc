@@ -1,23 +1,15 @@
-# Amazon Q pre block. Keep at the top of this file.
-# [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
-# If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:/usr/local/bin:$PATH
-
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
-# Set name of the theme to load --- if set to "random", it will
-# load a random theme each time oh-my-zsh is loaded, in which case,
-# to know which specific one was loaded, run: echo $RANDOM_THEME
-# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+# Performance: disable expensive oh-my-zsh features before sourcing
+DISABLE_AUTO_UPDATE="true"
+DISABLE_MAGIC_FUNCTIONS="true"
+DISABLE_COMPFIX="true"
+DISABLE_AUTO_TITLE="true"
 ZSH_THEME="robbyrussell"
 
-# Which plugins would you like to load?
-# Standard plugins can be found in ~/.oh-my-zsh/plugins/*
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-# Add wisely, as too many plugins slow down shell startup.
-plugins=(git git-auto-fetch)
+plugins=(fzf-tab git git-auto-fetch)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -80,8 +72,8 @@ alias bout="bundle outdated"
 alias yout="yarn outdated"
 alias d="docker-compose"
 alias dr="docker-compose run"
-alias pip="$(pyenv which pip)"
-alias ctags="$(readlink -f $(brew --prefix universal-ctags))/bin/ctags"
+alias pip='${PYENV_ROOT}/shims/pip'
+alias ctags='/opt/homebrew/opt/universal-ctags/bin/ctags'
 alias vimdiff='nvim -d'
 
 # Commented out slow git prompt - using fast vcs_info instead
@@ -101,9 +93,7 @@ setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history 
 setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
 
 export FZF_DEFAULT_COMMAND="rg --files"
-export PATH="/usr/local/bin:$PATH"
 export PATH="$HOME/.rbenv/bin:$PATH"
-# export PGHOST="/var/pgsql_socket"
 export PATH="$PATH:$HOME/Documents/flutter/bin"
 export PATH="$PATH:$HOME/.local/bin/"
 
@@ -117,7 +107,6 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH="$PATH":"$HOME/.pub-cache/bin"
 export PATH="$PATH":"$HOME/Documents/flutter/.pub-cache/bin"
 export PATH="$PATH":"$HOME/Documents/flutter/bin/cache/dart-sdk/bin"
-export PATH="$HOME/.local/bin:$PATH"
 export PATH="/usr/local/sbin:$PATH"
 
 export THOR_MERGE="nvim -d"
@@ -149,7 +138,63 @@ pyenv() {
   pyenv "$@"
 }
 
-autoload compinit; compinit; zstyle :completion:\* menu select
+zstyle ':completion:*' menu select
+
+# RSpec completion
+_rspec() {
+  local -a opts
+  opts=(
+    '--help[Show this message]'
+    '--version[Show version]'
+    '--init[Initialize your project with RSpec]'
+    '--pattern[Load files matching pattern (default: "spec/**/*_spec.rb")]'
+    '--exclude-pattern[Load files except those matching pattern]'
+    '--require[Require a file]:file:_files'
+    '-I[Specify PATH to add to $LOAD_PATH]:path:_directories'
+    '--default-path[Set the default path where RSpec looks for examples]:path:_directories'
+    '--order[Run examples by the specified order type]:order:(defined rand random recently-modified)'
+    '--seed[Equivalent of --order rand:SEED]:seed:'
+    '--bisect[Repeatedly runs the suite to isolate failures]'
+    '--fail-fast[Abort after a certain number of failures]:count:'
+    '--no-fail-fast[Disable fail fast]'
+    '--next-failure[Apply `--only-failures` and abort after one failure]'
+    '--only-failures[Filter to examples that failed the last time they ran]'
+    '--no-error-on-unmatched-pattern[Prevent non-zero exit status when no examples match the pattern]'
+    '--format[Choose a formatter]:format:(progress documentation html json)'
+    '--colour[Enable colour in the output]'
+    '--color[Enable color in the output]'
+    '--no-colour[Disable colour in the output]'
+    '--no-color[Disable color in the output]'
+    '--profile[Enable profiling of examples and list the slowest examples]:count:'
+    '--no-profile[Disable profiling of examples]'
+    '--backtrace[Enable full backtrace]'
+    '--no-backtrace[Disable backtrace]'
+    '--clean-backtrace[Clean up the backtrace]'
+    '--no-clean-backtrace[Disable clean backtrace]'
+    '--warnings[Enable ruby warnings]'
+    '--no-warnings[Disable ruby warnings]'
+    '--tag[Run examples with the specified tag]:tag:'
+    '-t[Run examples with the specified tag]:tag:'
+    '--dry-run[Print the formatter output of your suite without running examples]'
+    '--deprecation-out[Direct deprecation warnings to a file]:file:_files'
+  )
+
+  _arguments -s $opts '*:file:_files -g "**/*_spec.rb"'
+}
+
+compdef _rspec rspec
+compdef _rspec br
+
+# Bundle exec completion wrapper
+_bundle_exec_rspec() {
+  if [[ ${words[2]} == "exec" ]] && [[ ${words[3]} == "rspec" ]]; then
+    words=(rspec "${words[@]:3}")
+    (( CURRENT -= 2 ))
+    _rspec
+  fi
+}
+
+compdef '_bundle_exec_rspec' bundle
 
 # ctrl + home move cursor to beginning of line
 bindkey  "^[[H"   beginning-of-line
@@ -157,9 +202,6 @@ bindkey  "^[[H"   beginning-of-line
 bindkey  "^[[F"   end-of-line
 # delete key delete char under cursor
 bindkey  "^[[3~"  delete-char
-
-# Disable Oh My Zsh's slow terminal title features
-DISABLE_AUTO_TITLE="true"
 
 precmd() {
   # sets the tab title to current dir (fast version)
@@ -238,8 +280,6 @@ function +vi-git-st() {
 }
 
 PROMPT='$(get_prompt)'
-
-eval "$(direnv hook zsh)"
 
 # NVM lazy loading - but keep npm binaries in PATH
 export NVM_DIR="$HOME/.nvm"
@@ -323,9 +363,23 @@ create-worktree() {
         echo "📁 Created worktrees directory: ${WORKTREES_DIR}"
     fi
 
+    # Fetch latest changes from remote
+    echo "🔄 Fetching latest changes..."
+    git fetch --quiet
+
     # Check if branch already exists
     if git show-ref --verify --quiet refs/heads/"${BRANCH_NAME}"; then
         echo "📋 Creating worktree from existing branch '${BRANCH_NAME}'"
+
+        # Check if remote branch exists and update local branch
+        if git show-ref --verify --quiet refs/remotes/origin/"${BRANCH_NAME}"; then
+            echo "🔄 Updating local branch to match remote..."
+            git branch --set-upstream-to=origin/"${BRANCH_NAME}" "${BRANCH_NAME}" 2>/dev/null || true
+            git checkout "${BRANCH_NAME}" --quiet
+            git pull --quiet || echo "⚠️  Could not fast-forward ${BRANCH_NAME}, creating worktree with current state"
+            git checkout - --quiet
+        fi
+
         git worktree add "${WORKTREE_DIR}" "${BRANCH_NAME}" --quiet
     else
         # Fetch latest from remote to ensure we have up-to-date base branch
@@ -336,36 +390,7 @@ create-worktree() {
     fi
 
     if [ $? -eq 0 ]; then
-        # Symlink config files
-
-        # Get absolute path to main repo for symlinking
-        local MAIN_REPO_ABS=$(pwd)
-
-        # Symlink common config files if they exist
-        for file in .env .env.development .env.test CLAUDE.md; do
-            if [ -f "$file" ]; then
-                # Check if file is tracked in Git
-                if git ls-files --error-unmatch "$file" >/dev/null 2>&1; then
-                    echo "⚠️  Skipping symlink for $file (already tracked in Git)"
-                else
-                    ln -sf "${MAIN_REPO_ABS}/$file" "${WORKTREE_DIR}/$file"
-                fi
-            fi
-        done
-
-        # Symlink .claude directory if it exists
-        if [ -d ".claude" ]; then
-            ln -sf "${MAIN_REPO_ABS}/.claude" "${WORKTREE_DIR}/.claude"
-        fi
-
-        # Copy example files if the actual files don't exist
-        if [ ! -f "${WORKTREE_DIR}/.env.development" ] && [ -f ".env.development.example" ]; then
-            cp ".env.development.example" "${WORKTREE_DIR}/.env.development"
-        fi
-
-        if [ ! -f "${WORKTREE_DIR}/.env.test" ] && [ -f ".env.test.example" ]; then
-            cp ".env.test.example" "${WORKTREE_DIR}/.env.test"
-        fi
+        symlink-worktree "${WORKTREE_DIR}"
 
         # Copy MCP servers from main repo to new worktree in ~/.claude.json
         local CLAUDE_JSON="$HOME/.claude.json"
@@ -401,6 +426,74 @@ create-worktree() {
         echo "❌ Failed to create worktree"
         return 1
     fi
+}
+
+symlink-worktree() {
+    if ! git rev-parse --git-dir > /dev/null 2>&1; then
+        echo "❌ Not a git repository"
+        return 1
+    fi
+
+    local MAIN_REPO_ABS
+    local WORKTREE_DIR
+
+    if [ -n "$1" ]; then
+        MAIN_REPO_ABS=$(pwd)
+        WORKTREE_DIR="$1"
+    else
+        MAIN_REPO_ABS=$(git worktree list | head -1 | awk '{print $1}')
+        WORKTREE_DIR=$(pwd)
+
+        if [ "$MAIN_REPO_ABS" = "$WORKTREE_DIR" ]; then
+            echo "❌ You're in the main repo. Run from a worktree, or pass a worktree path."
+            echo "📝 Usage: symlink-worktree [worktree-path]"
+            return 1
+        fi
+    fi
+
+    if [ ! -d "$WORKTREE_DIR" ]; then
+        echo "❌ Directory does not exist: $WORKTREE_DIR"
+        return 1
+    fi
+
+    local CONFIG="${MAIN_REPO_ABS}/.worktree-symlinks"
+    if [ ! -f "$CONFIG" ]; then
+        echo "❌ No .worktree-symlinks file found in ${MAIN_REPO_ABS}"
+        echo "📝 Create one with file/dir paths to symlink (one per line, supports **/ globs)"
+        return 1
+    fi
+
+    while IFS= read -r entry || [ -n "$entry" ]; do
+        [[ -z "$entry" || "$entry" == \#* ]] && continue
+
+        if [[ "$entry" == **/* ]]; then
+            # Glob pattern — find matching files
+            while IFS= read -r match; do
+                local rel_path="${match#${MAIN_REPO_ABS}/}"
+                local target_dir="${WORKTREE_DIR}/$(dirname "$rel_path")"
+                if git -C "${MAIN_REPO_ABS}" ls-files --error-unmatch "$rel_path" >/dev/null 2>&1; then
+                    echo "⚠️  Skipping $rel_path (tracked in Git)"
+                elif [ -L "${WORKTREE_DIR}/$rel_path" ]; then
+                    echo "✓ $rel_path (already symlinked)"
+                else
+                    mkdir -p "$target_dir"
+                    ln -sf "${MAIN_REPO_ABS}/$rel_path" "${WORKTREE_DIR}/$rel_path"
+                    echo "🔗 $rel_path"
+                fi
+            done < <(find "${MAIN_REPO_ABS}" -name "$(basename "$entry")" -not -path "*/node_modules/*" -not -path "*/.git/*")
+        elif [ -e "${MAIN_REPO_ABS}/${entry}" ]; then
+            if git -C "${MAIN_REPO_ABS}" ls-files --error-unmatch "$entry" >/dev/null 2>&1; then
+                echo "⚠️  Skipping $entry (tracked in Git)"
+            elif [ -L "${WORKTREE_DIR}/${entry}" ]; then
+                echo "✓ $entry (already symlinked)"
+            else
+                ln -sf "${MAIN_REPO_ABS}/${entry}" "${WORKTREE_DIR}/${entry}"
+                echo "🔗 $entry"
+            fi
+        fi
+    done < "$CONFIG"
+
+    echo "✅ Symlinks applied to ${WORKTREE_DIR}"
 }
 
 remove-worktree() {
@@ -515,34 +608,30 @@ remove-worktree() {
     git worktree list
 }
 
-# Test function to see if cd works
-# test-cd() {
-#     echo "Before: $(pwd)"
-#     cd ..
-#     echo "After: $(pwd)"
-# }
-
-eval "$(/opt/homebrew/bin/brew shellenv)"
+eval "$(direnv hook zsh)"
 
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 export PATH="/opt/homebrew/opt/curl/bin:$PATH"
-export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 export PATH="/Applications/RubyMine.app/Contents/MacOS:$PATH"
-export PATH="$HOME/.local/bin:$PATH"
-
-# Amazon Q post block. Keep at the bottom of this file.
-# [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
-
-# test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # Re-prioritize rbenv shims after homebrew setup
 export PATH="$HOME/.rbenv/shims:$PATH"
 
 source ~/.config/zsh/tab-colors.zsh
 
-
 # Use vi keybindings for command-line editing (Esc to enter normal mode)
 set -o vi
 
+# OrbStack
+export PATH="$HOME/.orbstack/bin:$PATH"
 
+# bun completions - lazy loaded on first use
+bun() {
+  unfunction bun
+  [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
+  command bun "$@"
+}
 
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
