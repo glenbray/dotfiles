@@ -411,6 +411,12 @@ symlink-worktree() {
         return 1
     fi
 
+    # Symlink .worktree-symlinks itself if not already present in the worktree
+    if [ ! -e "${WORKTREE_DIR}/.worktree-symlinks" ]; then
+        ln -sf "$CONFIG" "${WORKTREE_DIR}/.worktree-symlinks"
+        echo "🔗 .worktree-symlinks"
+    fi
+
     while IFS= read -r entry || [ -n "$entry" ]; do
         [[ -z "$entry" || "$entry" == \#* ]] && continue
 

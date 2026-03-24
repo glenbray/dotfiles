@@ -3,7 +3,7 @@
 # ➜ user at host $
 
 format = '''
-$directory $git_branch$git_status
+$directory $git_branch${custom.git_untracked}$git_status
 $character$env_var[at ]()$hostname[\$]() '''
 
 add_newline = true
@@ -20,13 +20,20 @@ symbol = ""
 format = '[\(](white)[$branch]($style)'
 
 [git_status]
-format = '[$staged$modified|$ahead_behind[\)](white) ]()'
+format = '[$staged$modified$ahead_behind[\)](white) ]()'
 staged = '[●](bright-yellow)'
 modified = '[●](bright-red)'
 ahead = '[↑${count}](bright-green)'
 behind = '[↓${count}](bright-red)'
 diverged = '[↑${ahead_count}](bright-green)[/↓${behind_count}](bright-red)'
 up_to_date = '[✔](bright-green)'
+
+[custom.git_untracked]
+command = 'echo "?"'
+when = 'test -n "$(git ls-files --others --exclude-standard 2>/dev/null | head -1)"'
+format = '[$output](bright-blue)'
+description = 'Shows ? when there are untracked files (workaround for Starship worktree bug)'
+shell = ['bash', '--noprofile', '--norc']
 
 [character]
 success_symbol = '[➜](bold bright-green)'
