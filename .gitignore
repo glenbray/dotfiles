@@ -9,8 +9,12 @@ tags
 .idea
 .vscode
 .claude
-CLAUDE.md
 bigquery-keyfile.json
 bigquery*.json
 CLAUDE.local.md
 prompts/*
+
+.serena/
+GEMINI.md
+checkpoint.md
+.superset

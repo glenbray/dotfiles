@@ -32,6 +32,7 @@ brew "lazydocker"
 brew "shared-mime-info"
 cask "ngrok"
 brew "awscli"
+brew "terminal-notifier"
 
 cask "google-chrome"
 cask "firefox"

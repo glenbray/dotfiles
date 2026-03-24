@@ -1,3 +1,5 @@
+# Amazon Q pre block. Keep at the top of this file.
+# [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.pre.zsh"
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -15,7 +17,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git git-auto-fetch poetry)
+plugins=(git git-auto-fetch)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -102,7 +104,7 @@ export FZF_DEFAULT_COMMAND="rg --files"
 export PATH="/usr/local/bin:$PATH"
 export PATH="$HOME/.rbenv/bin:$PATH"
 # export PGHOST="/var/pgsql_socket"
-export PATH="$PATH:/Users/glen/Documents/flutter/bin"
+export PATH="$PATH:$HOME/Documents/flutter/bin"
 export PATH="$PATH:$HOME/.local/bin/"
 
 # Android Dev (React native)
@@ -125,6 +127,7 @@ export PYENV_ROOT="$HOME/.pyenv"
 export PIPENV_PYTHON="$PYENV_ROOT/shims/python"
 export PATH="$PYENV_ROOT/bin:$PATH"
 
+export PATH="$HOME/.deno/bin:$PATH"
 
 # export JAVA_HOME=$(/usr/libexec/java_home)
 
@@ -161,6 +164,10 @@ DISABLE_AUTO_TITLE="true"
 precmd() {
   # sets the tab title to current dir (fast version)
   echo -ne "\e]1;${PWD##*/}\a"
+  # Tell iTerm2 the current directory (enables split pane to inherit pwd)
+  echo -ne "\033]1337;CurrentDir=${PWD}\007"
+  # Report CWD to Ghostty (needed for split pane directory inheritance)
+  print -n "\e]7;file://${HOST}${PWD}\a" > /dev/tty
   # Call vcs_info for git status
   vcs_info
 }
@@ -178,7 +185,6 @@ get_prompt() {
   echo -n "$%{$reset_color%} " # $
   echo -n "\n"
 }
-
 
 # FAST GIT STATUS - Replace slow python script with built-in vcs_info
 autoload -Uz vcs_info
@@ -259,7 +265,8 @@ nvm() {
   nvm "$@"
 }
 
-ulimit -n 1024
+ulimit -n 64000 2>/dev/null || ulimit -n 10240 2>/dev/null || true
+ulimit -u 2048 2>/dev/null || true
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export JAVA_HOME=${SDKMAN_CANDIDATES_DIR}/java/${CURRENT}
@@ -267,6 +274,27 @@ export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 create-worktree() {
+    # Help flag
+    if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+        echo "Usage: create-worktree <dir-name> [branch-name] [base-branch]"
+        echo ""
+        echo "Arguments:"
+        echo "  dir-name     Directory name for the worktree (required)"
+        echo "  branch-name  Git branch name (defaults to dir-name)"
+        echo "  base-branch  Branch to base the new branch on (defaults to 'main')"
+        echo ""
+        echo "Examples:"
+        echo "  create-worktree timeline"
+        echo "      → Creates dir 'timeline', branch 'timeline', based on 'main'"
+        echo ""
+        echo "  create-worktree my-dir feature/timeline"
+        echo "      → Creates dir 'my-dir', branch 'feature/timeline', based on 'main'"
+        echo ""
+        echo "  create-worktree my-dir feature/timeline develop"
+        echo "      → Creates dir 'my-dir', branch 'feature/timeline', based on 'develop'"
+        return 0
+    fi
+
     # Check if we're in a git repository
     if ! git rev-parse --git-dir > /dev/null 2>&1; then
         echo "❌ Not a git repository"
@@ -275,18 +303,19 @@ create-worktree() {
 
     # Check if a name was provided
     if [ $# -eq 0 ]; then
-        echo "❌ Usage: create-worktree <worktree-name>"
-        echo "📝 Example: create-worktree timeline"
+        echo "❌ Usage: create-worktree <dir-name> [branch-name] [base-branch]"
+        echo "💡 Run 'create-worktree --help' for more info"
         return 1
     fi
 
     local NAME="$1"
+    local BRANCH_NAME="${2:-$NAME}"  # Use $2 if provided, otherwise default to $NAME
+    local BASE_BRANCH="${3:-main}"   # Use $3 if provided, otherwise default to main
 
     # Get current directory name for worktrees directory
     local CURRENT_DIR=$(basename "$(pwd)")
     local WORKTREES_DIR="../${CURRENT_DIR}-worktrees"
     local WORKTREE_DIR="${WORKTREES_DIR}/${NAME}"
-    local BRANCH_NAME="${NAME}"
 
     # Create worktrees directory if it doesn't exist
     if [ ! -d "${WORKTREES_DIR}" ]; then
@@ -299,8 +328,11 @@ create-worktree() {
         echo "📋 Creating worktree from existing branch '${BRANCH_NAME}'"
         git worktree add "${WORKTREE_DIR}" "${BRANCH_NAME}" --quiet
     else
-        echo "🆕 Creating worktree with new branch '${BRANCH_NAME}'"
-        git worktree add "${WORKTREE_DIR}" -b "${BRANCH_NAME}" --quiet
+        # Fetch latest from remote to ensure we have up-to-date base branch
+        git fetch origin "${BASE_BRANCH}" --quiet 2>/dev/null || true
+
+        echo "🆕 Creating worktree with new branch '${BRANCH_NAME}' based on '${BASE_BRANCH}'"
+        git worktree add "${WORKTREE_DIR}" -b "${BRANCH_NAME}" "origin/${BASE_BRANCH}" --quiet
     fi
 
     if [ $? -eq 0 ]; then
@@ -326,7 +358,6 @@ create-worktree() {
             ln -sf "${MAIN_REPO_ABS}/.claude" "${WORKTREE_DIR}/.claude"
         fi
 
-
         # Copy example files if the actual files don't exist
         if [ ! -f "${WORKTREE_DIR}/.env.development" ] && [ -f ".env.development.example" ]; then
             cp ".env.development.example" "${WORKTREE_DIR}/.env.development"
@@ -334,6 +365,34 @@ create-worktree() {
 
         if [ ! -f "${WORKTREE_DIR}/.env.test" ] && [ -f ".env.test.example" ]; then
             cp ".env.test.example" "${WORKTREE_DIR}/.env.test"
+        fi
+
+        # Copy MCP servers from main repo to new worktree in ~/.claude.json
+        local CLAUDE_JSON="$HOME/.claude.json"
+        if [ -f "$CLAUDE_JSON" ] && command -v jq &> /dev/null; then
+            local WORKTREE_ABS_PATH=$(cd "${WORKTREE_DIR}" && pwd)
+            local MCP_SERVERS=$(jq -r --arg path "$MAIN_REPO_ABS" '.projects[$path].mcpServers // {}' "$CLAUDE_JSON")
+
+            if [ "$MCP_SERVERS" != "{}" ] && [ "$MCP_SERVERS" != "null" ]; then
+                # Check if worktree project entry exists
+                local HAS_PROJECT=$(jq -r --arg path "$WORKTREE_ABS_PATH" 'has("projects") and (.projects | has($path))' "$CLAUDE_JSON")
+
+                if [ "$HAS_PROJECT" = "true" ]; then
+                    # Update existing project entry with MCP servers
+                    local TEMP_FILE=$(mktemp)
+                    jq --arg path "$WORKTREE_ABS_PATH" --argjson mcpServers "$MCP_SERVERS" \
+                        '.projects[$path].mcpServers = $mcpServers' "$CLAUDE_JSON" > "$TEMP_FILE" && \
+                        mv "$TEMP_FILE" "$CLAUDE_JSON"
+                    echo "🔌 Copied MCP servers to worktree config"
+                else
+                    # Create new project entry with MCP servers
+                    local TEMP_FILE=$(mktemp)
+                    jq --arg path "$WORKTREE_ABS_PATH" --argjson mcpServers "$MCP_SERVERS" \
+                        '.projects[$path] = {"allowedTools": [], "mcpContextUris": [], "mcpServers": $mcpServers, "enabledMcpjsonServers": [], "disabledMcpjsonServers": [], "hasTrustDialogAccepted": true}' "$CLAUDE_JSON" > "$TEMP_FILE" && \
+                        mv "$TEMP_FILE" "$CLAUDE_JSON"
+                    echo "🔌 Created worktree config with MCP servers"
+                fi
+            fi
         fi
 
         echo "✅ Worktree created: ${WORKTREE_DIR}"
@@ -457,11 +516,11 @@ remove-worktree() {
 }
 
 # Test function to see if cd works
-test-cd() {
-    echo "Before: $(pwd)"
-    cd ..
-    echo "After: $(pwd)"
-}
+# test-cd() {
+#     echo "Before: $(pwd)"
+#     cd ..
+#     echo "After: $(pwd)"
+# }
 
 eval "$(/opt/homebrew/bin/brew shellenv)"
 
@@ -471,4 +530,19 @@ export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 export PATH="/Applications/RubyMine.app/Contents/MacOS:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 
-export ANTHROPIC_MODEL="claude-sonnet-4-20250514"
+# Amazon Q post block. Keep at the bottom of this file.
+# [[ -f "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh" ]] && builtin source "${HOME}/Library/Application Support/amazon-q/shell/zshrc.post.zsh"
+
+# test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# Re-prioritize rbenv shims after homebrew setup
+export PATH="$HOME/.rbenv/shims:$PATH"
+
+source ~/.config/zsh/tab-colors.zsh
+
+
+# Use vi keybindings for command-line editing (Esc to enter normal mode)
+set -o vi
+
+
+

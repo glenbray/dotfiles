@@ -24,3 +24,5 @@
 	required = true
 [push]
 	autoSetupRemote = true
+[coderabbit]
+	machineId = cli/299d96b34ba84233b49477c32d0afb01

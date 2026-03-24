@@ -19,10 +19,10 @@ keybind = ctrl+shift+left=move_tab:-1
 keybind = ctrl+shift+right=move_tab:1
 macos-option-as-alt = true
 
-keybind = cmd+h=goto_split:left
-keybind = cmd+l=goto_split:right
-keybind = cmd+j=goto_split:bottom
-keybind = cmd+k=goto_split:top
+keybind = all:cmd+h=goto_split:left
+keybind = all:cmd+l=goto_split:right
+keybind = all:cmd+j=goto_split:down
+keybind = all:cmd+k=goto_split:up
 
 # Resize splits
 keybind = cmd+shift+h=resize_split:left,15
@@ -32,6 +32,9 @@ keybind = cmd+shift+k=resize_split:up,15
 
 # Equalize all splits to equal size
 keybind = cmd+equal=equalize_splits
+
+# Toggle current split to full screen (zoom)
+keybind = cmd+shift+f=toggle_split_zoom
 
 # Make split borders more visible
 split-divider-color = #666666
@@ -47,7 +50,7 @@ keybind = shift+enter=text:\n
 macos-non-native-fullscreen = false
 window-decoration = true
 
-# Disable the % symbol for incomplete output
+# Disable cursor feature to keep block cursor, enable everything else
 shell-integration-features = no-cursor
 
 # Note: Custom clickable file paths are not yet fully implemented in Ghostty
@@ -55,3 +58,8 @@ shell-integration-features = no-cursor
 
 # Fix shift+click selection behavior
 mouse-shift-capture = never
+
+# Ensure new tabs/panes start from the same directory as the current one
+window-inherit-working-directory = true
+
+auto-update-channel = tip

@@ -239,7 +239,7 @@ endfunction
 
 let g:ruby_indent_assignment_style = 'variable'
 let test#strategy = "neovim"
-let test#neovim#term_position = "belowright" 
+let test#neovim#term_position = "belowright"
 let test#neovim#start_normal = 1
 au TermOpen * setlocal listchars= nonumber norelativenumber
 
@@ -510,9 +510,9 @@ let g:sonokai_style = 'shusia'
 
 syntax on
 set background=dark
-" colorscheme gruvbox-material
+colorscheme gruvbox-material
 " colorscheme sonokai
-colorscheme cyberdream
+" colorscheme cyberdream
 " colorscheme miasma
 " colorscheme monokai-nightasty
 
@@ -798,14 +798,16 @@ lua << EOF
 
   local ruby_lsp_setup = require("ruby_lsp_setup")
 
-  require("lspconfig").ruby_lsp.setup({
+  vim.lsp.config('ruby_lsp', {
     on_attach = function(client, buffer)
       setup_diagnostics(client, buffer)
       ruby_lsp_setup.on_attach(client, buffer)
     end,
     cmd = { "rbenv", "exec", "ruby-lsp" },
     filetypes = { "ruby", "eruby" },
-    root_dir = require("lspconfig.util").root_pattern("Gemfile", ".git", ".ruby-version"),
+    root_dir = function(bufnr, on_dir)
+      on_dir(vim.fs.root(bufnr, { "Gemfile", ".git", ".ruby-version" }))
+    end,
     settings = {
       rubyLsp = {
         enabledFeatures = {
@@ -843,14 +845,21 @@ lua << EOF
       experimentalFeaturesEnabled = true,
     },
   })
+  vim.lsp.enable('ruby_lsp')
 
   -- Setup Ruby project environment
   ruby_lsp_setup.setup_ruby_project()
 
-  require'lspconfig'.ts_ls.setup {}
-  require'lspconfig'.yamlls.setup {}
-  require'lspconfig'.dockerls.setup {}
-  require"lspconfig".tailwindcss.setup {
+  vim.lsp.config('ts_ls', {})
+  vim.lsp.enable('ts_ls')
+
+  vim.lsp.config('yamlls', {})
+  vim.lsp.enable('yamlls')
+
+  vim.lsp.config('dockerls', {})
+  vim.lsp.enable('dockerls')
+
+  vim.lsp.config('tailwindcss', {
     settings = {
       tailwindCSS = {
         experimental = {
@@ -870,8 +879,11 @@ lua << EOF
         }
       }
     }
-  }
-  require'lspconfig'.jedi_language_server.setup{}
+  })
+  vim.lsp.enable('tailwindcss')
+
+  vim.lsp.config('jedi_language_server', {})
+  vim.lsp.enable('jedi_language_server')
   -- require"lspconfig".pyright.setup {}
   -- require'lspconfig'.pylsp.setup{}
 
@@ -1061,6 +1073,23 @@ lua << EOF
           ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
           ["<CR>"] = select_one_or_multi,
         }
+      },
+      preview = {
+        check_mime_type = false,  -- Disable MIME type checking
+        timeout = 500,           -- Increase timeout for preview
+        filesize_hook = function(filepath, bufnr, opts)
+          -- Simple hook to prevent complex filetype detection
+          local path = require("plenary.path"):new(filepath)
+          if path:exists() and path:stat().size > 100000 then  -- 100KB limit
+            require("telescope.previewers.utils").set_preview_message(
+              bufnr,
+              opts.winid,
+              "File too large for preview"
+            )
+            return false
+          end
+          return true
+        end
       },
       extensions = {
         fzf = {
