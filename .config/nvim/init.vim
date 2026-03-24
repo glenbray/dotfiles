@@ -134,16 +134,29 @@ let g:ale_fix_on_save = 1
 let g:ale_set_highlights = 0 " Disable highligting
 let g:ale_python_flake8_executable = 'python3'
 let g:ale_python_pyflakes_executable = 'pyflakes3'
-let g:ale_ruby_rubocop_executable = 'standardrb'
+function! HasStandardRb()
+  if filereadable('Gemfile')
+    return match(readfile('Gemfile'), "gem ['\"]standard['\"]") >= 0
+  endif
+  return 0
+endfunction
+
+function! RubyLinters()
+  return HasStandardRb() ? ['standardrb'] : []
+endfunction
+
+function! RubyFixers()
+  return HasStandardRb() ? ['standardrb'] : []
+endfunction
 
 let g:ale_linters = {
-\  'ruby': ['standardrb'],
+\  'ruby': RubyLinters(),
 \  'python': ['black'],
 \  'eruby': ['erblint'],
 \}
 
 let g:ale_fixers = {
-\  'ruby': ['standardrb'],
+\  'ruby': RubyFixers(),
 \  'javascript': ['prettier'],
 \  'javascriptreact': ['prettier'],
 \  'javascript.jsx': [],
@@ -239,7 +252,7 @@ endfunction
 
 let g:ruby_indent_assignment_style = 'variable'
 let test#strategy = "neovim"
-let test#neovim#term_position = "belowright" 
+let test#neovim#term_position = "belowright"
 let test#neovim#start_normal = 1
 au TermOpen * setlocal listchars= nonumber norelativenumber
 
@@ -510,9 +523,9 @@ let g:sonokai_style = 'shusia'
 
 syntax on
 set background=dark
-" colorscheme gruvbox-material
+colorscheme gruvbox-material
 " colorscheme sonokai
-colorscheme cyberdream
+" colorscheme cyberdream
 " colorscheme miasma
 " colorscheme monokai-nightasty
 
@@ -586,8 +599,8 @@ map <leader>w :w<cr>
 map <leader>nw :noa w<cr>
 
 " NvimTree mappings
-noremap <leader>nn :NvimTreeToggle<cr>
-noremap <leader>nf :NvimTreeFindFile<cr> :NvimTreeFocus<cr>
+nnoremap <silent> <leader>nn <cmd>NvimTreeToggle<CR>
+nnoremap <silent> <leader>nf <cmd>NvimTreeFindFileToggle<CR>
 
 " WinResizer
 map <leader>e :WinResizerStartResize<cr>
@@ -713,16 +726,31 @@ set completeopt=menu,menuone,noselect
 
 lua << EOF
   require("nvim-tree").setup {
-    -- open_on_setup = true,
-    -- open_on_setup_file = false,
     open_on_tab = false,
     hijack_cursor = true,
     sync_root_with_cwd = true,
+    hijack_directories = {
+      enable = false,
+    },
     view = {
       preserve_window_proportions = false,
     },
     renderer = {
-      root_folder_modifier = ":t:r"
+      root_folder_modifier = ":t:r",
+      icons = {
+        git_placement = "signcolumn",
+        glyphs = {
+          git = {
+            unstaged = "✗",
+            staged = "✓",
+            unmerged = "═",
+            renamed = "»",
+            untracked = "★",
+            deleted = "✘",
+            ignored = "◌",
+          }
+        }
+      }
     },
     live_filter = {
       always_show_folders = false,
@@ -734,6 +762,9 @@ lua << EOF
       open_file = {
         resize_window = true
       }
+    },
+    git = {
+      ignore = false,
     }
   }
 
@@ -848,7 +879,7 @@ lua << EOF
   ruby_lsp_setup.setup_ruby_project()
 
   require'lspconfig'.ts_ls.setup {}
-  require'lspconfig'.yamlls.setup {}
+  -- require'lspconfig'.yamlls.setup {}
   require'lspconfig'.dockerls.setup {}
   require"lspconfig".tailwindcss.setup {
     settings = {
@@ -884,6 +915,13 @@ lua << EOF
   )
 
   cmp.setup({
+    enabled = function()
+      -- disable completion in telescope
+      if vim.bo.filetype == 'TelescopePrompt' then
+        return false
+      end
+      return true
+    end,
     snippet = {
       expand = function(args)
         vim.fn["vsnip#anonymous"](args.body)
@@ -973,7 +1011,22 @@ lua << EOF
     require("nvim-tree.api").tree.open()
   end
 
-  vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
+  -- Disabled: causing buffer conflicts on toggle
+  -- vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
+
+  -- Fix Telescope key mappings
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "TelescopePrompt",
+    callback = function()
+      local opts = { buffer = true }
+      vim.keymap.set('i', '<C-j>', function()
+        require('telescope.actions').move_selection_next(vim.api.nvim_get_current_buf())
+      end, opts)
+      vim.keymap.set('i', '<C-k>', function()
+        require('telescope.actions').move_selection_previous(vim.api.nvim_get_current_buf())
+      end, opts)
+    end,
+  })
 
   local dap, dapui = require("dap"), require("dapui")
   dap.set_log_level('TRACE')
@@ -1060,6 +1113,10 @@ lua << EOF
           ["<C-k>"] = actions.move_selection_previous,
           ["<C-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
           ["<CR>"] = select_one_or_multi,
+        },
+        n = {
+          ["j"] = actions.move_selection_next,
+          ["k"] = actions.move_selection_previous,
         }
       },
       extensions = {
