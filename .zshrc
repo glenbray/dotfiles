@@ -9,7 +9,7 @@ DISABLE_COMPFIX="true"
 DISABLE_AUTO_TITLE="true"
 ZSH_THEME="robbyrussell"
 
-plugins=(fzf-tab git git-auto-fetch)
+plugins=(fzf-tab git git-auto-fetch zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -91,6 +91,7 @@ setopt HIST_FIND_NO_DUPS         # Do not display a line previously found.
 setopt HIST_IGNORE_SPACE         # Don't record an entry starting with a space.
 setopt HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history file.
 setopt HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
+setopt AUTO_CD                   # Type a directory name to cd into it.
 
 export FZF_DEFAULT_COMMAND="rg --files"
 export PATH="$HOME/.rbenv/bin:$PATH"
@@ -138,6 +139,12 @@ pyenv() {
 
 zstyle ':completion:*' menu select
 
+_rspec_files() {
+  local -a files
+  files=(${(f)"$(rg --files -g '*_spec.rb' 2>/dev/null)"})
+  compadd -a files
+}
+
 # RSpec completion
 _rspec() {
   local -a opts
@@ -177,7 +184,7 @@ _rspec() {
     '--deprecation-out[Direct deprecation warnings to a file]:file:_files'
   )
 
-  _arguments -s $opts '*:file:_files -g "**/*_spec.rb"'
+  _arguments -s $opts '*:spec file:_rspec_files'
 }
 
 compdef _rspec rspec
@@ -202,79 +209,68 @@ bindkey  "^[[F"   end-of-line
 bindkey  "^[[3~"  delete-char
 
 precmd() {
-  # sets the tab title to current dir (fast version)
+  # sets the tab title to current dir
   echo -ne "\e]1;${PWD##*/}\a"
-  # Call vcs_info for git status
-  vcs_info
 }
 
-get_prompt() {
-  echo -n "\n"
-  echo -n "%{$reset_color%}"
-  echo -n "%{$fg[cyan]%}[%~]" # Dir
-  echo -n " ${vcs_info_msg_0_} " # Git branch (fast)
-  echo -n "\n"
-  echo -n "%{$fg_bold[green]%}➜ " # Right arrow
-  echo -n "%{$fg[magenta]%}%n%f " # User
-  echo -n "at " # at
-  echo -n "%{$fg[yellow]%}%m%f " # Host
-  echo -n "$%{$reset_color%} " # $
-  echo -n "\n"
-}
+eval "$(starship init zsh)"
 
-
-# FAST GIT STATUS - Replace slow python script with built-in vcs_info
-autoload -Uz vcs_info
-setopt prompt_subst
-
-# Enable git in vcs_info
-zstyle ':vcs_info:*' enable git
-
-# Check for untracked files
-zstyle ':vcs_info:git:*' check-for-changes true
-zstyle ':vcs_info:git:*' unstagedstr '%F{red}●%f'
-zstyle ':vcs_info:git:*' stagedstr '%F{yellow}●%f'
-
-# Format when not in action (normal operation)
-zstyle ':vcs_info:git:*' formats '(%F{magenta}%b%f%c%u|%m)'
-# Format when in action (merge, rebase, etc)
-zstyle ':vcs_info:git:*' actionformats '(%F{magenta}%b%f%c%u|%F{red}%a%f)'
-
-# Hook to check remote status
-zstyle ':vcs_info:git*+set-message:*' hooks git-st
-function +vi-git-st() {
-    local ahead behind
-    local -a gitstatus
-
-    # Check for commits ahead/behind upstream
-    ahead=$(git rev-list --count @{u}..HEAD 2>/dev/null)
-    behind=$(git rev-list --count HEAD..@{u} 2>/dev/null)
-
-    if [[ -n $ahead ]] && [[ $ahead -gt 0 ]]; then
-        gitstatus+=("%F{green}↑${ahead}%f")
-    fi
-    if [[ -n $behind ]] && [[ $behind -gt 0 ]]; then
-        gitstatus+=("%F{red}↓${behind}%f")
-    fi
-
-    # Check if there are any staged or unstaged changes
-    local has_changes=false
-    if [[ -n $(git status --porcelain 2>/dev/null) ]]; then
-        has_changes=true
-    fi
-
-    if [[ ${#gitstatus[@]} -eq 0 ]]; then
-        if [[ $has_changes == false ]]; then
-            hook_com[misc]="%F{green}✔%f"
-        else
-            hook_com[misc]="%F{blue}~%f"
-        fi
-    else
-        hook_com[misc]="${(j:/:)gitstatus}"
-    fi
-}
-
-PROMPT='$(get_prompt)'
+# --- Old custom prompt (commented out) ---
+# precmd() {
+#   echo -ne "\e]1;${PWD##*/}\a"
+#   vcs_info
+# }
+#
+# get_prompt() {
+#   echo -n "\n"
+#   echo -n "%{$reset_color%}"
+#   echo -n "%{$fg[cyan]%}[%~]" # Dir
+#   echo -n " ${vcs_info_msg_0_} " # Git branch (fast)
+#   echo -n "\n"
+#   echo -n "%{$fg_bold[green]%}➜ " # Right arrow
+#   echo -n "%{$fg[magenta]%}%n%f " # User
+#   echo -n "at " # at
+#   echo -n "%{$fg[yellow]%}%m%f " # Host
+#   echo -n "$%{$reset_color%} " # $
+#   echo -n "\n"
+# }
+#
+# autoload -Uz vcs_info
+# setopt prompt_subst
+# zstyle ':vcs_info:*' enable git
+# zstyle ':vcs_info:git:*' check-for-changes true
+# zstyle ':vcs_info:git:*' unstagedstr '%F{red}●%f'
+# zstyle ':vcs_info:git:*' stagedstr '%F{yellow}●%f'
+# zstyle ':vcs_info:git:*' formats '(%F{magenta}%b%f%c%u|%m)'
+# zstyle ':vcs_info:git:*' actionformats '(%F{magenta}%b%f%c%u|%F{red}%a%f)'
+# zstyle ':vcs_info:git*+set-message:*' hooks git-st
+# function +vi-git-st() {
+#     local ahead behind
+#     local -a gitstatus
+#     ahead=$(git rev-list --count @{u}..HEAD 2>/dev/null)
+#     behind=$(git rev-list --count HEAD..@{u} 2>/dev/null)
+#     if [[ -n $ahead ]] && [[ $ahead -gt 0 ]]; then
+#         gitstatus+=("%F{green}↑${ahead}%f")
+#     fi
+#     if [[ -n $behind ]] && [[ $behind -gt 0 ]]; then
+#         gitstatus+=("%F{red}↓${behind}%f")
+#     fi
+#     local has_changes=false
+#     if [[ -n $(git status --porcelain 2>/dev/null) ]]; then
+#         has_changes=true
+#     fi
+#     if [[ ${#gitstatus[@]} -eq 0 ]]; then
+#         if [[ $has_changes == false ]]; then
+#             hook_com[misc]="%F{green}✔%f"
+#         else
+#             hook_com[misc]="%F{blue}~%f"
+#         fi
+#     else
+#         hook_com[misc]="${(j:/:)gitstatus}"
+#     fi
+# }
+# PROMPT='$(get_prompt)'
+# --- End old custom prompt ---
 
 # NVM lazy loading - but keep npm binaries in PATH
 export NVM_DIR="$HOME/.nvm"
