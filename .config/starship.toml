@@ -1,0 +1,43 @@
+# Starship config — matches old custom prompt layout:
+# [~/path] (branch●|✔)
+# ➜ user at host $
+
+format = '''
+$directory $git_branch$git_status
+$character$env_var[at ]()$hostname[\$]() '''
+
+add_newline = true
+
+[directory]
+style = "bright-cyan"
+truncation_length = 0
+truncate_to_repo = false
+format = '[\[$path\]]($style)'
+
+[git_branch]
+style = "bright-purple"
+symbol = ""
+format = '[\(](white)[$branch]($style)'
+
+[git_status]
+format = '[$staged$modified|$ahead_behind[\)](white) ]()'
+staged = '[●](bright-yellow)'
+modified = '[●](bright-red)'
+ahead = '[↑${count}](bright-green)'
+behind = '[↓${count}](bright-red)'
+diverged = '[↑${ahead_count}](bright-green)[/↓${behind_count}](bright-red)'
+up_to_date = '[✔](bright-green)'
+
+[character]
+success_symbol = '[➜](bold bright-green)'
+error_symbol = '[➜](bold bright-red)'
+
+[env_var]
+variable = "USER"
+style = "bright-purple"
+format = '[$env_value]($style) '
+
+[hostname]
+ssh_only = false
+style = "bright-yellow"
+format = '[$hostname]($style) '
