@@ -9,7 +9,14 @@ DISABLE_COMPFIX="true"
 DISABLE_AUTO_TITLE="true"
 ZSH_THEME="robbyrussell"
 
+# Performance: tune autosuggestions
+ZSH_AUTOSUGGEST_BUFFER_MAX_SIZE="20"
+ZSH_AUTOSUGGEST_USE_ASYNC=1
+
 plugins=(fzf-tab git git-auto-fetch zsh-autosuggestions)
+
+# Performance: skip system-wide compinit from /etc/zshrc
+skip_global_compinit=1
 
 source $ZSH/oh-my-zsh.sh
 

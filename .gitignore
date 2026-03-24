@@ -18,3 +18,4 @@ prompts/*
 GEMINI.md
 checkpoint.md
 .superset
+.worktree-symlinks
